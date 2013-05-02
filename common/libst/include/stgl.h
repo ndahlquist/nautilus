@@ -19,6 +19,12 @@
 #ifdef ANDROID_NDK
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+
+#elif __APPLE__
+#import <OpenGLES/ES2/gl.h>
+//#include <OpenGL/gl.h>
+//#include <OpenGL/glu.h>
+
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>

@@ -21,7 +21,7 @@
 		55906DC017303A9E00BD92BF /* renderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55906DBF17303A9D00BD92BF /* renderView.m */; };
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
-		55906DCD1731EA3400BD92BF /* Common.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55906DCC1731EA3400BD92BF /* Common.mm */; };
+		55906DCD1731EA3400BD92BF /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55906DCC1731EA3400BD92BF /* common.mm */; };
 		55907097173251CF00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		559070F9173254E300BD92BF /* STColor3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E5173254E200BD92BF /* STColor3f.cpp */; };
 		559070FA173254E300BD92BF /* STColor4f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E6173254E200BD92BF /* STColor4f.cpp */; };
@@ -78,9 +78,8 @@
 		55906DBF17303A9D00BD92BF /* renderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = renderView.m; sourceTree = "<group>"; };
 		55906DC71731D05600BD92BF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		55906DCC1731EA3400BD92BF /* Common.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Common.mm; sourceTree = "<group>"; };
+		55906DCC1731EA3400BD92BF /* common.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = common.mm; sourceTree = "<group>"; };
 		55907096173251CF00BD92BF /* liblibstObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibstObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		559070E4173253F000BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		559070E5173254E200BD92BF /* STColor3f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor3f.cpp; path = ../common/libst/STColor3f.cpp; sourceTree = "<group>"; };
 		559070E6173254E200BD92BF /* STColor4f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor4f.cpp; path = ../common/libst/STColor4f.cpp; sourceTree = "<group>"; };
 		559070E7173254E200BD92BF /* STColor4ub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor4ub.cpp; path = ../common/libst/STColor4ub.cpp; sourceTree = "<group>"; };
@@ -124,6 +123,7 @@
 		55907122173254FA00BD92BF /* STVector2.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector2.inl; sourceTree = "<group>"; };
 		55907123173254FA00BD92BF /* STVector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STVector3.h; sourceTree = "<group>"; };
 		55907124173254FA00BD92BF /* STVector3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector3.inl; sourceTree = "<group>"; };
+		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,8 +191,8 @@
 				55906DB117302DDB00BD92BF /* nativeGraphicsViewController.m */,
 				55906DBE17303A9D00BD92BF /* renderView.h */,
 				55906DBF17303A9D00BD92BF /* renderView.m */,
-				559070E4173253F000BD92BF /* common.h */,
-				55906DCC1731EA3400BD92BF /* Common.mm */,
+				559071251732580500BD92BF /* common.h */,
+				55906DCC1731EA3400BD92BF /* common.mm */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
 			);
 			path = nativeGraphics;
@@ -360,7 +360,7 @@
 				55906DA617302DDB00BD92BF /* nativeGraphicsAppDelegate.m in Sources */,
 				55906DB217302DDB00BD92BF /* nativeGraphicsViewController.m in Sources */,
 				55906DC017303A9E00BD92BF /* renderView.m in Sources */,
-				55906DCD1731EA3400BD92BF /* Common.mm in Sources */,
+				55906DCD1731EA3400BD92BF /* common.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
