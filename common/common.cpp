@@ -1,3 +1,13 @@
+//
+//  common.m
+//  nativeGraphics
+//
+//  Created by Ling-Ling Zhang on 5/1/13.
+//  Copyright (c) 2013 Ling-Ling Zhang. All rights reserved.
+//
+
+#include "common.h"
+
 // main.cpp
 
 //
@@ -5,18 +15,19 @@
 // and GLEW (to load OpenGL extensions)
 //
 
-#include "common.h"
-
-
 #ifdef ANDROID_NDK
-//#include "importgl.h"
+#include "importgl.h"
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <jni.h>
 #include <android/log.h>
 
-#else
+#elif __APPLE__
+//else if ios
+//#import <OpenGLES/ES2/glext.h>
+#include <stdlib.h>
 
+#else
 #include "stglew.h"
 #include <stdio.h>
 
@@ -77,29 +88,29 @@ STShaderProgram *shader;
 
 
 /*void resetCamera() {
-    mCameraTranslation = STVector3(0.f, 1.f, 1.5f);
-    mCameraAzimuth = 0.f;
-    mCameraElevation = 65.0f;
-}*/
+ mCameraTranslation = STVector3(0.f, 1.f, 1.5f);
+ mCameraAzimuth = 0.f;
+ mCameraElevation = 65.0f;
+ }*/
 
 static void checkGlError(const char* op) {
     for (GLint error = glGetError(); error; error
-            = glGetError()) {
+         = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
 
-static const char gVertexShader[] = 
-    "attribute vec4 vPosition;\n"
-    "void main() {\n"
-    "  gl_Position = vPosition;\n"
-    "}\n";
+static const char gVertexShader[] =
+"attribute vec4 vPosition;\n"
+"void main() {\n"
+"  gl_Position = vPosition;\n"
+"}\n";
 
-static const char gFragmentShader[] = 
+static const char gFragmentShader[] =
 //    "precision mediump float;\n"
-    "void main() {\n"
-    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-    "}\n";
+"void main() {\n"
+"  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+"}\n";
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
@@ -132,12 +143,12 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     if (!vertexShader) {
         return 0;
     }
-
+    
     GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
     if (!pixelShader) {
         return 0;
     }
-
+    
     GLuint program = glCreateProgram();
     if (program) {
         glAttachShader(program, vertexShader);
@@ -172,12 +183,19 @@ GLuint gvPositionHandle;
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 //
+
+//ifdef ios
+/*- (void)SetupWidth:(int)w Height:(int)h {
+ Setup(w, h);
+ }*/
+//endif
+
 void Setup(int w, int h) {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
-
+    
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
     if (!gProgram) {
@@ -187,12 +205,12 @@ void Setup(int w, int h) {
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-            gvPositionHandle);
-
+         gvPositionHandle);
+    
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
     return;
-
+    
     // Set up lighting variables in OpenGL
     // Once we do this, we will be able to access them as built-in
     // attributes in the shader (see examples of this in normalmap.frag)
@@ -201,24 +219,24 @@ void Setup(int w, int h) {
     //glLightfv(GL_LIGHT0, GL_SPECULAR,  specularLight);
     //glLightfv(GL_LIGHT0, GL_AMBIENT,   ambientLight);
     //glLightfv(GL_LIGHT0, GL_DIFFUSE,   diffuseLight);
-
+    
     // Ditto with accessing material properties in the fragment
     // and vertex shaders.
     //glMaterialfv(GL_FRONT, GL_AMBIENT,   materialAmbient);
     //glMaterialfv(GL_FRONT, GL_DIFFUSE,   materialDiffuse);
     //glMaterialfv(GL_FRONT, GL_SPECULAR,  materialSpecular);
     //glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
-
+    
     //surfaceNormImg = new STImage(normalMap);
     //surfaceNormTex = new STTexture(surfaceNormImg);
-
+    
     //lightProbeImg = new STImage(lightProbe);
-   // /lightProbeTex = new STTexture(lightProbeImg);
-
+    // /lightProbeTex = new STTexture(lightProbeImg);
+    
     //shader = new STShaderProgram();
     //shader->LoadVertexShader(vertexShader);
     //shader->LoadFragmentShader(fragmentShader);
-
+    
     //resetCamera();
     
     //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -226,6 +244,12 @@ void Setup(int w, int h) {
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
+
+//ifdef ios
+/*- (void)RenderFrame {
+ RenderFrame();
+ }*/
+//endif
 
 void RenderFrame() {
     
@@ -240,10 +264,10 @@ void RenderFrame() {
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
-
+    
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
-
+    
     glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
@@ -256,15 +280,15 @@ void RenderFrame() {
  * Camera adjustment methods
  */
 /*void AdjustCameraAzimuthBy(float delta)
-{
-    mCameraAzimuth += delta;
-}
-
-void AdjustCameraElevationBy(float delta)
-{
-    mCameraElevation += delta;
-}
-
-void AdjustCameraTranslationBy(STVector3 delta) {
-    mCameraTranslation += delta;
-}*/
+ {
+ mCameraAzimuth += delta;
+ }
+ 
+ void AdjustCameraElevationBy(float delta)
+ {
+ mCameraElevation += delta;
+ }
+ 
+ void AdjustCameraTranslationBy(STVector3 delta) {
+ mCameraTranslation += delta;
+ }*/
