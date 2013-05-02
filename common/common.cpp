@@ -251,6 +251,12 @@ const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
  }*/
 //endif
 
+
+void SetResourceCallback(void(*callbackfunc)(const char *)) {
+    const char * filename = "hello world";
+    callbackfunc(filename);
+}
+
 void RenderFrame() {
     
     static float delta = 0.01f;
