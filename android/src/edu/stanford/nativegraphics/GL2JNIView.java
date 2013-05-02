@@ -330,7 +330,8 @@ class GL2JNIView extends GLSurfaceView {
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            NativeLib.init(width, height);
+            NativeLib mNative = new NativeLib();
+            mNative.nativeInit(width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {

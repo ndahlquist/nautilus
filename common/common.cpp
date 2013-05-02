@@ -251,8 +251,16 @@ const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
  }*/
 //endif
 
+
+void(*resourceCallback)(const char *) = NULL;
+
+void SetResourceCallback(void(*cb)(const char *)) {
+    resourceCallback = cb;
+}
+
 void RenderFrame() {
-    
+    if(resourceCallback)
+        resourceCallback("hello cruel world");
     static float delta = 0.01f;
     static float grey;
     grey += delta;
