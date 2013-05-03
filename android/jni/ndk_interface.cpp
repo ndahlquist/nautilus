@@ -15,10 +15,10 @@ extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * env, jobject obj, jint w, jint h) {
     LOGI("Native Setup() called.");
     Setup(w, h);
+    SetResourceCallback(resourcecb);
 }
 
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_step(JNIEnv * env, jobject obj) {
     RenderFrame();
-    SetResourceCallback(resourcecb);
 }
