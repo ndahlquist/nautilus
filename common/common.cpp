@@ -1,12 +1,10 @@
-//
-//  common.m
+
+//  common.cpp
 //  nativeGraphics
-//
-//  Created by Ling-Ling Zhang on 5/1/13.
-//  Copyright (c) 2013 Ling-Ling Zhang. All rights reserved.
-//
 
 #include "common.h"
+
+#include "obj_parser.h"
 
 // main.cpp
 
@@ -34,7 +32,7 @@
 #endif
 
 #include <string>
-#include "st.h"
+//#include "st.h"
 
 using namespace std;
 
@@ -68,30 +66,6 @@ static float materialAmbient[]  = { 0.2, 0.2, 0.6, 1.0 };
 static float materialDiffuse[]  = { 0.2, 0.2, 0.6, 1.0 };
 static float materialSpecular[] = { 0.8, 0.8, 0.8, 1.0 };
 static float shininess          = 8.0;  // # between 1 and 128.
-
-STImage   *surfaceNormImg;
-STTexture *surfaceNormTex;
-
-STImage   *lightProbeImg;
-STTexture *lightProbeTex;
-
-STShaderProgram *shader;
-
-// Stored mouse position for camera rotation, panning, and zoom.
-//int gPreviousMouseX = -1;
-//int gPreviousMouseY = -1;
-//int gMouseButton = -1;
-//STVector3 mCameraTranslation;
-//float mCameraAzimuth;
-//float mCameraElevation;
-//bool teapot = false;
-
-
-/*void resetCamera() {
- mCameraTranslation = STVector3(0.f, 1.f, 1.5f);
- mCameraAzimuth = 0.f;
- mCameraElevation = 65.0f;
- }*/
 
 static void checkGlError(const char* op) {
     for (GLint error = glGetError(); error; error
@@ -179,18 +153,84 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
 GLuint gProgram;
 GLuint gvPositionHandle;
 
+// Callback function to load resources.
+char*(*resourceCallback)(const char *) = NULL;
+
+void SetResourceCallback(char*(*cb)(const char *)) {
+    resourceCallback = cb;
+}
+
 //
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 //
-
-//ifdef ios
-/*- (void)SetupWidth:(int)w Height:(int)h {
- Setup(w, h);
- }*/
-//endif
-
 void Setup(int w, int h) {
+    if(!resourceCallback) {
+        LOGE("Resource callback not set.");
+        exit(0);
+    }
+
+    /////////////////
+    std::vector<struct Vertex> vertices;
+	std::vector<struct face> faces;
+	
+	char * objFile = resourceCallback("raptor");
+	parseObjString(objFile, vertices, faces);
+	free(objFile);
+
+	computeAdjacencyLists(vertices, faces);
+
+    /*for(int i = 0; i < subdivide; i++) {
+	    subdivideMesh(vertices, faces);
+	    computeAdjacencyLists(vertices, faces);
+	    smoothMesh(vertices, faces);
+	}*/
+
+	computeNormals(vertices, faces);
+
+	const int faceSize = 3*3 + 3*3 + 3*2;
+	const int size = faces.size() * faceSize;
+
+	/*jfloatArray interleaved = env->NewFloatArray(size);
+	if(interleaved == NULL) {
+		LOGE("NewFloatArray failed.");
+		return NULL;
+	}
+	int bufferIndex = 0;
+	jfloat * buffer = (jfloat *) calloc(sizeof(jfloat), size);
+	if(buffer == NULL) {
+		LOGE("Native buffer allocation (calloc) failed.");
+		return NULL;
+	}
+
+	LOGI("Beginning interleave. %d faces and %d vertices", faces.size(), vertices.size());
+
+	for(int i=0; i < faces.size(); i++) {
+		for(int v=0; v<3; v++) {
+			int vertexIndex = faces[i].vertex[v];
+			if(vertexIndex < 0 || vertexIndex >= vertices.size())
+				LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
+			struct Vertex vertex = vertices[vertexIndex];
+
+			buffer[bufferIndex++] = scale * vertex.coord.x;
+			buffer[bufferIndex++] = scale * vertex.coord.y;
+			buffer[bufferIndex++] = scale * vertex.coord.z;
+
+			buffer[bufferIndex++] = vertex.normal.x;
+			buffer[bufferIndex++] = vertex.normal.y;
+			buffer[bufferIndex++] = vertex.normal.z;
+
+			/*buffer[bufferIndex++] = faces[i].normal.x;
+			buffer[bufferIndex++] = faces[i].normal.y;
+			buffer[bufferIndex++] = faces[i].normal.z;*/
+
+			/*buffer[bufferIndex++] = vertex.texture[0];
+			buffer[bufferIndex++] = vertex.texture[1];
+		}
+	}*/
+	////////////
+    
+
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -198,7 +238,7 @@ void Setup(int w, int h) {
     
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
-    if (!gProgram) {
+    if(!gProgram) {
         LOGE("Could not create program.");
         return;
     }
@@ -210,57 +250,11 @@ void Setup(int w, int h) {
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
     return;
-    
-    // Set up lighting variables in OpenGL
-    // Once we do this, we will be able to access them as built-in
-    // attributes in the shader (see examples of this in normalmap.frag)
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-    //glLightfv(GL_LIGHT0, GL_SPECULAR,  specularLight);
-    //glLightfv(GL_LIGHT0, GL_AMBIENT,   ambientLight);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE,   diffuseLight);
-    
-    // Ditto with accessing material properties in the fragment
-    // and vertex shaders.
-    //glMaterialfv(GL_FRONT, GL_AMBIENT,   materialAmbient);
-    //glMaterialfv(GL_FRONT, GL_DIFFUSE,   materialDiffuse);
-    //glMaterialfv(GL_FRONT, GL_SPECULAR,  materialSpecular);
-    //glMaterialfv(GL_FRONT, GL_SHININESS, &shininess);
-    
-    //surfaceNormImg = new STImage(normalMap);
-    //surfaceNormTex = new STTexture(surfaceNormImg);
-    
-    //lightProbeImg = new STImage(lightProbe);
-    // /lightProbeTex = new STTexture(lightProbeImg);
-    
-    //shader = new STShaderProgram();
-    //shader->LoadVertexShader(vertexShader);
-    //shader->LoadFragmentShader(fragmentShader);
-    
-    //resetCamera();
-    
-    //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    //glEnable(GL_DEPTH_TEST);
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
 
-//ifdef ios
-/*- (void)RenderFrame {
- RenderFrame();
- }*/
-//endif
-
-
-void(*resourceCallback)(const char *) = NULL;
-
-void SetResourceCallback(void(*cb)(const char *)) {
-    resourceCallback = cb;
-}
-
 void RenderFrame() {
-    if(resourceCallback)
-        resourceCallback("hello cruel world");
     static float delta = 0.01f;
     static float grey;
     grey += delta;
@@ -284,19 +278,4 @@ void RenderFrame() {
     checkGlError("glDrawArrays");
 }
 
-/**
- * Camera adjustment methods
- */
-/*void AdjustCameraAzimuthBy(float delta)
- {
- mCameraAzimuth += delta;
- }
- 
- void AdjustCameraElevationBy(float delta)
- {
- mCameraElevation += delta;
- }
- 
- void AdjustCameraTranslationBy(STVector3 delta) {
- mCameraTranslation += delta;
- }*/
+#undef LOG_TAG
