@@ -160,6 +160,9 @@ void SetResourceCallback(char*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
+GLfloat * raptorVertices = NULL;
+int raptorVerticesSize = 0;
+
 //
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -191,46 +194,27 @@ void Setup(int w, int h) {
 	const int faceSize = 3*3 + 3*3 + 3*2;
 	const int size = faces.size() * faceSize;
 
-	/*jfloatArray interleaved = env->NewFloatArray(size);
-	if(interleaved == NULL) {
-		LOGE("NewFloatArray failed.");
-		return NULL;
-	}
-	int bufferIndex = 0;
-	jfloat * buffer = (jfloat *) calloc(sizeof(jfloat), size);
-	if(buffer == NULL) {
-		LOGE("Native buffer allocation (calloc) failed.");
-		return NULL;
-	}
-
-	LOGI("Beginning interleave. %d faces and %d vertices", faces.size(), vertices.size());
-
-	for(int i=0; i < faces.size(); i++) {
+    raptorVertices = (GLfloat *) malloc(sizeof(GLfloat) * faces.size() * 3*3); // TODO: Make this more c++
+    
+    const float scale = .01f;
+    int bufferIndex = 0;
+    for(int i=0; i < faces.size(); i++) {
 		for(int v=0; v<3; v++) {
 			int vertexIndex = faces[i].vertex[v];
 			if(vertexIndex < 0 || vertexIndex >= vertices.size())
 				LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
 			struct Vertex vertex = vertices[vertexIndex];
 
-			buffer[bufferIndex++] = scale * vertex.coord.x;
-			buffer[bufferIndex++] = scale * vertex.coord.y;
-			buffer[bufferIndex++] = scale * vertex.coord.z;
-
-			buffer[bufferIndex++] = vertex.normal.x;
-			buffer[bufferIndex++] = vertex.normal.y;
-			buffer[bufferIndex++] = vertex.normal.z;
-
-			/*buffer[bufferIndex++] = faces[i].normal.x;
-			buffer[bufferIndex++] = faces[i].normal.y;
-			buffer[bufferIndex++] = faces[i].normal.z;*/
-
-			/*buffer[bufferIndex++] = vertex.texture[0];
-			buffer[bufferIndex++] = vertex.texture[1];
+			raptorVertices[bufferIndex++] = scale * vertex.coord.x;
+			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
+			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
 		}
-	}*/
-	////////////
+	}
+	
+	raptorVerticesSize = faces.size();
     
-
+    ///////////////////
+    
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -255,6 +239,10 @@ void Setup(int w, int h) {
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
 
 void RenderFrame() {
+    if(!raptorVertices) {
+        LOGE("raptorVertices undeclared");
+        return;
+    }
     static float delta = 0.01f;
     static float grey;
     grey += delta;
@@ -270,11 +258,11 @@ void RenderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, raptorVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
     checkGlError("glDrawArrays");
 }
 
