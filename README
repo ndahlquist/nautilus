@@ -1,11 +1,12 @@
 nativeGraphics
-Nic Dahlquist
 2013.3.29
 ----------------------------------
 
-A simple cross-compilation setup for Android and Linux. The 'android' and 'linux'
-directories contain build files for their respective platforms, which call the 
-code in the 'common' directory through the 'common.h' api.
+A simple cross-compilation setup for Android, iOS and Linux.
+The 'android', 'ios and 'linux' directories contain build files for their
+respective platforms, which call the code in the 'common' directory through
+the 'common.h' api.
 
-Based on source code from LibST, the Android Open Source Project, and Stanford CS148 starter project code.
+Based on source code from the Android Open Source Project, and Stanford CS148
+starter project code.
 
