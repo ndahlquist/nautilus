@@ -1,17 +1,17 @@
-#include <jni.h>
-#include <android/log.h>
+// obj_parser.h
+// nativeGraphics
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <vector>
+#include <cstring>
 
 #include "Vector3.h"
 #include "Point3.h"
 
 #define  LOG_TAG    "obj_parser"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#include "log.h"
 
 struct Vertex {
 	Vertex(float x, float y, float z) {

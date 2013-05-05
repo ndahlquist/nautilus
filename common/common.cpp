@@ -1,4 +1,3 @@
-
 //  common.cpp
 //  nativeGraphics
 
@@ -6,44 +5,24 @@
 
 #include "obj_parser.h"
 
-// main.cpp
-
-//
-// For this project, we use OpenGL, GLUT
-// and GLEW (to load OpenGL extensions)
-//
-
-#ifdef ANDROID_NDK
-#include "importgl.h"
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <jni.h>
-#include <android/log.h>
-
-#elif __APPLE__
-//else if ios
-//#import <OpenGLES/ES2/glext.h>
-#include <stdlib.h>
-
-#else
-#include "stglew.h"
-#include <stdio.h>
-
-#endif
-
 #include <string>
-//#include "st.h"
-
-using namespace std;
 
 #define  LOG_TAG    "libnativegraphics"
+#include "log.h"
+
 #ifdef ANDROID_NDK
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#else
-#define  LOGI(...);  printf("INFO: "); printf(__VA_ARGS__); printf("\n");
-#define  LOGE(...);  printf("ERROR: "); printf(__VA_ARGS__); printf("\n");
+    #include "importgl.h"
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+    #include <jni.h>
+#elif __APPLE__
+    #include <stdlib.h>
+#else // linux
+    #include <GL/glew.h>
+    #include <stdio.h>
 #endif
+
+using namespace std;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);

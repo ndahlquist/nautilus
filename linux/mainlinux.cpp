@@ -1,6 +1,6 @@
 
-#include "stglew.h"
-#include "st.h"
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <stdio.h>
 
 #include "common.h"
@@ -58,7 +58,7 @@ void SpecialKeyCallback(int key, int x, int y) {
 
 void KeyCallback(unsigned char key, int x, int y) {
     switch(key) {
-    case 's': {
+    /*case 's': {
             //
             // Take a screenshot, and save as screenshot.jpg
             //
@@ -67,7 +67,7 @@ void KeyCallback(unsigned char key, int x, int y) {
             screenshot->Save("screenshot.jpg");
             delete screenshot;
         }
-        break;
+        break;*/
     case 'r':
         //resetCamera();
         break;

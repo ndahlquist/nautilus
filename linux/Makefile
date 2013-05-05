@@ -19,7 +19,7 @@ CFLAGS 		 := -g
 CFLAGS_PLATFORM  :=
 LDFLAGS		 :=
 FRAMEWORKS	 :=
-LIBS		 := st png jpeg freetype
+LIBS		 := png jpeg freetype
 
 ARCH=$(shell uname | sed -e 's/-.*//g')
 
@@ -97,10 +97,7 @@ OBJS       :=  $(addsuffix $(OBJSUFFIX), $(FILES))
 
 all: $(TARGET)
 
-$(LIBST_DIR)/libst.a:
-	(cd $(LIBST_ROOT); $(MAKE))
-
-$(TARGET): $(OBJS) $(LIBST_DIR)/libst.a
+$(TARGET): $(OBJS)
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
 
 
