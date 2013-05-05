@@ -119,7 +119,7 @@ struct subdividedFace {
 
 static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
 
-	LOGI("Beginning subdivision with %d faces and %d vertices", faces.size(), vertices.size());
+	LOGI("Beginning subdivision with %d faces and %d vertices", (int) faces.size(), (int) vertices.size());
 
     // Create a second face array
 	std::vector<subdividedFace> subdividedfaces;
@@ -168,7 +168,7 @@ static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<str
 			    newVertex.odd = true;
 				vertices.push_back(newVertex);
 				subdividedfaces[i].vertex[j] = vertices.size() - 1;
-				LOGI("Created new vertice %d", vertices.size() - 1);
+				LOGI("Created new vertice %d", (int) vertices.size() - 1);
 			}
 		}
 	}
@@ -197,7 +197,7 @@ static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<str
 		newFaces.push_back(face(vertexJ1, vertexJ2, vertexJ3));
 	}
 
-	LOGI("Subdivision complete, a total of %d faces and %d vertices", newFaces.size(), vertices.size());
+	LOGI("Subdivision complete, a total of %d faces and %d vertices", (int) newFaces.size(), (int) vertices.size());
 
 	faces = newFaces;
 }
@@ -402,8 +402,8 @@ static void parseObjString(char * objString, std::vector<struct Vertex> & vertic
 				vertices[faces[i].vertex[v]].texture[0] = 0;
 				vertices[faces[i].vertex[v]].texture[1] = 0;
 			} else {
-				if(texIndex >= textures.size())
-					LOGE("texIndex %d out of bounds [0, %d]", texIndex, textures.size());
+				//if(texIndex < 0 || texIndex >= (int) textures.size())
+				//	LOGE("texIndex %d out of bounds [0, %d]", texIndex, (int) textures.size()); // TODO: Why does this break on Linux?
 				vertices[faces[i].vertex[v]].texture[0] = textures[texIndex].coord[0];
 				vertices[faces[i].vertex[v]].texture[1] = textures[texIndex].coord[1];
 			}

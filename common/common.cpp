@@ -60,7 +60,9 @@ static const char gVertexShader[] =
 "}\n";
 
 static const char gFragmentShader[] =
-//    "precision mediump float;\n"
+#ifdef ANDROID_NDK
+"precision mediump float;\n"
+#endif
 "void main() {\n"
 "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
 "}\n";
@@ -93,14 +95,12 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
 
 GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
-    if (!vertexShader) {
+    if(!vertexShader)
         return 0;
-    }
     
     GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    if (!pixelShader) {
+    if(!pixelShader)
         return 0;
-    }
     
     GLuint program = glCreateProgram();
     if (program) {
@@ -180,8 +180,8 @@ void Setup(int w, int h) {
     for(int i=0; i < faces.size(); i++) {
 		for(int v=0; v<3; v++) {
 			int vertexIndex = faces[i].vertex[v];
-			if(vertexIndex < 0 || vertexIndex >= vertices.size())
-				LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
+			//if(vertexIndex < 0 || vertexIndex >= vertices.size())
+			//	LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
 			struct Vertex vertex = vertices[vertexIndex];
 
 			raptorVertices[bufferIndex++] = scale * vertex.coord.x;

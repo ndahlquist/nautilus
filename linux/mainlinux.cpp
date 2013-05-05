@@ -1,39 +1,34 @@
+// mainlinux.cpp
+// nativeGraphics
 
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <string.h>
 
 #include "common.h"
+
+using namespace std;
 
 // Window size, kept for screenshots
 static int gWindowSizeX = 200;
 static int gWindowSizeY = 200;
 
-//
 // Display the output image from our vertex and fragment shaders
-//
 void DisplayCallback() {
     RenderFrame();
     glutSwapBuffers();
 }
 
-//
 // Reshape the window and record the size so
 // that we can use it for screenshots.
-//
 void ReshapeCallback(int w, int h) {
 	gWindowSizeX = w;
     gWindowSizeY = h;
     Setup(gWindowSizeX, gWindowSizeY);
-
-  /*glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-	// Set up a perspective projection
-    float aspectRatio = (float) gWindowSizeX / (float) gWindowSizeY;
-	gluPerspective(30.0f, aspectRatio, .1f, 100.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();*/
 }
 
 void SpecialKeyCallback(int key, int x, int y) {
@@ -58,22 +53,6 @@ void SpecialKeyCallback(int key, int x, int y) {
 
 void KeyCallback(unsigned char key, int x, int y) {
     switch(key) {
-    /*case 's': {
-            //
-            // Take a screenshot, and save as screenshot.jpg
-            //
-            STImage* screenshot = new STImage(gWindowSizeX, gWindowSizeY);
-            screenshot->Read(0,0);
-            screenshot->Save("screenshot.jpg");
-            delete screenshot;
-        }
-        break;*/
-    case 'r':
-        //resetCamera();
-        break;
-    case 't':
-        //teapot = !teapot;
-        break;
 	case 'q':
 		exit(0);
     default:
@@ -83,9 +62,7 @@ void KeyCallback(unsigned char key, int x, int y) {
     // glutPostRedisplay();
 }
 
-/**
- * Mouse event handler
- */
+// Mouse event handler
 void MouseCallback(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
         //gMouseButton = button;
@@ -99,56 +76,34 @@ void MouseCallback(int button, int state, int x, int y) {
     }
 }
 
-/**
- * Mouse active motion callback (when button is pressed)
- /*/
+
+// Mouse active motion callback (when button is pressed)
 void MouseMotionCallback(int x, int y) {
-    /*if (gPreviousMouseX >= 0 && gPreviousMouseY >= 0)
-    {
-        //compute delta
-        float deltaX = x-gPreviousMouseX;
-        float deltaY = y-gPreviousMouseY;
-        gPreviousMouseX = x;
-        gPreviousMouseY = y;
-        
-        float zoomSensitivity = 0.2f;
-        float rotateSensitivity = 0.5f;
-        
-        //orbit or zoom
-        if (gMouseButton == GLUT_LEFT_BUTTON)
-        {
-            AdjustCameraAzimuthBy(-deltaX*rotateSensitivity);
-            AdjustCameraElevationBy(-deltaY*rotateSensitivity);
-            
-        } else if (gMouseButton == GLUT_RIGHT_BUTTON)
-        {
-            STVector3 zoom(0,0,deltaX);
-            AdjustCameraTranslationBy(zoom * zoomSensitivity);
-        }
-        
-    } else
-    {
-        gPreviousMouseX = x;
-        gPreviousMouseY = y;
-    }*/
     
 }
 
-int main(int argc, char** argv) {
-	/*if (argc != 5)
-		usage();
+char * stringResourceCB(const char * filename) {
+    ifstream file("res/raptor.obj");
+    if(!file.is_open()) {
+        printf("Unable to open file %s", filename);
+        return NULL;
+    }
+    
+    string returnStr;
+    getline(file, returnStr, '\0');
+    file.close();
+    
+    return strdup(returnStr.c_str());
+}
 
-	vertexShader   = std::string(argv[1]);
-	fragmentShader = std::string(argv[2]);
-	lightProbe     = std::string(argv[3]);
-	normalMap      = std::string(argv[4]);*/
+int main(int argc, char** argv) {
 
     // Initialize GLUT.
     glutInit(&argc, argv);
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowPosition(20, 20);
     glutInitWindowSize(640, 480);
-    glutCreateWindow("CS148 Assignment 7");
+    glutCreateWindow("nativeGraphics");
     
     // Initialize GLEW.
     glewInit();
@@ -165,10 +120,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Be sure to initialize GLUT (and GLEW for this assignment) before
-    // initializing your application.
-
-
+    SetResourceCallback(stringResourceCB);
     Setup(gWindowSizeX, gWindowSizeY);
 
     glutDisplayFunc(DisplayCallback);
@@ -181,9 +133,7 @@ int main(int argc, char** argv) {
 
     glutMainLoop();
 
-
     // Cleanup code should be called here.
-
 
     return 0;
 }
