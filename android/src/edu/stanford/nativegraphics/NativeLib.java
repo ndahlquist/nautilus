@@ -17,10 +17,10 @@ public class NativeLib {
     
     public void nativeInit(Context context, int width, int height) {
         // TODO: Unholy resource hack
-        passResource("raptor", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
-        passResource("hex", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
-        passResource("depth_f", RawResourceReader.readTextFileFromRawResource(context, R.raw.depth_f));
-        passResource("standard_v", RawResourceReader.readTextFileFromRawResource(context, R.raw.standard_v));
+        passResource("raptor.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
+        passResource("hex.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
+        passResource("depth_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.depth_f));
+        passResource("standard_v.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.standard_v));
         init(width, height);
     }   
 
