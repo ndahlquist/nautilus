@@ -27,6 +27,7 @@
 		5594978817377359006E176F /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978717377359006E176F /* hex.obj */; };
 		5594978C1737736F006E176F /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978A1737736F006E176F /* depth_f.glsl */; };
 		5594978D1737736F006E176F /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978B1737736F006E176F /* standard_v.glsl */; };
+		5594978F1737849D006E176F /* raptor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5594978E1737849D006E176F /* raptor.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -112,6 +113,7 @@
 		5594978717377359006E176F /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hex.obj; sourceTree = "<group>"; };
 		5594978A1737736F006E176F /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = depth_f.glsl; sourceTree = "<group>"; };
 		5594978B1737736F006E176F /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = standard_v.glsl; sourceTree = "<group>"; };
+		5594978E1737849D006E176F /* raptor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = raptor.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +266,7 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				5594978E1737849D006E176F /* raptor.jpg */,
 				5594978717377359006E176F /* hex.obj */,
 				5594978417376E18006E176F /* raptor.obj */,
 			);
@@ -358,6 +361,7 @@
 				5594978817377359006E176F /* hex.obj in Resources */,
 				5594978C1737736F006E176F /* depth_f.glsl in Resources */,
 				5594978D1737736F006E176F /* standard_v.glsl in Resources */,
+				5594978F1737849D006E176F /* raptor.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
