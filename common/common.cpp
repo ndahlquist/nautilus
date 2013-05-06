@@ -153,6 +153,7 @@ int raptorVerticesSize = 0;
 // we will be accessing later in our fragment shaders.
 //
 void Setup(int w, int h) {
+    
     if(!resourceCallback) {
         LOGE("Resource callback not set.");
         exit(0);
@@ -179,7 +180,7 @@ void Setup(int w, int h) {
 	const int faceSize = 3*3 + 3*3 + 3*2;
 	const int size = faces.size() * faceSize;
 
-    raptorVertices = (GLfloat *) malloc(sizeof(GLfloat) * faces.size() * 3*3); // TODO: Make this more c++
+    raptorVertices = (GLfloat *) malloc(sizeof(GLfloat) * faces.size() * 3*(3 + 2)); // TODO: Make this more c++
     
     const float scale = .01f;
     int bufferIndex = 0;
@@ -194,8 +195,8 @@ void Setup(int w, int h) {
 			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
 			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
 
-            //raptorVertices[bufferIndex++] = vertex.texture[0];
-			//raptorVertices[bufferIndex++] = vertex.texture[1];
+            raptorVertices[bufferIndex++] = vertex.texture[0];
+			raptorVertices[bufferIndex++] = vertex.texture[1];
 		}
 	}
 	
@@ -211,7 +212,7 @@ void Setup(int w, int h) {
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
     
-    // gProgram = createProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("depth_f.glsl"));
+    //gProgram = createProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("depth_f.glsl"));
 
     if(!gProgram) {
         LOGE("Could not create program.");
@@ -241,6 +242,7 @@ void Setup(int w, int h) {
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
 
 void RenderFrame() {
+    
     if(!raptorVertices) {
         LOGE("raptorVertices undeclared");
         return;
@@ -263,10 +265,10 @@ void RenderFrame() {
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(textureUniform, 0);
     
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, raptorVertices);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices);
     checkGlError("glVertexAttribPointer");
-    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices + (sizeof(GLfloat) * 3));
-    //checkGlError("glVertexAttribPointer");
+    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices + (sizeof(GLfloat) * 3));
+    checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
