@@ -135,11 +135,12 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
 
 GLuint gProgram;
 GLuint gvPositionHandle;
+GLuint textureUniform;
 
 // Callback function to load resources.
-char*(*resourceCallback)(const char *) = NULL;
+void*(*resourceCallback)(const char *) = NULL;
 
-void SetResourceCallback(char*(*cb)(const char *)) {
+void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
@@ -160,7 +161,7 @@ void Setup(int w, int h) {
     std::vector<struct Vertex> vertices;
 	std::vector<struct face> faces;
 	
-	char * objFile = resourceCallback("raptor.obj");
+	char * objFile = (char *)resourceCallback("raptor.obj");
 	parseObjString(objFile, vertices, faces);
 	free(objFile);
 
@@ -206,7 +207,7 @@ void Setup(int w, int h) {
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
     
-    // gProgram = createProgram(resourceCallback("standard_v.glsl"), resourceCallback("depth_f.glsl"));
+    // gProgram = createProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("depth_f.glsl"));
 
     if(!gProgram) {
         LOGE("Could not create program.");
@@ -216,6 +217,15 @@ void Setup(int w, int h) {
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
          gvPositionHandle);
+    
+    void *imageData = resourceCallback("raptor.jpg");
+    textureUniform = glGetUniformLocation(gProgram, "Texture");
+    
+    GLuint texName;
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    free(imageData);
     
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
@@ -243,6 +253,9 @@ void RenderFrame() {
     
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
+    
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(textureUniform, 0);
     
     glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, raptorVertices);
     checkGlError("glVertexAttribPointer");
