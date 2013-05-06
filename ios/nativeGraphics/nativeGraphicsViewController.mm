@@ -8,7 +8,6 @@
 
 #import "nativeGraphicsViewController.h"
 #import "renderView.h"
-#import "iosInterface.h"
 #import "common.h"
 
 @interface nativeGraphicsViewController ()
@@ -22,10 +21,6 @@
 {
     [super viewDidLoad];
 
-    [self parseResource:@"raptor" ofType:@"obj"];
-    [self parseResource:@"hex" ofType:@"obj"];
-    [self parseResource:@"depth_f" ofType:@"glsl"];
-    [self parseResource:@"standard_v" ofType:@"glsl"];
     [self setResources];
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -39,13 +34,22 @@
     SetResourceCallback(resourceCB);
 }
 
-- (void)parseResource:(NSString *)fileName ofType:(NSString *)fileType
+NSString* parseResource(NSString *fileName, NSString *fileType)
 {
     NSError *error;
     NSString *fileContents = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:fileType] usedEncoding:nil error: &error];
     NSLog(@"error:%@", error);
     
-    passResource([fileName UTF8String], [fileContents UTF8String]);
+    return fileContents;
+}
+
+char *resourceCB(const char *cfileName)
+{
+    NSString *fileName = [NSString stringWithFormat:@"%s", cfileName];
+    NSArray *fileComponents = [fileName componentsSeparatedByString:@"."];
+    NSString *fileContents = parseResource([fileComponents objectAtIndex:0], [fileComponents objectAtIndex:1]);
+    
+    return strdup([fileContents UTF8String]);
 }
 
 - (void)didReceiveMemoryWarning

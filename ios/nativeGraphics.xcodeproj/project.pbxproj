@@ -23,7 +23,6 @@
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		55907097173251CF00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
-		559497821737668C006E176F /* iosInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559497801737668B006E176F /* iosInterface.cpp */; };
 		5594978517376E18006E176F /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978417376E18006E176F /* raptor.obj */; };
 		5594978817377359006E176F /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978717377359006E176F /* hex.obj */; };
 		5594978C1737736F006E176F /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978A1737736F006E176F /* depth_f.glsl */; };
@@ -109,8 +108,6 @@
 		55907124173254FA00BD92BF /* STVector3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector3.inl; sourceTree = "<group>"; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
-		559497801737668B006E176F /* iosInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosInterface.cpp; sourceTree = "<group>"; };
-		559497811737668B006E176F /* iosInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iosInterface.h; sourceTree = "<group>"; };
 		5594978417376E18006E176F /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = raptor.obj; sourceTree = "<group>"; };
 		5594978717377359006E176F /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hex.obj; sourceTree = "<group>"; };
 		5594978A1737736F006E176F /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = depth_f.glsl; sourceTree = "<group>"; };
@@ -175,7 +172,6 @@
 		55906D9B17302DDB00BD92BF /* nativeGraphics */ = {
 			isa = PBXGroup;
 			children = (
-				5594978917377361006E176F /* shaders */,
 				55906DA417302DDB00BD92BF /* nativeGraphicsAppDelegate.h */,
 				55906DA517302DDB00BD92BF /* nativeGraphicsAppDelegate.m */,
 				55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */,
@@ -183,10 +179,9 @@
 				55906DB117302DDB00BD92BF /* nativeGraphicsViewController.mm */,
 				55906DBE17303A9D00BD92BF /* renderView.h */,
 				55906DBF17303A9D00BD92BF /* renderView.mm */,
-				559497811737668B006E176F /* iosInterface.h */,
-				559497801737668B006E176F /* iosInterface.cpp */,
 				559071251732580500BD92BF /* common.h */,
 				5590712C1732FEC500BD92BF /* common.cpp */,
+				5594978917377361006E176F /* shaders */,
 				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
 			);
@@ -378,7 +373,6 @@
 				55906DB217302DDB00BD92BF /* nativeGraphicsViewController.mm in Sources */,
 				55906DC017303A9E00BD92BF /* renderView.mm in Sources */,
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
-				559497821737668C006E176F /* iosInterface.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

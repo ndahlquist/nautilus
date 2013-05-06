@@ -157,7 +157,7 @@ void Setup(int w, int h) {
     std::vector<struct Vertex> vertices;
 	std::vector<struct face> faces;
 	
-	char * objFile = resourceCallback("raptor");
+	char * objFile = resourceCallback("raptor.obj");
 	parseObjString(objFile, vertices, faces);
 	free(objFile);
 
@@ -202,7 +202,7 @@ void Setup(int w, int h) {
     
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
-    // gProgram = createProgram(resourceCallback("standard_v"), resourceCallback("depth_f"));
+    // gProgram = createProgram(resourceCallback("standard_v.glsl"), resourceCallback("depth_f.glsl"));
     if(!gProgram) {
         LOGE("Could not create program.");
         return;
