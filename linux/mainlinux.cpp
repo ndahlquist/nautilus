@@ -82,8 +82,13 @@ void MouseMotionCallback(int x, int y) {
     
 }
 
-char * stringResourceCB(const char * filename) {
-    ifstream file("res/raptor.obj");
+void * stringResourceCB(const char * filename) {
+    const char * path = "res/";
+    char * filePath = (char *) malloc(strlen(path) + strlen(filename) + 1);
+    strcpy(filePath, path);
+    strcat(filePath, filename);
+    ifstream file(filePath);
+    free(filePath);
     if(!file.is_open()) {
         printf("Unable to open file %s", filename);
         return NULL;
