@@ -27,6 +27,7 @@
 #endif
 
 using namespace std;
+using Eigen::Matrix4f;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -262,11 +263,14 @@ void RenderFrame() {
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
- 
+
+    loadIdentity();
+    translatef(3.f, -3.f, -10.f);
+    Matrix4f model_view_matrix = model_view.top();
     GLfloat* mvMatrix = new GLfloat[16];
     for(int i=0; i<4; i++)
        for(int j=0; j<4; j++){
-          mvMatrix[i*4+j] = model_view.top()(i,j);
+          mvMatrix[i*4+j] = model_view_matrix(i,j);
        }  
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
