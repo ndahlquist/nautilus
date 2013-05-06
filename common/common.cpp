@@ -7,6 +7,9 @@
 
 #include <string>
 
+#include "Eigen/Core"
+#include "Eigen/Eigenvalues"
+
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
 
@@ -202,7 +205,9 @@ void Setup(int w, int h) {
     
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
+    
     // gProgram = createProgram(resourceCallback("standard_v.glsl"), resourceCallback("depth_f.glsl"));
+
     if(!gProgram) {
         LOGE("Could not create program.");
         return;

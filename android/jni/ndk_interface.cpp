@@ -50,7 +50,6 @@ JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * 
     LOGI("Native Setup() called.");
     SetResourceCallback(resourcecb);
     Setup(w, h);
-    resourcecb("raptor");
 }
 
 // TODO: release
