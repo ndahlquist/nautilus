@@ -49,17 +49,17 @@ void *resourceCB(const char *cfileName)
     NSArray *fileComponents = [fileName componentsSeparatedByString:@"."];
     NSString *fileType = [fileComponents objectAtIndex:1];
     
-    if ([fileType isEqualToString:@"obj"]) {
-        return objResourceCB([fileComponents objectAtIndex:0]);
+    if ([fileType isEqualToString:@"obj"] || [fileType isEqualToString:@"glsl"]) {
+        return objResourceCB([fileComponents objectAtIndex:0], fileType);
     } else if ([fileType isEqualToString:@"jpg"]) {
         return imageResourceCB([fileComponents objectAtIndex:0], fileType);
     }
     return NULL;
 }
 
-void *objResourceCB(NSString *fileName)
+void *objResourceCB(NSString *fileName, NSString *fileType)
 {
-    NSString *fileContents = parseResource(fileName, @"obj");
+    NSString *fileContents = parseResource(fileName, fileType);
     return strdup([fileContents UTF8String]);
 }
 

@@ -18,6 +18,12 @@ void popMatrix(){
 void loadIdentity(){
   model_view.push(Matrix4f::Identity());
 }
+//Scale
+void scalef(float sx, float sy, float sz){
+  Matrix4f scale;
+  scale<<sx,0,0,0,0,sy,0,0,0,0,sz,0,0,0,0,1;
+  model_view.top() *= scale;
+}
 //Translate
 void translatef(float x, float y, float z){
   Matrix4f translation;
