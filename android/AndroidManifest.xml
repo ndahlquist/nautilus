@@ -20,9 +20,13 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.stanford.nativegraphics">
-    <application
-            android:label="@string/gl2jni_activity">
-        <activity android:name="GL2JNIActivity"
+    <uses-feature android:glEsVersion="0x00020000"/>
+    <uses-sdk android:minSdkVersion="8"
+              android:targetSdkVersion="17"></uses-sdk>
+        <application
+            android:label="@string/gl2jni_activity"
+            android:allowBackup="true">
+            <activity android:name="MainActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             	android:launchMode="singleTask"
             	android:configChanges="orientation|keyboardHidden">
@@ -32,6 +36,4 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-feature android:glEsVersion="0x00020000"/>
-    <uses-sdk android:minSdkVersion="8"/>
 </manifest>
