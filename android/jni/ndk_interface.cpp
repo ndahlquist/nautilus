@@ -27,7 +27,7 @@ jint JNI_OnLoad(JavaVM * vm, void * unused) {
 }
 
 // TODO: Unholy resource hack
-char * resourcecb(const char * filename) {
+void * resourcecb(const char * filename) {
     for(int i = 0; i < resources.size(); i++) {
         if(strcmp(resources[i].name, filename) == 0)
             return strdup(resources[i].contents);
