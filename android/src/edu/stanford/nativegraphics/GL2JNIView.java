@@ -35,10 +35,8 @@ package edu.stanford.nativegraphics;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
-import android.util.AttributeSet;
+import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -327,12 +325,23 @@ class GL2JNIView extends GLSurfaceView {
 
     private static class Renderer implements GLSurfaceView.Renderer {
         private Context context;
-        
+        private long lastMeterTime = 0;
+	    private int lastMeterFrame = 0;
+	    
         public Renderer(Context context) {
             this.context = context;
         }
         
         public void onDrawFrame(GL10 gl) {
+            if(++lastMeterFrame >= 20) {
+			    float FramesPerSecond = lastMeterFrame / ((System.currentTimeMillis() - lastMeterTime) / 1000.0f);
+			    Message msg = new Message();
+			    msg.arg1 = GL2JNIActivity.overlayUpdater.FPS_UPDATE;
+			    msg.arg2 = (int) FramesPerSecond;
+			    GL2JNIActivity.overlayUpdater.sendMessage(msg);
+			    lastMeterTime = System.currentTimeMillis();
+			    lastMeterFrame = 0;
+		    }
             NativeLib.step();
         }
 

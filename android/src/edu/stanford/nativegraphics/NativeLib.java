@@ -16,8 +16,11 @@ public class NativeLib {
     }
     
     public void nativeInit(Context context, int width, int height) {
-        String raptor = RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor);
-        passResource("raptor", raptor);
+        // TODO: Unholy resource hack
+        passResource("raptor", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
+        passResource("hex", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
+        passResource("depth_f", RawResourceReader.readTextFileFromRawResource(context, R.raw.depth_f));
+        passResource("standard_v", RawResourceReader.readTextFileFromRawResource(context, R.raw.standard_v));
         init(width, height);
     }   
 

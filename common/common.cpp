@@ -201,6 +201,7 @@ void Setup(int w, int h) {
     
     LOGI("setupGraphics(%d, %d)", w, h);
     gProgram = createProgram(gVertexShader, gFragmentShader);
+    // gProgram = createProgram(resourceCallback("standard_v"), resourceCallback("depth_f"));
     if(!gProgram) {
         LOGE("Could not create program.");
         return;

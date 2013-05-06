@@ -16,22 +16,29 @@
 
 package edu.stanford.nativegraphics;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.WindowManager;
-
-import java.io.File;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 public class GL2JNIActivity extends Activity {
 
-    GL2JNIView mView;
+    public static GL2JNIView mView;
+	public static OverlayUpdater overlayUpdater;
 
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         mView = new GL2JNIView(getApplication());
         setContentView(mView);
+        
+        View overlay = getLayoutInflater().inflate(R.layout.overlay, null);
+		addContentView(overlay, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+		overlayUpdater = new OverlayUpdater();
     }
 
     @Override protected void onPause() {
@@ -43,4 +50,21 @@ public class GL2JNIActivity extends Activity {
         super.onResume();
         mView.onResume();
     }
+    
+    @SuppressLint("HandlerLeak") // TODO: Fix leak condition
+	class OverlayUpdater extends Handler {
+		public final int FPS_UPDATE = 0;
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.arg1) {
+			case FPS_UPDATE:
+				TextView FPSmeter = (TextView)findViewById(R.id.FPS_meter);
+				FPSmeter.setText(msg.arg2 + " FPS");
+				return;
+			default:
+				return;
+			}
+		}
+	}
 }
