@@ -136,6 +136,7 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
 GLuint gProgram;
 GLuint gvPositionHandle;
 GLuint textureUniform;
+GLuint gvTexCoords;
 
 // Callback function to load resources.
 void*(*resourceCallback)(const char *) = NULL;
@@ -192,6 +193,9 @@ void Setup(int w, int h) {
 			raptorVertices[bufferIndex++] = scale * vertex.coord.x;
 			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
 			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
+
+            //raptorVertices[bufferIndex++] = vertex.texture[0];
+			//raptorVertices[bufferIndex++] = vertex.texture[1];
 		}
 	}
 	
@@ -217,6 +221,8 @@ void Setup(int w, int h) {
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
          gvPositionHandle);
+    
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     
     void *imageData = resourceCallback("raptor.jpg");
     textureUniform = glGetUniformLocation(gProgram, "Texture");
@@ -259,6 +265,8 @@ void RenderFrame() {
     
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, raptorVertices);
     checkGlError("glVertexAttribPointer");
+    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices + (sizeof(GLfloat) * 3));
+    //checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
