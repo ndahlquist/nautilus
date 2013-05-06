@@ -195,7 +195,7 @@ void Setup(int w, int h) {
 		}
 	}
 	
-	raptorVerticesSize = faces.size();
+	raptorVerticesSize = faces.size()*3;
     
     ///////////////////
     
@@ -257,7 +257,7 @@ void RenderFrame() {
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(textureUniform, 0);
     
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, raptorVertices);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, raptorVertices);
     checkGlError("glVertexAttribPointer");
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
