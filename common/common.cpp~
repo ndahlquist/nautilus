@@ -213,10 +213,9 @@ void Setup(int w, int h) {
         LOGE("Could not create program.");
         return;
     }
-    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
-    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix"); 
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
-      
+    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");   
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
          gvPositionHandle);
