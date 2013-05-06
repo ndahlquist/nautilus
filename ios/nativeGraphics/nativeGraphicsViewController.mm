@@ -8,6 +8,9 @@
 
 #import "nativeGraphicsViewController.h"
 #import "renderView.h"
+#import "iosInterface.h"
+#import "common.h"
+
 @interface nativeGraphicsViewController ()
 @property (nonatomic, retain) IBOutlet renderView *glview;
 @end
@@ -18,12 +21,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [self parseResource:@"raptor" ofType:@"obj"];
+    [self setResources];
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     self.glview = [[renderView alloc] initWithFrame:screenBounds];
     [self.view addSubview:self.glview];
-
 	// Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)setResources
+{
+    SetResourceCallback(resourceCB);
+}
+
+- (void)parseResource:(NSString *)fileName ofType:(NSString *)fileType
+{
+    NSError *error;
+    NSString *fileContents = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:fileType] usedEncoding:nil error: &error];
+    NSLog(@"error:%@", error);
+    
+    passResource([fileName UTF8String], [fileContents UTF8String]);
 }
 
 - (void)didReceiveMemoryWarning

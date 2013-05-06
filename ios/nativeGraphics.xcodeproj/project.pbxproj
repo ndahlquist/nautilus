@@ -17,32 +17,14 @@
 		55906DAA17302DDB00BD92BF /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55906DA917302DDB00BD92BF /* Default@2x.png */; };
 		55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55906DAB17302DDB00BD92BF /* Default-568h@2x.png */; };
 		55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */; };
-		55906DB217302DDB00BD92BF /* nativeGraphicsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55906DB117302DDB00BD92BF /* nativeGraphicsViewController.m */; };
+		55906DB217302DDB00BD92BF /* nativeGraphicsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55906DB117302DDB00BD92BF /* nativeGraphicsViewController.mm */; };
 		55906DC017303A9E00BD92BF /* renderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55906DBF17303A9D00BD92BF /* renderView.mm */; };
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		55907097173251CF00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
-		559070F9173254E300BD92BF /* STColor3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E5173254E200BD92BF /* STColor3f.cpp */; };
-		559070FA173254E300BD92BF /* STColor4f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E6173254E200BD92BF /* STColor4f.cpp */; };
-		559070FB173254E300BD92BF /* STColor4ub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E7173254E200BD92BF /* STColor4ub.cpp */; };
-		559070FC173254E300BD92BF /* STFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E8173254E200BD92BF /* STFont.cpp */; };
-		559070FD173254E300BD92BF /* STImage_jpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070E9173254E200BD92BF /* STImage_jpeg.cpp */; };
-		559070FE173254E300BD92BF /* STImage_png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070EA173254E200BD92BF /* STImage_png.cpp */; };
-		559070FF173254E300BD92BF /* STImage_ppm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070EB173254E200BD92BF /* STImage_ppm.cpp */; };
-		55907100173254E300BD92BF /* STImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070EC173254E200BD92BF /* STImage.cpp */; };
-		55907101173254E300BD92BF /* STJoystick_darwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070ED173254E200BD92BF /* STJoystick_darwin.cpp */; };
-		55907102173254E300BD92BF /* STJoystick_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070EE173254E200BD92BF /* STJoystick_linux.cpp */; };
-		55907103173254E300BD92BF /* STJoystick_win32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070EF173254E200BD92BF /* STJoystick_win32.cpp */; };
-		55907104173254E300BD92BF /* STJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F0173254E300BD92BF /* STJoystick.cpp */; };
-		55907105173254E300BD92BF /* STPoint2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F1173254E300BD92BF /* STPoint2.cpp */; };
-		55907106173254E300BD92BF /* STPoint3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F2173254E300BD92BF /* STPoint3.cpp */; };
-		55907107173254E300BD92BF /* STShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F3173254E300BD92BF /* STShaderProgram.cpp */; };
-		55907108173254E300BD92BF /* STShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F4173254E300BD92BF /* STShape.cpp */; };
-		55907109173254E300BD92BF /* STTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F5173254E300BD92BF /* STTexture.cpp */; };
-		5590710A173254E300BD92BF /* STTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F6173254E300BD92BF /* STTimer.cpp */; };
-		5590710B173254E300BD92BF /* STVector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F7173254E300BD92BF /* STVector2.cpp */; };
-		5590710C173254E300BD92BF /* STVector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559070F8173254E300BD92BF /* STVector3.cpp */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
+		559497821737668C006E176F /* iosInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559497801737668B006E176F /* iosInterface.cpp */; };
+		5594978517376E18006E176F /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978417376E18006E176F /* raptor.obj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -73,7 +55,7 @@
 		55906DAB17302DDB00BD92BF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		55906DAE17302DDB00BD92BF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		55906DB017302DDB00BD92BF /* nativeGraphicsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = nativeGraphicsViewController.h; sourceTree = "<group>"; };
-		55906DB117302DDB00BD92BF /* nativeGraphicsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = nativeGraphicsViewController.m; sourceTree = "<group>"; };
+		55906DB117302DDB00BD92BF /* nativeGraphicsViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = nativeGraphicsViewController.mm; sourceTree = "<group>"; };
 		55906DBE17303A9D00BD92BF /* renderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderView.h; sourceTree = "<group>"; };
 		55906DBF17303A9D00BD92BF /* renderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderView.mm; sourceTree = "<group>"; };
 		55906DC71731D05600BD92BF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -124,6 +106,9 @@
 		55907124173254FA00BD92BF /* STVector3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector3.inl; sourceTree = "<group>"; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
+		559497801737668B006E176F /* iosInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosInterface.cpp; sourceTree = "<group>"; };
+		559497811737668B006E176F /* iosInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iosInterface.h; sourceTree = "<group>"; };
+		5594978417376E18006E176F /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = raptor.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,11 +173,14 @@
 				55906DA517302DDB00BD92BF /* nativeGraphicsAppDelegate.m */,
 				55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */,
 				55906DB017302DDB00BD92BF /* nativeGraphicsViewController.h */,
-				55906DB117302DDB00BD92BF /* nativeGraphicsViewController.m */,
+				55906DB117302DDB00BD92BF /* nativeGraphicsViewController.mm */,
 				55906DBE17303A9D00BD92BF /* renderView.h */,
 				55906DBF17303A9D00BD92BF /* renderView.mm */,
+				559497811737668B006E176F /* iosInterface.h */,
+				559497801737668B006E176F /* iosInterface.cpp */,
 				559071251732580500BD92BF /* common.h */,
 				5590712C1732FEC500BD92BF /* common.cpp */,
+				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
 			);
 			path = nativeGraphics;
@@ -271,6 +259,14 @@
 			path = ../common/libst/include;
 			sourceTree = "<group>";
 		};
+		5594978317376DFF006E176F /* obj */ = {
+			isa = PBXGroup;
+			children = (
+				5594978417376E18006E176F /* raptor.obj */,
+			);
+			name = obj;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -346,6 +342,7 @@
 				55906DAA17302DDB00BD92BF /* Default@2x.png in Resources */,
 				55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */,
 				55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */,
+				5594978517376E18006E176F /* raptor.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,9 +355,10 @@
 			files = (
 				55906DA217302DDB00BD92BF /* main.m in Sources */,
 				55906DA617302DDB00BD92BF /* nativeGraphicsAppDelegate.m in Sources */,
-				55906DB217302DDB00BD92BF /* nativeGraphicsViewController.m in Sources */,
+				55906DB217302DDB00BD92BF /* nativeGraphicsViewController.mm in Sources */,
 				55906DC017303A9E00BD92BF /* renderView.mm in Sources */,
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
+				559497821737668C006E176F /* iosInterface.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,26 +366,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				559070F9173254E300BD92BF /* STColor3f.cpp in Sources */,
-				559070FA173254E300BD92BF /* STColor4f.cpp in Sources */,
-				559070FB173254E300BD92BF /* STColor4ub.cpp in Sources */,
-				559070FC173254E300BD92BF /* STFont.cpp in Sources */,
-				559070FD173254E300BD92BF /* STImage_jpeg.cpp in Sources */,
-				559070FE173254E300BD92BF /* STImage_png.cpp in Sources */,
-				559070FF173254E300BD92BF /* STImage_ppm.cpp in Sources */,
-				55907100173254E300BD92BF /* STImage.cpp in Sources */,
-				55907101173254E300BD92BF /* STJoystick_darwin.cpp in Sources */,
-				55907102173254E300BD92BF /* STJoystick_linux.cpp in Sources */,
-				55907103173254E300BD92BF /* STJoystick_win32.cpp in Sources */,
-				55907104173254E300BD92BF /* STJoystick.cpp in Sources */,
-				55907105173254E300BD92BF /* STPoint2.cpp in Sources */,
-				55907106173254E300BD92BF /* STPoint3.cpp in Sources */,
-				55907107173254E300BD92BF /* STShaderProgram.cpp in Sources */,
-				55907108173254E300BD92BF /* STShape.cpp in Sources */,
-				55907109173254E300BD92BF /* STTexture.cpp in Sources */,
-				5590710A173254E300BD92BF /* STTimer.cpp in Sources */,
-				5590710B173254E300BD92BF /* STVector2.cpp in Sources */,
-				5590710C173254E300BD92BF /* STVector3.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +529,7 @@
 				559070A0173251CF00BD92BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
