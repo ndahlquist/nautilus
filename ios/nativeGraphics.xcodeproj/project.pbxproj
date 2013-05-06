@@ -25,6 +25,9 @@
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
 		559497821737668C006E176F /* iosInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 559497801737668B006E176F /* iosInterface.cpp */; };
 		5594978517376E18006E176F /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978417376E18006E176F /* raptor.obj */; };
+		5594978817377359006E176F /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978717377359006E176F /* hex.obj */; };
+		5594978C1737736F006E176F /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978A1737736F006E176F /* depth_f.glsl */; };
+		5594978D1737736F006E176F /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978B1737736F006E176F /* standard_v.glsl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -109,6 +112,9 @@
 		559497801737668B006E176F /* iosInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosInterface.cpp; sourceTree = "<group>"; };
 		559497811737668B006E176F /* iosInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iosInterface.h; sourceTree = "<group>"; };
 		5594978417376E18006E176F /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = raptor.obj; sourceTree = "<group>"; };
+		5594978717377359006E176F /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hex.obj; sourceTree = "<group>"; };
+		5594978A1737736F006E176F /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = depth_f.glsl; sourceTree = "<group>"; };
+		5594978B1737736F006E176F /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = standard_v.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +175,7 @@
 		55906D9B17302DDB00BD92BF /* nativeGraphics */ = {
 			isa = PBXGroup;
 			children = (
+				5594978917377361006E176F /* shaders */,
 				55906DA417302DDB00BD92BF /* nativeGraphicsAppDelegate.h */,
 				55906DA517302DDB00BD92BF /* nativeGraphicsAppDelegate.m */,
 				55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */,
@@ -262,9 +269,19 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				5594978717377359006E176F /* hex.obj */,
 				5594978417376E18006E176F /* raptor.obj */,
 			);
 			name = obj;
+			sourceTree = "<group>";
+		};
+		5594978917377361006E176F /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				5594978A1737736F006E176F /* depth_f.glsl */,
+				5594978B1737736F006E176F /* standard_v.glsl */,
+			);
+			name = shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,6 +360,9 @@
 				55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */,
 				55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */,
 				5594978517376E18006E176F /* raptor.obj in Resources */,
+				5594978817377359006E176F /* hex.obj in Resources */,
+				5594978C1737736F006E176F /* depth_f.glsl in Resources */,
+				5594978D1737736F006E176F /* standard_v.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

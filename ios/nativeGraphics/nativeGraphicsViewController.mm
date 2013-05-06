@@ -23,6 +23,9 @@
     [super viewDidLoad];
 
     [self parseResource:@"raptor" ofType:@"obj"];
+    [self parseResource:@"hex" ofType:@"obj"];
+    [self parseResource:@"depth_f" ofType:@"glsl"];
+    [self parseResource:@"standard_v" ofType:@"glsl"];
     [self setResources];
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
