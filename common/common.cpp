@@ -1,6 +1,6 @@
 //  common.cpp
 //  nativeGraphics
-#include "model_view.h"
+#include "transform.h"
 #include "common.h"
 
 #include "obj_parser.h"
@@ -246,7 +246,8 @@ void Setup(int w, int h) {
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
-
+float cameraPos[4] = {0,0,0.9,1};
+float pan[3] = {0,0,0}, up[3] = {0,1,0};
 void RenderFrame() {
     
     if(!raptorVertices) {
@@ -265,26 +266,32 @@ void RenderFrame() {
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
-    loadIdentity();
-    translatef(0.5f, 0.5f, 0.5f);
-    scalef(0.5, 0.5, 0.5);
-    rotatef(90,0,0,1);
+    pLoadIdentity();
+    //viewport(0, 0, 100, 200);
+    //perspective(20, 0.5, 0.001, 1000);
+    frustum(-0.6, 0.6, -1, 1, 0.2, 10);
     
-    GLfloat* mvMatrix = new GLfloat[16];
-    for(int i=0; i<4; i++)
-       for(int j=0; j<4; j++){
-          mvMatrix[i*4+j] = model_view.top()(j,i);
-    }  
+    mvLoadIdentity();
+    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    
+    rotatef(35,0,1,0);
+    scalef(1.1, 1.1, 1.1);
+    translatef(0.1f, -.2f, 0.f);
+    
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(textureUniform, 0);
     
-    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, (const GLfloat*)mvMatrix);
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, (const GLfloat*)mvMatrix);
+    GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
+    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
+    
+    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
+    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
     checkGlError("glUniformMatrix4fv");
-    delete mvMatrix;
+    delete mv_Matrix;
+    delete mvp_Matrix;
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices);
     checkGlError("glVertexAttribPointer");
     glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices + (sizeof(GLfloat) * 3));
