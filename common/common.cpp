@@ -51,9 +51,11 @@ static float materialSpecular[] = { 0.8, 0.8, 0.8, 1.0 };
 static float shininess          = 8.0;  // # between 1 and 128.
 
 static void checkGlError(const char* op) {
-    for (GLint error = glGetError(); error; error
-         = glGetError()) {
+    for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
+#ifndef BUILD_RELEASE
+        exit(-1); // Die fast and early
+#endif
     }
 }
 
@@ -229,7 +231,7 @@ void Setup(int w, int h) {
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
          gvPositionHandle);
     
-    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    /*gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     
     void *imageData = resourceCallback("raptor.jpg");
     textureUniform = glGetUniformLocation(gProgram, "Texture");
@@ -238,7 +240,7 @@ void Setup(int w, int h) {
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);
+    free(imageData);*/
     
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
@@ -281,8 +283,9 @@ void RenderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(textureUniform, 0);
+    //glActiveTexture(GL_TEXTURE0);
+    //glUniform1i(textureUniform, 0);
+    //checkGlError("texture");
     
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();

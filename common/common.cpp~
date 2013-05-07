@@ -1,6 +1,6 @@
 //  common.cpp
 //  nativeGraphics
-#include "model_view.h"
+#include "transform.h"
 #include "common.h"
 
 #include "obj_parser.h"
@@ -27,7 +27,6 @@
 #endif
 
 using namespace std;
-using Eigen::Matrix4f;
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
@@ -52,16 +51,18 @@ static float materialSpecular[] = { 0.8, 0.8, 0.8, 1.0 };
 static float shininess          = 8.0;  // # between 1 and 128.
 
 static void checkGlError(const char* op) {
-    for (GLint error = glGetError(); error; error
-         = glGetError()) {
+    for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
+#ifndef BUILD_RELEASE
+        exit(-1); // Die fast and early
+#endif
     }
 }
 
 static const char gVertexShader[] =
-"attribute vec4 vPosition;\n"
+"attribute vec4 a_Position;\n"
 "void main() {\n"
-"  gl_Position = vPosition;\n"
+"  gl_Position = a_Position;\n"
 "}\n";
 
 static const char gFragmentShader[] =
@@ -215,7 +216,7 @@ void Setup(int w, int h) {
     LOGI("setupGraphics(%d, %d)", w, h);
     //gProgram = createProgram(gVertexShader, gFragmentShader);
         
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("depth_f.glsl"));
+    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), gFragmentShader);
     
 
     if(!gProgram) {
@@ -223,14 +224,14 @@ void Setup(int w, int h) {
         return;
     }
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
-    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix"); 
-    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
+    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
       
     checkGlError("glGetAttribLocation");
     LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
          gvPositionHandle);
     
-    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    /*gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     
     void *imageData = resourceCallback("raptor.jpg");
     textureUniform = glGetUniformLocation(gProgram, "Texture");
@@ -239,7 +240,7 @@ void Setup(int w, int h) {
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);
+    free(imageData);*/
     
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
@@ -247,7 +248,8 @@ void Setup(int w, int h) {
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
-
+float cameraPos[4] = {0,0,0.9,1};
+float pan[3] = {0,0,0}, up[3] = {0,1,0};
 void RenderFrame() {
     
     if(!raptorVertices) {
@@ -266,23 +268,41 @@ void RenderFrame() {
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
-    loadIdentity();
-    //translatef(3.f, -3.f, -10.f);
-    Matrix4f model_view_matrix = model_view.top();
-    GLfloat* mvMatrix = new GLfloat[16];
-    for(int i=0; i<4; i++)
-       for(int j=0; j<4; j++){
-          mvMatrix[i*4+j] = model_view_matrix(i,j);
-       }  
+    pLoadIdentity();
+    //viewport(0, 0, 100, 200);
+    //perspective(20, 0.5, 0.001, 1000);
+    frustum(-0.6, 0.6, -1, 1, 0.2, 10);
+    
+    mvLoadIdentity();
+    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    
+    rotatef(35,0,1,0);
+    scalef(1.1, 1.1, 1.1);
+    translatef(0.1f, -.2f, 0.f);
+    
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(textureUniform, 0);
+    //glActiveTexture(GL_TEXTURE0);
+    //glUniform1i(textureUniform, 0);
+    //checkGlError("texture");
     
-    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_TRUE, mvMatrix);
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_TRUE, mvMatrix);
-
+<<<<<<< HEAD
+    GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
+    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
+    
+    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
+    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
+    checkGlError("glUniformMatrix4fv");
+    delete mv_Matrix;
+    delete mvp_Matrix;
+=======
+    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, (const GLfloat*)mvMatrix);
+    checkGlError("glUniformMatrix4fv 1");
+    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, (const GLfloat*)mvMatrix);
+    checkGlError("glUniformMatrix4fv 2");
+    delete mvMatrix;
+>>>>>>> fc6503b8b1dfe1d1927baeb38f24a5563759b296
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices);
     checkGlError("glVertexAttribPointer");
     glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*5, raptorVertices + (sizeof(GLfloat) * 3));
