@@ -10,6 +10,18 @@
 #include "Vector3.h"
 #include "Point3.h"
 
+// Public Interface: -----------------------------------------------------------
+
+float * getInterleavedBuffer(char * objString, int & numVertices);
+
+static void parseObjString(char * objString, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+static void computeAdjacencyLists(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+static void smoothMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+static void computeNormals(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+
+// Implementation: -------------------------------------------------------------
+
 #define  LOG_TAG    "obj_parser"
 #include "log.h"
 
@@ -56,11 +68,51 @@ struct face {
 	Point3 normal;
 };
 
-static void parseObjString(char * objString, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
-static void computeAdjacencyLists(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
-static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
-static void smoothMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
-static void computeNormals(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
+float * getInterleavedBuffer(char * objString, int & numVertices) {
+
+    std::vector<struct Vertex> vertices;
+	std::vector<struct face> faces;
+	
+	parseObjString(objString, vertices, faces);
+
+	computeAdjacencyLists(vertices, faces);
+
+    /*for(int i = 0; i < subdivide; i++) {
+	    subdivideMesh(vertices, faces);
+	    computeAdjacencyLists(vertices, faces);
+	    smoothMesh(vertices, faces);
+	}*/
+
+	computeNormals(vertices, faces);
+
+	const int faceSize = 3*3 + 3*3 + 3*2;
+	const int size = faces.size() * faceSize;
+
+    float * raptorVertices = (float *) malloc(sizeof(float) * faces.size() * 3*(3 + 2));
+    
+    const float scale = .01f;
+    int bufferIndex = 0;
+    for(int i=0; i < faces.size(); i++) {
+		for(int v=0; v<3; v++) {
+			int vertexIndex = faces[i].vertex[v];
+			//if(vertexIndex < 0 || vertexIndex >= vertices.size())
+			//	LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
+			struct Vertex vertex = vertices[vertexIndex];
+
+			raptorVertices[bufferIndex++] = scale * vertex.coord.x;
+			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
+			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
+
+            raptorVertices[bufferIndex++] = vertex.texture[0];
+			raptorVertices[bufferIndex++] = vertex.texture[1];
+		}
+	}
+	
+	numVertices = faces.size()*3;
+	
+	return raptorVertices;
+
+}
 
 static bool checkAdjacency(struct face * a, struct face * b) {
 	int sharedVertices = 0;

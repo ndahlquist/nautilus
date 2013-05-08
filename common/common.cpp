@@ -1,5 +1,6 @@
 //  common.cpp
 //  nativeGraphics
+
 #include "transform.h"
 #include "common.h"
 
@@ -160,77 +161,34 @@ void Setup(int w, int h) {
     
     if(!resourceCallback) {
         LOGE("Resource callback not set.");
-        exit(0);
+        exit(-1);
     }
 
-    /////////////////
-    std::vector<struct Vertex> vertices;
-	std::vector<struct face> faces;
-	
-	char * objFile = (char *)resourceCallback("raptor.obj");
-	parseObjString(objFile, vertices, faces);
-	free(objFile);
-
-	computeAdjacencyLists(vertices, faces);
-
-    /*for(int i = 0; i < subdivide; i++) {
-	    subdivideMesh(vertices, faces);
-	    computeAdjacencyLists(vertices, faces);
-	    smoothMesh(vertices, faces);
-	}*/
-
-	computeNormals(vertices, faces);
-
-	const int faceSize = 3*3 + 3*3 + 3*2;
-	const int size = faces.size() * faceSize;
-
-    raptorVertices = (GLfloat *) malloc(sizeof(GLfloat) * faces.size() * 3*(3 + 2)); // TODO: Make this more c++
-    
-    const float scale = .01f;
-    int bufferIndex = 0;
-    for(int i=0; i < faces.size(); i++) {
-		for(int v=0; v<3; v++) {
-			int vertexIndex = faces[i].vertex[v];
-			//if(vertexIndex < 0 || vertexIndex >= vertices.size())
-			//	LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
-			struct Vertex vertex = vertices[vertexIndex];
-
-			raptorVertices[bufferIndex++] = scale * vertex.coord.x;
-			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
-			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
-
-            raptorVertices[bufferIndex++] = vertex.texture[0];
-			raptorVertices[bufferIndex++] = vertex.texture[1];
-		}
-	}
-	
-	raptorVerticesSize = faces.size()*3;
-    
-    ///////////////////
-    
+    // Log device-specific GL info
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
-    
-    LOGI("setupGraphics(%d, %d)", w, h);
-    //gProgram = createProgram(gVertexShader, gFragmentShader);
-        
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), gFragmentShader);
-    
 
+    // Parse obj file into an interleaved float buffer
+	char * objFile = (char *)resourceCallback("raptor.obj");
+	raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize);
+	free(objFile);
+        
+    // Compile and link shader program
+    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), gFragmentShader);
     if(!gProgram) {
         LOGE("Could not create program.");
         return;
     }
+    
+    // Get uniform and attrib locations
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
     gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
-      
     checkGlError("glGetAttribLocation");
-    LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-         gvPositionHandle);
     
+    // Load textures
     /*gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     
     void *imageData = resourceCallback("raptor.jpg");
