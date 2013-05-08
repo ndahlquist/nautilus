@@ -1,9 +1,0 @@
-
-Set up perspective matrices.
-Vertex buffer geometry.
-Implement string resource passing for iOS.
-Replace unholy Android string resource loading code with JNI callbacks.
-Implement texture resource passing.
-Add shaders.
-Write an interface for user input.
-Consolidate matrix and vector operations to Eigen, and decide whether to use LibST.
