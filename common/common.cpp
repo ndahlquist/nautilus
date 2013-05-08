@@ -172,7 +172,7 @@ void Setup(int w, int h) {
 
     // Parse obj file into an interleaved float buffer
 	char * objFile = (char *)resourceCallback("raptor.obj");
-	raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize);
+	raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize, false, true);
 	free(objFile);
         
     // Compile and link shader program

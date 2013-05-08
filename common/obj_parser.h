@@ -12,7 +12,7 @@
 
 // Public Interface: -----------------------------------------------------------
 
-float * getInterleavedBuffer(char * objString, int & numVertices);
+float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoords = false, bool textureCoords = false);
 
 static void parseObjString(char * objString, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
 static void computeAdjacencyLists(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
@@ -68,49 +68,50 @@ struct face {
 	Point3 normal;
 };
 
-float * getInterleavedBuffer(char * objString, int & numVertices) {
+float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoords, bool textureCoords) {
 
+    // Parse obj file into vertices and faces
     std::vector<struct Vertex> vertices;
 	std::vector<struct face> faces;
-	
 	parseObjString(objString, vertices, faces);
 
+    // Compute adjacent vertices and normals
 	computeAdjacencyLists(vertices, faces);
-
-    /*for(int i = 0; i < subdivide; i++) {
-	    subdivideMesh(vertices, faces);
-	    computeAdjacencyLists(vertices, faces);
-	    smoothMesh(vertices, faces);
-	}*/
-
 	computeNormals(vertices, faces);
 
-	const int faceSize = 3*3 + 3*3 + 3*2;
-	const int size = faces.size() * faceSize;
-
-    float * raptorVertices = (float *) malloc(sizeof(float) * faces.size() * 3*(3 + 2));
+    const int floatsPerFace = 3 + (normalCoords ? 3 : 0) + (textureCoords ? 2 : 0);
+    float * interleavedBuffer = (float *) malloc(faces.size() * 3 * floatsPerFace * sizeof(float));
+    numVertices = faces.size()*3;
     
-    const float scale = .01f;
+    const float scale = .01f; // TODO
     int bufferIndex = 0;
-    for(int i=0; i < faces.size(); i++) {
-		for(int v=0; v<3; v++) {
+    for(int i = 0; i < faces.size(); i++) {
+		for(int v = 0; v < 3; v++) {
+		
 			int vertexIndex = faces[i].vertex[v];
-			//if(vertexIndex < 0 || vertexIndex >= vertices.size())
+			//if(vertexIndex < 0 || vertexIndex >= vertices.size()) // TODO
 			//	LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
-			struct Vertex vertex = vertices[vertexIndex];
+			
+			struct Vertex * thisVertex = &vertices[vertexIndex];
 
-			raptorVertices[bufferIndex++] = scale * vertex.coord.x;
-			raptorVertices[bufferIndex++] = scale * vertex.coord.y;
-			raptorVertices[bufferIndex++] = scale * vertex.coord.z;
-
-            raptorVertices[bufferIndex++] = vertex.texture[0];
-			raptorVertices[bufferIndex++] = vertex.texture[1];
+			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.x;
+			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.y;
+			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.z;
+            
+            if(normalCoords) {
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.y;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.z;
+			}
+            
+            if(textureCoords) {
+                interleavedBuffer[bufferIndex++] = thisVertex->texture[0];
+			    interleavedBuffer[bufferIndex++] = thisVertex->texture[1];
+			}
 		}
 	}
 	
-	numVertices = faces.size()*3;
-	
-	return raptorVertices;
+	return interleavedBuffer;
 
 }
 
@@ -156,157 +157,6 @@ static void computeAdjacencyLists(std::vector<struct Vertex> & vertices, std::ve
 				if(checkAdjacency(thisFace, possibleAdjacentFace))
 					thisFace->adjacentFace[j] = thisVertex->adjacentFaces[k];
 			}
-		}
-	}
-}
-
-struct subdividedFace {
-	subdividedFace() {
-		vertex[0] = -1;
-		vertex[1] = -1;
-		vertex[2] = -1;
-	}
-	int vertex[3];
-};
-
-static void subdivideMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
-
-	LOGI("Beginning subdivision with %d faces and %d vertices", (int) faces.size(), (int) vertices.size());
-
-    // Create a second face array
-	std::vector<subdividedFace> subdividedfaces;
-	for(int i = 0; i < faces.size(); i++) {
-		struct subdividedFace newFace;
-		newFace.vertex[0] = -1;
-		newFace.vertex[1] = -1;
-		newFace.vertex[2] = -1;
-		subdividedfaces.push_back(newFace);
-	}
-	
-	// Reset all vertices to even
-	for(int i = 0; i < vertices.size(); i++)
-	    vertices[i].odd = false;
-
-	for(int i = 0; i < faces.size(); i++) {
-		for(int j = 0; j < 3; j++) {
-		
-			struct Vertex * oldVertex1 = &vertices[faces[i].vertex[(j+1)%3]];
-			struct Vertex * oldVertex2 = &vertices[faces[i].vertex[(j+2)%3]];
-			Point3 newCoord = Point3::Lerp(oldVertex1->coord, oldVertex2->coord, .5f);
-
-			// See if we can reuse an existing midpoint
-			bool matchFound = false;
-			for(int k = 0; k < vertices.size(); k++) {
-			    if(vertices[k].coord == newCoord) {
-					matchFound = true;
-					subdividedfaces[i].vertex[j] = k;
-					break; // TODO
-				}
-			}
-			/*for(int k = 0; k < 3; k++) {
-			    for(int l = 0; l < 3; l++) { // TODO
-			    int adjacentFaceIndex = faces[i].adjacentFace[l];
-				int potentialIndex = subdividedfaces[adjacentFaceIndex].vertex[k];
-				if(potentialIndex != -1 && coordsMatch(vertices[potentialIndex].coord, newVertex)) {
-					LOGI("Match found");
-					matchFound = true;
-					subdividedfaces[i].vertex[j] = potentialIndex;
-				}
-				}
-			}*/
-
-			if(!matchFound) {
-			    Vertex newVertex = Vertex(newCoord.x, newCoord.y, newCoord.z);
-			    newVertex.odd = true;
-				vertices.push_back(newVertex);
-				subdividedfaces[i].vertex[j] = vertices.size() - 1;
-				LOGI("Created new vertice %d", (int) vertices.size() - 1);
-			}
-		}
-	}
-
-	LOGI("Subdivision sub-tesselation complete");
-
-	std::vector<struct face> newFaces;
-	for(int i = 0; i < faces.size(); i++) {
-
-		// Add the three new outer faces
-		for(int j = 0; j<3; j++) {
-			int vertexJ = faces[i].vertex[j];
-			int vertexJ1 = subdividedfaces[i].vertex[(j+1)%3];
-			int vertexJ2 = subdividedfaces[i].vertex[(j+2)%3];
-			if(vertexJ < 0 || vertexJ1 < 0 || vertexJ2 < 0)
-				LOGE("Error: subdivideMesh caused an unitialized vertex.");
-			newFaces.push_back(face(vertexJ, vertexJ1, vertexJ2));
-		}
-
-		// Add the new inner face
-		int vertexJ1 = subdividedfaces[i].vertex[2];
-		int vertexJ2 = subdividedfaces[i].vertex[1];
-		int vertexJ3 = subdividedfaces[i].vertex[0];
-		if(vertexJ1 < 0 || vertexJ2 < 0 || vertexJ3 < 0)
-			LOGE("Error: subdivideMesh caused an unitialized vertex.");
-		newFaces.push_back(face(vertexJ1, vertexJ2, vertexJ3));
-	}
-
-	LOGI("Subdivision complete, a total of %d faces and %d vertices", (int) newFaces.size(), (int) vertices.size());
-
-	faces = newFaces;
-}
-
-	static std::vector<int> getAdjacentVertices(int index, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
-	    std::vector<int> adjacentVertices;
-		for(int i = 0; i < vertices[index].adjacentFaces.size(); i++) {
-		    for(int j = 0; j < 3; j++) {
-		        int candidate = faces[vertices[index].adjacentFaces[i]].vertex[j];
-		        if(candidate == index)
-		            continue;
-		        adjacentVertices.push_back(candidate);
-		    }
-		}
-	    return adjacentVertices;
-	}
-
-static void smoothMesh(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
-	std::vector<Vertex> originalVertices = std::vector<Vertex>(vertices);
-	for(int i = 0; i < vertices.size(); i++) {
-		float total[3] = {0,0,0};
-		struct Vertex * thisVertex = &originalVertices[i];
-		if(thisVertex->odd) {
-		    /*for(int j = 0; j < thisVertex->adjacentFaces.size(); j++) {
-			    for(int k = 0; k < 3; k++) {
-				    struct Vertex * neighborVertex = &originalVertices[faces[thisVertex->adjacentFaces[j]].vertex[k]];
-				    total[0] += neighborVertex->coord.x;
-				    total[1] += neighborVertex->coord.y;
-				    total[2] += neighborVertex->coord.z;
-				    denominator++;
-			    }
-		    }
-		
-		    if(denominator == 0) {
-			    LOGE("Error: No neighbors detected for a vertex");
-			    return;
-		    }
-		    total[0] /= denominator;
-		    total[1] /= denominator;
-		    total[2] /= denominator;
-		    vertices[i].coord = Point3(total[0], total[1], total[2]);*/
-		} else { // even
-		    float beta = 3.0f/8.0f;
-		    std::vector<int> adjacentVertices = getAdjacentVertices(i, vertices, faces);
-		    if(adjacentVertices.size() > 3)
-		        beta /= (float) adjacentVertices.size();
-		    for(int j = 0; j < adjacentVertices.size(); j++) {
-		        total[0] += beta * vertices[adjacentVertices[j]].coord.x;
-		        total[1] += beta * vertices[adjacentVertices[j]].coord.y;
-		        total[2] += beta * vertices[adjacentVertices[j]].coord.z;
-		    }
-		    
-		    total[0] += (1.0f - beta * adjacentVertices.size()) * thisVertex->coord.x;
-		    total[1] += (1.0f - beta * adjacentVertices.size()) * thisVertex->coord.y;
-		    total[2] += (1.0f - beta * adjacentVertices.size()) * thisVertex->coord.z;
-		    
-		    thisVertex->coord = Point3(total[1], total[2], total[3]);
 		}
 	}
 }
