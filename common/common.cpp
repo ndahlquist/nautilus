@@ -1,18 +1,9 @@
 //  common.cpp
 //  nativeGraphics
 
-#include "transform.h"
 #include "common.h"
 
-#include "obj_parser.h"
-
 #include <string>
-
-#include "Eigen/Core"
-#include "Eigen/Eigenvalues"
-
-#define  LOG_TAG    "libnativegraphics"
-#include "log.h"
 
 #ifdef ANDROID_NDK
     #include "importgl.h"
@@ -27,114 +18,23 @@
     #include <stdio.h>
 #endif
 
-using namespace std;
+#include "Eigen/Core"
+#include "Eigen/Eigenvalues"
 
-static void printGLString(const char *name, GLenum s) {
-    const char *v = (const char *) glGetString(s);
-    LOGI("GL %s = %s\n", name, v);
-}
+#include "transform.h"
+#include "obj_parser.h"
+#include "glsl_helper.h"
+
+#define  LOG_TAG    "libnativegraphics"
+#include "log.h"
+
+using namespace std;
 
 // File locations
 string vertexShader;
 string fragmentShader;
 string normalMap;
 string lightProbe;
-
-// Light source attributes
-static float specularLight[] = {1.00, 1.00, 1.00, 1.0};
-static float ambientLight[]  = {0.10, 0.10, 0.10, 1.0};
-static float diffuseLight[]  = {1.00, 1.00, 1.00, 1.0};
-
-// Material color properties
-static float materialAmbient[]  = { 0.2, 0.2, 0.6, 1.0 };
-static float materialDiffuse[]  = { 0.2, 0.2, 0.6, 1.0 };
-static float materialSpecular[] = { 0.8, 0.8, 0.8, 1.0 };
-static float shininess          = 8.0;  // # between 1 and 128.
-
-static void checkGlError(const char* op) {
-    for (GLint error = glGetError(); error; error = glGetError()) {
-        LOGI("after %s() glError (0x%x)\n", op, error);
-#ifndef BUILD_RELEASE
-        exit(-1); // Die fast and early
-#endif
-    }
-}
-
-static const char gVertexShader[] =
-"attribute vec4 a_Position;\n"
-"void main() {\n"
-"  gl_Position = a_Position;\n"
-"}\n";
-
-static const char gFragmentShader[] =
-#ifdef ANDROID_NDK
-"precision mediump float;\n"
-#endif
-"void main() {\n"
-"  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-"}\n";
-
-GLuint loadShader(GLenum shaderType, const char* pSource) {
-    GLuint shader = glCreateShader(shaderType);
-    if (shader) {
-        glShaderSource(shader, 1, &pSource, NULL);
-        glCompileShader(shader);
-        GLint compiled = 0;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) {
-            GLint infoLen = 0;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-            if (infoLen) {
-                char* buf = (char*) malloc(infoLen);
-                if(buf) {
-                    glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                    LOGE("Could not compile shader %d:\n%s\n", shaderType, buf);
-                    LOGI("%s", pSource);
-                    free(buf);
-                }
-                glDeleteShader(shader);
-                shader = 0;
-            }
-        }
-    }
-    return shader;
-}
-
-GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
-    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
-    if(!vertexShader)
-        return 0;
-    
-    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    if(!pixelShader)
-        return 0;
-    
-    GLuint program = glCreateProgram();
-    if (program) {
-        glAttachShader(program, vertexShader);
-        checkGlError("glAttachShader");
-        glAttachShader(program, pixelShader);
-        checkGlError("glAttachShader");
-        glLinkProgram(program);
-        GLint linkStatus = GL_FALSE;
-        glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-        if (linkStatus != GL_TRUE) {
-            GLint bufLength = 0;
-            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-            if (bufLength) {
-                char* buf = (char*) malloc(bufLength);
-                if (buf) {
-                    glGetProgramInfoLog(program, bufLength, NULL, buf);
-                    LOGE("Could not link program:\n%s\n", buf);
-                    free(buf);
-                }
-            }
-            glDeleteProgram(program);
-            program = 0;
-        }
-    }
-    return program;
-}
 
 GLuint gProgram;
 GLuint gvPositionHandle;
@@ -176,11 +76,7 @@ void Setup(int w, int h) {
 	free(objFile);
         
     // Compile and link shader program
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), gFragmentShader);
-    if(!gProgram) {
-        LOGE("Could not create program.");
-        return;
-    }
+    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), NULL);
     
     // Get uniform and attrib locations
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
