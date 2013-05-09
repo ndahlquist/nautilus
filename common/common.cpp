@@ -39,6 +39,8 @@ GLuint gvTexCoords;
 GLuint gvNormals;
 
 GLuint depthRenderBuffer;
+GLuint normalBuffer;
+GLuint vertexBuffer;
 
 // Callback function to load resources.
 void*(*resourceCallback)(const char *) = NULL;
@@ -68,7 +70,7 @@ void Setup(int w, int h) {
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-
+    
     // Parse obj file into an interleaved float buffer
     char * objFile = (char *)resourceCallback("raptor.obj");
     raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize, true, true);
@@ -86,17 +88,17 @@ void Setup(int w, int h) {
     checkGlError("glGetAttribLocation");
     
     // Load textures
-    /*gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
-    
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    /*
     void *imageData = resourceCallback("raptor.jpg");
-    textureUniform = glGetUniformLocation(gProgram, "Texture");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
     
     GLuint texName;
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);*/
-    
+    free(imageData);
+    */
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
 }
@@ -119,9 +121,10 @@ void RenderFrame() {
         delta *= -1;
         grey += delta;
     }
-    
     glEnable(GL_CULL_FACE);
+    checkGlError("glCullFace");
     glEnable(GL_DEPTH_TEST);
+    checkGlError("glDepthTest");
     glClearColor(grey, .8f * grey, grey, 1.0f);
     checkGlError("glClearColor");
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -142,9 +145,10 @@ void RenderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    //glActiveTexture(GL_TEXTURE0);
-    //glUniform1i(textureUniform, 0);
-    //checkGlError("texture");
+    /*glActiveTexture(GL_TEXTURE0);
+    glUniform1i(textureUniform, 0);
+    checkGlError("texture");
+    */
     
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
@@ -155,18 +159,19 @@ void RenderFrame() {
     delete mv_Matrix;
     delete mvp_Matrix;
     
+
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices);
     checkGlError("gvPositionHandle");
     
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 3));
     checkGlError("gvNormals");
     
-    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
-    //checkGlError("gvTexCoords");
-    
-    //glEnableVertexAttribArray(gvPositionHandle);
-    glEnableVertexAttribArray(gvNormals);
+    /*glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
+    checkGlError("gvTexCoords");
+    */
+    //glEnableVertexAttribArray(gvTexCoords);
     glEnableVertexAttribArray(gvPositionHandle);
+    glEnableVertexAttribArray(gvNormals);
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
     checkGlError("glDrawArrays");

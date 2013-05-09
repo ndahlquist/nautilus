@@ -19,5 +19,5 @@ void main() {
 	else
 	    diffuse *= 4.0 / length(u_LightPos - v_Position);
 
-	gl_FragColor = vec4(.1+diffuse, diffuse, .2*diffuse, 1.0);
+	gl_FragColor = vec4(.1+diffuse, diffuse, .2*diffuse, 1.0);// * texture2D(u_Texture, v_TexCoordinate);
 }
