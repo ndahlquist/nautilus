@@ -61,3 +61,18 @@ extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_renderFrame(JNIEnv * env, jobject obj) {
     RenderFrame();
 }
+
+extern "C"
+JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerDown(JNIEnv * env, jobject obj, jfloat x, jfloat y) {
+    PointerDown(x, y);
+}
+
+extern "C"
+JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerMove(JNIEnv * env, jobject obj, jfloat x, jfloat y) {
+    PointerMove(x, y);
+}
+
+extern "C"
+JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerUp(JNIEnv * env, jobject obj, jfloat x, jfloat y) {
+    PointerUp(x, y);
+}

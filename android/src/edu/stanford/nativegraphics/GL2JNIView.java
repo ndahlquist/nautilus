@@ -21,6 +21,7 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Message;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -306,11 +307,40 @@ class GL2JNIView extends GLSurfaceView {
         protected int mStencilSize;
         private int[] mValue = new int[1];
     }
+    
+    @Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if(event == null)
+		    return false;
+		
+		float x = (float) event.getX() / (float) Renderer.width;
+	    float y = (float) event.getY() / (float) Renderer.height;
+
+		if(event.getAction() == MotionEvent.ACTION_DOWN) {
+			NativeLib.pointerDown(x, y);
+			return true;
+	    }
+	    
+		if(event.getAction() == MotionEvent.ACTION_MOVE) {
+			NativeLib.pointerMove(x, y);
+			return true;
+	    }
+			
+		if(event.getAction() == MotionEvent.ACTION_UP) {
+			NativeLib.pointerUp(x, y);
+	        return true;
+	    }
+
+		return super.onTouchEvent(event);	
+	}
 
     private static class Renderer implements GLSurfaceView.Renderer {
         private Context context;
         private long lastMeterTime = 0;
 	    private int lastMeterFrame = 0;
+	    
+	    public static int width;
+        public static int height;
 	    
         public Renderer(Context context) {
             this.context = context;
@@ -330,7 +360,9 @@ class GL2JNIView extends GLSurfaceView {
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-             NativeLib.nativeInit(context, width, height);
+            this.width = width;
+            this.height = height;
+            NativeLib.nativeInit(context, width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {

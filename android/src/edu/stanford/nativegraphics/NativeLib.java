@@ -30,4 +30,7 @@ public class NativeLib {
     private static native void passResource(String name, String contents); // TODO: Unholy resource hack
     private static native void init(int width, int height);
     public static native void renderFrame();
+    public static native void pointerDown(float x, float y);
+    public static native void pointerMove(float x, float y);
+    public static native void pointerUp(float x, float y);
 }
