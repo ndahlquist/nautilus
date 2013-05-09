@@ -75,7 +75,7 @@ void Setup(int w, int h) {
     free(objFile);
         
     // Compile and link shader program
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("normals_f.glsl"));
+    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("diffuse_f.glsl"));
     
     // Get uniform and attrib locations
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
