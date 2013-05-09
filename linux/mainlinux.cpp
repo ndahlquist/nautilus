@@ -62,24 +62,15 @@ void KeyCallback(unsigned char key, int x, int y) {
     // glutPostRedisplay();
 }
 
-// Mouse event handler
 void MouseCallback(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
-        //gMouseButton = button;
-    } else {
-        //gMouseButton = -1;
-    }
-    
-    if (state == GLUT_UP) {
-        //gPreviousMouseX = -1;
-        //gPreviousMouseY = -1;
-    }
+    if(state == GLUT_DOWN)
+        PointerDown((float) x / (float)gWindowSizeX, (float) y / (float)gWindowSizeY);
+    if(state == GLUT_UP)
+        PointerUp((float) x / (float)gWindowSizeX, (float) y / (float)gWindowSizeY);
 }
 
-
-// Mouse active motion callback (when button is pressed)
 void MouseMotionCallback(int x, int y) {
-    
+    PointerMove((float) x / (float)gWindowSizeX, (float) y / (float)gWindowSizeY);
 }
 
 void * stringResourceCB(const char * filename) {

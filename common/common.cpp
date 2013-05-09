@@ -103,6 +103,7 @@ void Setup(int w, int h) {
 
 float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
+float rot[2] = {0,0};
 
 void RenderFrame() {
     
@@ -134,7 +135,7 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
-    rotatef(35,0,1,0);
+    rotatef(rot[0],0,1,0);
     scalef(1.1, 1.1, 1.1);
     translatef(0.1f, -.2f, 0.f);
     
@@ -163,13 +164,35 @@ void RenderFrame() {
     //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
     //checkGlError("gvTexCoords");
     
-    
     //glEnableVertexAttribArray(gvPositionHandle);
     glEnableVertexAttribArray(gvNormals);
     glEnableVertexAttribArray(gvPositionHandle);
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
     checkGlError("glDrawArrays");
+}
+
+float lastPointer[2] = {0,0};
+
+void PointerDown(float x, float y, int pointerIndex) {
+    lastPointer[0] = x;
+    lastPointer[1] = y;
+}
+
+void PointerMove(float x, float y, int pointerIndex) {
+     float deltaX = x - lastPointer[0];
+	 float deltaY = y - lastPointer[1];
+	 
+	 rot[0] += 100.0f * deltaX;
+	 rot[1] += 100.0f * deltaY;
+	 
+	 lastPointer[0] = x;
+     lastPointer[1] = y;
+}
+
+void PointerUp(float x, float y, int pointerIndex) {
+    lastPointer[0] = x;
+    lastPointer[1] = y;
 }
 
 #undef LOG_TAG
