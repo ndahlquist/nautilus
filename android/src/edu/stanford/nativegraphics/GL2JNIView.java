@@ -54,7 +54,7 @@ class GL2JNIView extends GLSurfaceView {
     public GL2JNIView(Context context) {
         super(context);
         this.context = context;
-        init(false, 0, 0);
+        init(false, 10, 0);
     }
 
     public GL2JNIView(Context context, boolean translucent, int depth, int stencil) {

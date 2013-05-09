@@ -21,6 +21,7 @@ public class NativeLib {
         passResource("hex.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
         passResource("depth_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.depth_f));
         passResource("standard_v.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.standard_v));
+        passResource("normals_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.normals_f));
         init(width, height);
     }   
 
