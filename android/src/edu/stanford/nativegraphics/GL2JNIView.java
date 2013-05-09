@@ -326,12 +326,11 @@ class GL2JNIView extends GLSurfaceView {
 			    lastMeterTime = System.currentTimeMillis();
 			    lastMeterFrame = 0;
 		    }
-            NativeLib.step();
+            NativeLib.renderFrame();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            NativeLib mNative = new NativeLib();
-            mNative.nativeInit(context, width, height);
+             NativeLib.nativeInit(context, width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {

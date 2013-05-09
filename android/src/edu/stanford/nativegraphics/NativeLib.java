@@ -10,12 +10,12 @@ public class NativeLib {
     }
 
     // Called from native
-    public void stringCallback() {
+    public void stringCallback() { // TODO
         Log.v("NativeLib", "Java");
         //return "Test successful";
     }
     
-    public void nativeInit(Context context, int width, int height) {
+    public static void nativeInit(Context context, int width, int height) {
         // TODO: Unholy resource hack
         passResource("raptor.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
         passResource("hex.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
@@ -27,5 +27,5 @@ public class NativeLib {
     // Native Functions
     private static native void passResource(String name, String contents); // TODO: Unholy resource hack
     private static native void init(int width, int height);
-    public static native void step();
+    public static native void renderFrame();
 }

@@ -30,12 +30,6 @@
 
 using namespace std;
 
-// File locations
-string vertexShader;
-string fragmentShader;
-string normalMap;
-string lightProbe;
-
 GLuint gProgram;
 GLuint gvPositionHandle;
 GLuint gmvMatrixHandle;
@@ -71,9 +65,9 @@ void Setup(int w, int h) {
     printGLString("Extensions", GL_EXTENSIONS);
 
     // Parse obj file into an interleaved float buffer
-	char * objFile = (char *)resourceCallback("raptor.obj");
-	raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize, false, true);
-	free(objFile);
+    char * objFile = (char *)resourceCallback("raptor.obj");
+    raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize, false, true);
+    free(objFile);
         
     // Compile and link shader program
     gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), NULL);
@@ -98,7 +92,6 @@ void Setup(int w, int h) {
     
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
-    return;
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f };
