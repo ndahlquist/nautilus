@@ -55,7 +55,7 @@ class GL2JNIView extends GLSurfaceView {
     public GL2JNIView(Context context) {
         super(context);
         this.context = context;
-        init(false, 10, 0);
+        init(false, 16, 0);
     }
 
     public GL2JNIView(Context context, boolean translucent, int depth, int stencil) {
@@ -347,7 +347,7 @@ class GL2JNIView extends GLSurfaceView {
         }
         
         public void onDrawFrame(GL10 gl) {
-            if(++lastMeterFrame >= 20) {
+            /*if(++lastMeterFrame >= 20) {
 			    float FramesPerSecond = lastMeterFrame / ((System.currentTimeMillis() - lastMeterTime) / 1000.0f);
 			    Message msg = new Message();
 			    msg.arg1 = MainActivity.overlayUpdater.FPS_UPDATE;
@@ -355,13 +355,13 @@ class GL2JNIView extends GLSurfaceView {
 			    MainActivity.overlayUpdater.sendMessage(msg);
 			    lastMeterTime = System.currentTimeMillis();
 			    lastMeterFrame = 0;
-		    }
+		    }*/
             NativeLib.renderFrame();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            this.width = width;
-            this.height = height;
+            Renderer.width = width;
+            Renderer.height = height;
             NativeLib.nativeInit(context, width, height);
         }
 

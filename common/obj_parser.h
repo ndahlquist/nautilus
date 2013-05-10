@@ -87,7 +87,6 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
     float * interleavedBuffer = (float *) malloc(numVertices * floatsPerVertex * sizeof(float));
     
     
-    const float scale = .01f; // TODO
     int bufferIndex = 0;
     for(int i = 0; i < faces.size(); i++) {
 		for(int v = 0; v < 3; v++) {
@@ -99,9 +98,9 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
 			
 			struct Vertex * thisVertex = &vertices[vertexIndex];
 
-			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.x;
-			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.y;
-			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.z;
+			interleavedBuffer[bufferIndex++] = thisVertex->coord.x;
+			interleavedBuffer[bufferIndex++] = thisVertex->coord.y;
+			interleavedBuffer[bufferIndex++] = thisVertex->coord.z;
             
             if(normalCoords) {
 			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;

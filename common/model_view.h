@@ -34,7 +34,7 @@ void translatef(float x, float y, float z){
   model_view.top() *= translation;
 }
 //Rotate, angle in degrees
-void rotatef(float angle, float x, float y, float z){
+void rotatef(float angle, float x, float y, float z){  // TODO: Only rotates 180d
   angle *=  3.1415926/360.f;
   Vector4f r(cos(angle),x,y,z);
   r.normalize();
