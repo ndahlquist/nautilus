@@ -9,6 +9,7 @@
 #include "RenderObject.h"
 #include "glsl_helper.h"
 #include "obj_parser.h"
+#include "transform.h"
 
 RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile)
 {

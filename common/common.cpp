@@ -21,7 +21,7 @@
 #include "Eigen/Core"
 #include "Eigen/Eigenvalues"
 
-//#include "transform.h"
+#include "transform.h"
 //#include "obj_parser.h"
 //#include "glsl_helper.h"
 #include "RenderObject.h"

@@ -26,7 +26,6 @@
 #endif
 
 
-#include "transform.h"
 
 using namespace std;
 
@@ -45,12 +44,8 @@ private:
     GLuint gvTexCoords;
     GLuint gvNormals;
     GLuint gVertexBuffer;
-
     
     int numVertices = 0;
-    
-
-    
 };
 
 
