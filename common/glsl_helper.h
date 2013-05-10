@@ -2,6 +2,9 @@
 // nativeGraphics
 // Compiles and links GLSL shader programs
 
+#ifndef __nativeGraphics__glsl_helper__
+#define __nativeGraphics__glsl_helper__
+
 #define  LOG_TAG    "glsl_helper"
 #include "log.h"
 
@@ -86,3 +89,5 @@ GLuint createProgram(const char* pVertexSource = NULL, const char* pFragmentSour
 }
 
 #undef LOG_TAG
+
+#endif /* defined(__nativeGraphics__glsl_helper__) */

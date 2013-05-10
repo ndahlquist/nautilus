@@ -1,3 +1,6 @@
+#ifndef __nativeGraphics__transform__
+#define __nativeGraphics__transform__
+
 #include <iostream>
 #include "Eigen/Core"
 #include <stack>
@@ -216,4 +219,6 @@ float* mvpMatrix(){
        mvpMatrix[i*4+j] = mvp(j,i);
    return mvpMatrix;  
 }
+
+#endif /* defined(__nativeGraphics__transform__) */
 

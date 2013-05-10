@@ -30,6 +30,7 @@
 		5594978F1737849D006E176F /* raptor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5594978E1737849D006E176F /* raptor.jpg */; };
 		55B66B98173B8EFB0094F000 /* diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B66B96173B8EFB0094F000 /* diffuse_f.glsl */; };
 		55B66B9A173B93A50094F000 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B66B99173B93A50094F000 /* normals_f.glsl */; };
+		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -118,6 +119,8 @@
 		5594978E1737849D006E176F /* raptor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = raptor.jpg; sourceTree = "<group>"; };
 		55B66B96173B8EFB0094F000 /* diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = diffuse_f.glsl; sourceTree = "<group>"; };
 		55B66B99173B93A50094F000 /* normals_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = normals_f.glsl; sourceTree = "<group>"; };
+		55B66B9E173CAA440094F000 /* RenderObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderObject.cpp; path = ../../common/RenderObject.cpp; sourceTree = "<group>"; };
+		55B66B9F173CAA440094F000 /* RenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderObject.h; path = ../../common/RenderObject.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +190,8 @@
 				55906DBF17303A9D00BD92BF /* renderView.mm */,
 				559071251732580500BD92BF /* common.h */,
 				5590712C1732FEC500BD92BF /* common.cpp */,
+				55B66B9F173CAA440094F000 /* RenderObject.h */,
+				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				5594978917377361006E176F /* shaders */,
 				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
@@ -385,6 +390,7 @@
 				55906DB217302DDB00BD92BF /* nativeGraphicsViewController.mm in Sources */,
 				55906DC017303A9E00BD92BF /* renderView.mm in Sources */,
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
+				55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,6 +482,7 @@
 		55906DB617302DDB00BD92BF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -491,6 +498,7 @@
 		55906DB717302DDB00BD92BF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

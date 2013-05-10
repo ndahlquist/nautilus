@@ -5,7 +5,7 @@
 
 #include <string>
 
-#ifdef ANDROID_NDK
+/*#ifdef ANDROID_NDK
     #include "importgl.h"
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
@@ -16,20 +16,21 @@
 #else // linux
     #include <GL/glew.h>
     #include <stdio.h>
-#endif
+#endif*/
 
 #include "Eigen/Core"
 #include "Eigen/Eigenvalues"
 
-#include "transform.h"
-#include "obj_parser.h"
-#include "glsl_helper.h"
+//#include "transform.h"
+//#include "obj_parser.h"
+//#include "glsl_helper.h"
+#include "RenderObject.h"
 
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
 
 using namespace std;
-
+/*
 GLuint gProgram;
 GLuint gvPositionHandle;
 GLuint gmvMatrixHandle;
@@ -39,7 +40,7 @@ GLuint gvTexCoords;
 GLuint gvNormals;
 
 GLuint gVertexBuffer; 
-
+*/
 GLuint depthRenderBuffer;
 
 int width = 0;
@@ -52,7 +53,10 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-int numVertices = 0;
+//int numVertices = 0;
+
+RenderObject *cave;
+RenderObject *character;
 
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -73,6 +77,22 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
 
+    char *objFile = (char *)resourceCallback("hex.obj");
+    char *vertexShaderFile = (char *)resourceCallback("standard_v.glsl");
+    char *fragmentShaderFile = (char *)resourceCallback("diffuse_f.glsl");
+    
+    cave = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
+    
+    objFile = (char *)resourceCallback("raptor.obj");
+    vertexShaderFile = (char *)resourceCallback("standard_v.glsl");
+    fragmentShaderFile = (char *)resourceCallback("diffuse_f.glsl");
+    
+    character = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
+    
+    free(objFile);
+    free(vertexShaderFile);
+    free(fragmentShaderFile);
+    /*
     // Parse obj file into an interleaved float buffer
     char * objFile = (char *)resourceCallback("raptor.obj");
     GLfloat * interleavedBuffer = getInterleavedBuffer(objFile, numVertices, true, true);
@@ -94,6 +114,7 @@ void Setup(int w, int h) {
     gvNormals = glGetAttribLocation(gProgram, "a_Normal");
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     checkGlError("glGetAttribLocation");
+    */
     
     // Load textures
     /*
@@ -118,10 +139,10 @@ float rot[2] = {0,0};
 
 void RenderFrame() {
     
-    if(numVertices == 0) {
+    /*if(numVertices == 0) {
         LOGE("Setup not yet called.");
         return;
-    }
+    }*/
     
     static float delta = 0.01f;
     static float grey;
@@ -151,15 +172,17 @@ void RenderFrame() {
     //scalef(1.1, 1.1, 1.1);
     translatef(0.0f, -2.0f, -1.0f);
     
-    glUseProgram(gProgram);
-    checkGlError("glUseProgram");
+    //glUseProgram(gProgram);
+    //checkGlError("glUseProgram");
     
+    cave->RenderFrame();
+    character->RenderFrame();
     /*
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(textureUniform, 0);
     checkGlError("texture");
     */
-
+/*
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
     
@@ -187,6 +210,7 @@ void RenderFrame() {
     checkGlError("glDrawArrays");
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+ */
 }
 
 float lastPointer[2] = {0,0};
