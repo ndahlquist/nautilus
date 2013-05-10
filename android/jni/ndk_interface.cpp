@@ -9,9 +9,7 @@
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
-
 static JavaVM * javaVM;
-//JNIEnv * javaEnv;
 static jobject callbackObject;
 
 jint JNI_OnLoad(JavaVM * vm, void * unused) {
@@ -35,23 +33,21 @@ void resourcecb(const char * filename) {
     }
 
     jclass cls = env->FindClass("edu/stanford/nativegraphics/NativeLib");
-    //env->GetObjectClass(callbackObject);
     if(!cls) {
         if(isAttached)
             javaVM->DetachCurrentThread();
         return;
     }
 
-    jmethodID method = env->GetMethodID(cls, "stringCallback", "()V");
+    jmethodID method = env->GetMethodID(cls, "stringCallback", "(I)V");
     if(!method) {
         if(isAttached)
             javaVM->DetachCurrentThread();
         return;
     }
 
-    //jstring string = (*mEnv)->NewStringUTF(mEnv, msg);
     LOGI("Pre-callvoidmethod");
-    env->CallVoidMethod(callbackObject, method);
+    env->CallVoidMethod(callbackObject, method, 5);
     LOGI("Post-callvoidmethod");
 
     if(isAttached)
@@ -89,12 +85,8 @@ void resourcecb(const char * filename) {
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * env, jobject obj, jint w, jint h) {
     LOGI("Native Setup() called.");
-    Setup(w, h);
-    //SetResourceCallback(resourcecb);
-    //jclass localClass = env->FindClass("edu/stanford/nativegraphics/NativeLib");
+    //Setup(w, h);
     callbackObject = env->NewGlobalRef(obj);
-    //javaEnv = env;
-    //savedObj = obj;
     resourcecb("hey");
 }
 
@@ -105,5 +97,5 @@ JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * 
 
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_step(JNIEnv * env, jobject obj) {
-    RenderFrame();
+    //RenderFrame();
 }
