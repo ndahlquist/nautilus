@@ -23,12 +23,12 @@ void resourcecb(const char * filename) {
     JNIEnv *env;
     int isAttached = 0;
 
-    if(!callbackObject) return;
+    if(!callbackObject)
+    	return;
 
     if((status = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6)) < 0) {
-        if((status = javaVM->AttachCurrentThread(&env, NULL)) < 0) {
+        if((status = javaVM->AttachCurrentThread(&env, NULL)) < 0)
             return;
-        }
         isAttached = 1;
     }
 
@@ -39,15 +39,17 @@ void resourcecb(const char * filename) {
         return;
     }
 
-    jmethodID method = env->GetMethodID(cls, "stringCallback", "(I)V");
+    jmethodID method = env->GetMethodID(cls, "stringCallback", "(Ljava/lang/String;)Ljava/lang/String;");
     if(!method) {
         if(isAttached)
             javaVM->DetachCurrentThread();
         return;
     }
 
+    jstring fileName = env->NewStringUTF("This string comes from JNI");
+
     LOGI("Pre-callvoidmethod");
-    env->CallVoidMethod(callbackObject, method, 5);
+    jstring file = (jstring) env->CallObjectMethod(callbackObject, method, fileName);
     LOGI("Post-callvoidmethod");
 
     if(isAttached)
@@ -85,9 +87,9 @@ void resourcecb(const char * filename) {
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * env, jobject obj, jint w, jint h) {
     LOGI("Native Setup() called.");
-    //Setup(w, h);
     callbackObject = env->NewGlobalRef(obj);
-    resourcecb("hey");
+    SetResourceCallback(resourcecb);
+    Setup(w, h);
 }
 
 // TODO: release
@@ -97,5 +99,5 @@ JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * 
 
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_step(JNIEnv * env, jobject obj) {
-    //RenderFrame();
+	RenderFrame();
 }

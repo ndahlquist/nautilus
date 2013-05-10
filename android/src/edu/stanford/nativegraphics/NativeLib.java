@@ -10,9 +10,9 @@ public class NativeLib {
     }
 
     // Called from native
-    public void stringCallback(int num) {
-        Log.v("NativeLib", "Java" + num);
-        //return "Test successful";
+    public String stringCallback(String filename) {
+        Log.v("NativeLib", "Java" + filename);
+        return "Success!";
     }
     
     public void nativeInit(int width, int height) {
@@ -21,5 +21,5 @@ public class NativeLib {
 
     // Native Functions
     private native void init(int width, int height);
-    public static native void step();
+    public native void step();
 }

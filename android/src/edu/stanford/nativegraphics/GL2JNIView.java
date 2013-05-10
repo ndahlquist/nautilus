@@ -325,12 +325,14 @@ class GL2JNIView extends GLSurfaceView {
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {
+    	NativeLib mNative;
+    	
         public void onDrawFrame(GL10 gl) {
-            NativeLib.step();
+        	mNative.step();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            NativeLib mNative = new NativeLib();
+            mNative = new NativeLib();
             mNative.nativeInit(width, height);
         }
 
