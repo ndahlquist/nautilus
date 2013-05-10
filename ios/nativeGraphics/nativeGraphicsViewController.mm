@@ -34,7 +34,7 @@
     SetResourceCallback(resourceCB);
 }
 
-NSString* parseResource(NSString *fileName, NSString *fileType)
+NSString *parseResource(NSString *fileName, NSString *fileType)
 {
     NSError *error;
     NSString *fileContents = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:fileType] usedEncoding:nil error: &error];

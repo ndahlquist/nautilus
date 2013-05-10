@@ -22,12 +22,12 @@
         
         [self setupLayer];
         [self setupContext];
+        Setup(self.bounds.size.width, self.bounds.size.height);
+        
         [self setupRenderBuffer];
         [self setupFrameBuffer];
         [self setupDisplayLink];
-
-        // Initialization code
-        Setup(self.bounds.size.width, self.bounds.size.height);
+        
     }
     return self;
 }

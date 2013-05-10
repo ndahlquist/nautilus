@@ -155,10 +155,6 @@ void RenderFrame() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    //glActiveTexture(GL_TEXTURE0);
-    //glUniform1i(textureUniform, 0);
-    //checkGlError("texture");
-    
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
     
