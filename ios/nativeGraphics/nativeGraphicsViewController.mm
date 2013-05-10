@@ -92,4 +92,34 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     // Dispose of any resources that can be recreated.
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch * touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self.view];
+    
+    PointerDown(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
+}
+
+// Add new touchesMoved method
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    UITouch * touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self.view];
+    
+    PointerMove(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch * touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self.view];
+    
+    PointerUp(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
+    
+}
+
+- (IBAction)handlePanGesture:(UIPanGestureRecognizer *)sender
+{
+    
+}
+
 @end

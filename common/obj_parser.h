@@ -79,9 +79,10 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
 	computeAdjacencyLists(vertices, faces);
 	computeNormals(vertices, faces);
 
-    const int floatsPerFace = 3 + (normalCoords ? 3 : 0) + (textureCoords ? 2 : 0);
-    float * interleavedBuffer = (float *) malloc(faces.size() * 3 * floatsPerFace * sizeof(float));
+    const int floatsPerVertex = 3 + (normalCoords ? 3 : 0) + (textureCoords ? 2 : 0);
     numVertices = faces.size()*3;
+    float * interleavedBuffer = (float *) malloc(numVertices * floatsPerVertex * sizeof(float));
+    
     
     int bufferIndex = 0;
     for(int i = 0; i < faces.size(); i++) {
@@ -100,8 +101,8 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
             
             if(normalCoords) {
 			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
-			    interleavedBuffer[bufferIndex++] = thisVertex->normal.y;
-			    interleavedBuffer[bufferIndex++] = thisVertex->normal.z;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
 			}
             
             if(textureCoords) {
