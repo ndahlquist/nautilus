@@ -12,8 +12,8 @@
 #else // linux & ios
     // TODO: does this work for ios?
     // TODO: Rewrite
-    #define  LOGI(...);  printf("INFO: "); printf(__VA_ARGS__); printf("\n");
-    #define  LOGE(...);  printf("ERROR: "); printf(__VA_ARGS__); printf("\n");
+    #define  LOGI(...);  printf("INFO: ");printf(__VA_ARGS__);printf("\n");
+    #define  LOGE(...);  printf("ERROR: ");printf(__VA_ARGS__);printf("\n");
 #endif
 
 static void printGLString(const char *name, GLenum s) {
