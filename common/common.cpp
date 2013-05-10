@@ -123,17 +123,9 @@ void RenderFrame() {
         return;
     }
     
-    static float delta = 0.01f;
-    static float grey;
-    grey += delta;
-    if(grey > 1.0f || grey < 0.0f) {
-        delta *= -1;
-        grey += delta;
-    }
-    
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(grey, .8f * grey, grey, 1.0f);
+    glClearColor(0., 0., 0., .1f);
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
