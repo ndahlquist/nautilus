@@ -101,10 +101,9 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
 			interleavedBuffer[bufferIndex++] = scale * thisVertex->coord.z;
             
             if(normalCoords) {
-			    interleavedBuffer[bufferIndex++] = 0;//vertices[faces[0].vertex[0]].normal.x;
-			    interleavedBuffer[bufferIndex++] = 0;//vertices[faces[0].vertex[0]].normal.x;
-			    interleavedBuffer[bufferIndex++] = 0;//vertices[faces[0].vertex[0]].normal.x;
-                //printf("%f, %f, %f", thisVertex->normal.x, thisVertex->normal.y, thisVertex->normal.x);
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
 			}
             
             if(textureCoords) {
