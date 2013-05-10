@@ -38,7 +38,12 @@ GLuint textureUniform;
 GLuint gvTexCoords;
 GLuint gvNormals;
 
+GLuint gVertexBuffer; 
+
 GLuint depthRenderBuffer;
+
+int width = 0;
+int height = 0;
 
 // Callback function to load resources.
 void*(*resourceCallback)(const char *) = NULL;
@@ -47,8 +52,7 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-GLfloat * raptorVertices = NULL;
-int raptorVerticesSize = 0;
+int numVertices = 0;
 
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -71,8 +75,14 @@ void Setup(int w, int h) {
 
     // Parse obj file into an interleaved float buffer
     char * objFile = (char *)resourceCallback("raptor.obj");
-    raptorVertices = getInterleavedBuffer(objFile, raptorVerticesSize, true, true);
+    GLfloat * interleavedBuffer = getInterleavedBuffer(objFile, numVertices, true, true);
     free(objFile);
+    glGenBuffers(1, &gVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    checkGlError("VertexBuffer Generation");
+    free(interleavedBuffer);
         
     // Compile and link shader program
     gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("diffuse_f.glsl"));
@@ -97,6 +107,8 @@ void Setup(int w, int h) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
     free(imageData);*/
     
+    width = w;
+    height = h;
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
 }
@@ -107,8 +119,8 @@ float rot[2] = {0,0};
 
 void RenderFrame() {
     
-    if(!raptorVertices) {
-        LOGE("raptorVertices undeclared");
+    if(numVertices == 0) {
+        LOGE("Setup not yet called.");
         return;
     }
     
@@ -124,7 +136,7 @@ void RenderFrame() {
     glEnable(GL_DEPTH_TEST);
     glClearColor(grey, .8f * grey, grey, 1.0f);
     checkGlError("glClearColor");
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
     pLoadIdentity();
@@ -135,9 +147,10 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
-    rotatef(rot[0],0,1,0);
-    scalef(1.1, 1.1, 1.1);
-    translatef(0.1f, -.2f, 0.f);
+    rotate(rot[1],rot[0],0);
+    //rotatef(rot[1],1,0);
+    //scalef(1.1, 1.1, 1.1);
+    translatef(0.0f, -2.0f, -1.0f);
     
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
@@ -155,21 +168,24 @@ void RenderFrame() {
     delete mv_Matrix;
     delete mvp_Matrix;
     
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices);
-    checkGlError("gvPositionHandle");
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
-    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 3));
+    glEnableVertexAttribArray(gvNormals);
+    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
     checkGlError("gvNormals");
     
+    glEnableVertexAttribArray(gvPositionHandle);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
+    checkGlError("gvPositionHandle");
+    
+    //glEnableVertexAttribArray(gvTexCoords);
     //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
     //checkGlError("gvTexCoords");
     
-    //glEnableVertexAttribArray(gvPositionHandle);
-    glEnableVertexAttribArray(gvNormals);
-    glEnableVertexAttribArray(gvPositionHandle);
-    checkGlError("glEnableVertexAttribArray");
-    glDrawArrays(GL_TRIANGLES, 0, raptorVerticesSize);
+    glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 float lastPointer[2] = {0,0};
@@ -183,8 +199,8 @@ void PointerMove(float x, float y, int pointerIndex) {
      float deltaX = x - lastPointer[0];
 	 float deltaY = y - lastPointer[1];
 	 
-	 rot[0] += 100.0f * deltaX;
-	 rot[1] += 100.0f * deltaY;
+	 rot[0] +=  8.0 * deltaX;
+	 rot[1] += -1.0 * deltaY;
 	 
 	 lastPointer[0] = x;
      lastPointer[1] = y;

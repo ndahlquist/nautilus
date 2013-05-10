@@ -89,8 +89,9 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
 		for(int v = 0; v < 3; v++) {
 		
 			int vertexIndex = faces[i].vertex[v];
-			//if(vertexIndex < 0 || vertexIndex >= vertices.size()) // TODO
-			//	LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, vertices.size());
+			if(vertexIndex < 0 || vertexIndex >= vertices.size()) { // TODO
+				LOGE("vertexIndex %d out of bounds (0, %d)", vertexIndex, (int) vertices.size());
+		    }
 			
 			struct Vertex * thisVertex = &vertices[vertexIndex];
 
