@@ -18,17 +18,17 @@ jint JNI_OnLoad(JavaVM * vm, void * unused) {
     return JNI_VERSION_1_6;
 }
 
-void resourcecb(const char * filename) {
+char * resourcecb(const char * fileName) {
     int status;
     JNIEnv *env;
     int isAttached = 0;
 
     if(!callbackObject)
-    	return;
+    	return NULL;
 
     if((status = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6)) < 0) {
         if((status = javaVM->AttachCurrentThread(&env, NULL)) < 0)
-            return;
+            return NULL;
         isAttached = 1;
     }
 
@@ -36,52 +36,30 @@ void resourcecb(const char * filename) {
     if(!cls) {
         if(isAttached)
             javaVM->DetachCurrentThread();
-        return;
+        return NULL;
     }
 
     jmethodID method = env->GetMethodID(cls, "stringCallback", "(Ljava/lang/String;)Ljava/lang/String;");
     if(!method) {
         if(isAttached)
             javaVM->DetachCurrentThread();
-        return;
+        return NULL;
     }
 
-    jstring fileName = env->NewStringUTF("This string comes from JNI");
+    jstring jfileName = env->NewStringUTF(fileName);
 
     LOGI("Pre-callvoidmethod");
-    jstring file = (jstring) env->CallObjectMethod(callbackObject, method, fileName);
+    jstring jfile = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
     LOGI("Post-callvoidmethod");
+
+    const char *file = env->GetStringUTFChars(jfile, 0);
+    char * returnFile = strdup(file);
+    env->ReleaseStringUTFChars(jfile, file);
 
     if(isAttached)
         javaVM->DetachCurrentThread();
-    /*jclass handlerClass = javaEnv->FindClass("edu/stanford/nativegraphics/NativeLib"); // TODO
-    if(!handlerClass) {
-        LOGE("Unable to locate java class edu/stanford/nativeagraphics/NativeLib");
-        return;
-    }
 
-    jmethodID javaMid = javaEnv->GetMethodID(handlerClass, "stringCallback", "()V");
-    if(!javaMid) {
-        LOGE("Unable to locate java method stringCallback");
-        return;
-    }
-    
-    //jstring jstr = javaEnv->NewStringUTF("This string comes from JNI");
-    //jbyteArray jbArray = javaEnv->NewByteArray(strlen(filename));
-    //javaEnv->SetByteArrayRegion(jbArray, 0, strlen(filename), (jbyte*) filename);
-
-    //jobject result = 
-    LOGI("Pre-callvoidmethod");
-    javaEnv->CallVoidMethod(savedObj, javaMid);
-    LOGI("Post-callvoidmethod");
-    
-    //const char* str = javaEnv->GetStringUTFChars((jstring) result, NULL);
-    
-    //LOGI("resourcecb(%s) = %s", filename, str);
-    if(javaEnv->ExceptionCheck()) {
-        javaEnv->ExceptionDescribe();
-        javaEnv->ExceptionClear();
-    }*/
+    return returnFile;
 }
 
 extern "C"
