@@ -1,6 +1,9 @@
 // obj_parser.h
 // nativeGraphics
 
+#ifndef __nativeGraphics__obj_parser__
+#define __nativeGraphics__obj_parser__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -315,3 +318,5 @@ static void parseObjString(char * objString, std::vector<struct Vertex> & vertic
 }
 
 #undef LOG_TAG
+
+#endif /* defined(__nativeGraphics__obj_parser__) */

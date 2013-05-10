@@ -1,3 +1,6 @@
+#ifndef __nativeGraphics__model_view__
+#define __nativeGraphics__model_view__
+
 #include <iostream>
 #include "Eigen/Core"
 #include <stack>
@@ -153,3 +156,4 @@ void gluLookAt(float eyex, float eyey, float eyez,
 
 }
 
+#endif /* defined(__nativeGraphics__model_view__) */
