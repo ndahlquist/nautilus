@@ -77,7 +77,7 @@ void Setup(int w, int h) {
     free(objFile);
         
     // Compile and link shader program
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("diffuse_f.glsl"));
+    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("normals_f.glsl"));
     
     // Get uniform and attrib locations
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
@@ -88,7 +88,6 @@ void Setup(int w, int h) {
     checkGlError("glGetAttribLocation");
     
     // Load textures
-    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     /*
     void *imageData = resourceCallback("raptor.jpg");
     textureUniform = glGetUniformLocation(gProgram, "u_Texture");
@@ -139,13 +138,14 @@ void RenderFrame() {
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
     rotatef(rot[0],0,1,0);
-    scalef(1.1, 1.1, 1.1);
+    scalef(2.1, 2.1, 2.1);
     translatef(0.1f, -.2f, 0.f);
     
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
-    /*glActiveTexture(GL_TEXTURE0);
+    /*
+    glActiveTexture(GL_TEXTURE0);
     glUniform1i(textureUniform, 0);
     checkGlError("texture");
     */
@@ -159,17 +159,16 @@ void RenderFrame() {
     delete mv_Matrix;
     delete mvp_Matrix;
     
-
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices);
     checkGlError("gvPositionHandle");
     
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 3));
     checkGlError("gvNormals");
     
-    /*glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
+    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
     checkGlError("gvTexCoords");
-    */
-    //glEnableVertexAttribArray(gvTexCoords);
+    
+    glEnableVertexAttribArray(gvTexCoords);
     glEnableVertexAttribArray(gvPositionHandle);
     glEnableVertexAttribArray(gvNormals);
     checkGlError("glEnableVertexAttribArray");
