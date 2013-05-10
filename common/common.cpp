@@ -140,17 +140,15 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    //viewport(0, 0, 100, 200);
-    //perspective(20, 0.5, 0.001, 1000);
-    frustum(-0.6, 0.6, -1, 1, 0.2, 10);
+    perspective(20, (float) width / (float) height, 10, 1000);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
+    scalef(.05, .05, .05);
+    translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
-    //rotatef(rot[1],1,0);
-    //scalef(1.1, 1.1, 1.1);
-    translatef(0.0f, -2.0f, -1.0f);
+    translatef(0.0f, -40.0f, 0.0f);
     
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
