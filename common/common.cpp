@@ -22,8 +22,7 @@
 #include "Eigen/Eigenvalues"
 
 #include "transform.h"
-//#include "obj_parser.h"
-//#include "glsl_helper.h"
+//#include "model_view.h"
 #include "RenderObject.h"
 
 #define  LOG_TAG    "libnativegraphics"

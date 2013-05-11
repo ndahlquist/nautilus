@@ -5,6 +5,8 @@
 #ifndef __nativeGraphics__glsl_helper__
 #define __nativeGraphics__glsl_helper__
 
+#include <cstdlib>
+
 #define  LOG_TAG    "glsl_helper"
 #include "log.h"
 
