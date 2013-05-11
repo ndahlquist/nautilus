@@ -11,8 +11,8 @@
 #include "obj_parser.h"
 #include "transform.h"
 
-RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile)
-{
+RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile) {
+
     // Parse obj file into an interleaved float buffe
     GLfloat * interleavedBuffer = getInterleavedBuffer(objFile, numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);

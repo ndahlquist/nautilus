@@ -25,15 +25,12 @@
 #include <stdio.h>
 #endif
 
-
-
 using namespace std;
 
 class RenderObject {
 public:
     RenderObject(char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void RenderFrame();
-    
+    void RenderFrame();   
     
 private:
     GLuint gProgram;
@@ -45,7 +42,7 @@ private:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     
-    int numVertices = 0;
+    int numVertices;
 };
 
 
