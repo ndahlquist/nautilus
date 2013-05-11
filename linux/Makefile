@@ -7,7 +7,6 @@ FILES   := mainlinux ../common/common ../common/RenderObject ../common/transform
 
 #################################################################
 
-
 # The following Makefile rules should work for Linux or Cygwin
 
 CC		 := g++
@@ -70,16 +69,10 @@ EXTRA_INC_DIRS := /usr/include/freetype2 glew/include ../common/
 endif
 endif
 
-
-LIBST      :=  st
-LIBST_ROOT :=  ../common/libst
-LIBST_DIR  :=  $(LIBST_ROOT)/lib
-LIBST_INC  :=  $(LIBST_ROOT)/include
-
 TARGET     := $(addsuffix $(EXESUFFIX), $(TARGET))
 
 INCDIRS    := . $(LIBST_INC) $(EXTRA_INC_DIRS)
-LIBDIRS    := $(LIBST_DIR) $(EXTRA_LIB_DIRS)
+LIBDIRS    := $(EXTRA_LIB_DIRS)
 
 CFLAGS     += $(addprefix -I, $(INCDIRS))
 CFLAGS	   += $(CFLAGS_PLATFORM)
@@ -90,7 +83,6 @@ LDFRAMEWORKS := $(addprefix -framework , $(FRAMEWORKS))
 
 OBJS       :=  $(addsuffix $(OBJSUFFIX), $(FILES))
 
-
 .SUFFIXES : .cpp $(OBJSUFFIX)
 
 .PHONY : clean release all
@@ -99,7 +91,6 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LDLIBS) $(LDFRAMEWORKS)
-
 
 %.o : %.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
