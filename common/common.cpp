@@ -5,7 +5,7 @@
 
 #include <string>
 
-/*#ifdef ANDROID_NDK
+#ifdef ANDROID_NDK
     #include "importgl.h"
     #include <GLES2/gl2.h>
     #include <GLES2/gl2ext.h>
@@ -16,13 +16,12 @@
 #else // linux
     #include <GL/glew.h>
     #include <stdio.h>
-#endif*/
+#endif
 
 #include "Eigen/Core"
 #include "Eigen/Eigenvalues"
 
 #include "transform.h"
-//#include "model_view.h"
 #include "RenderObject.h"
 
 #define  LOG_TAG    "libnativegraphics"
