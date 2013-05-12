@@ -65,30 +65,31 @@ void *objResourceCB(NSString *fileName, NSString *fileType)
 
 void *imageResourceCB(NSString *fileName, NSString *fileType)
 {
-    // 1
+    // Get the image
     NSString *path = [[NSBundle mainBundle] pathForResource:fileName ofType:fileType];
     NSData *texData = [[NSData alloc] initWithContentsOfFile:path];
     UIImage *image = [[UIImage alloc] initWithData:texData];
-    CGImageRef spriteImage = image.CGImage;
-    if (!spriteImage) {
+    CGImageRef imageRef = image.CGImage;
+    
+    if (!imageRef) {
         NSLog(@"Failed to load image %@", fileName);
         exit(1);
     }
     
-    // 2
-    size_t width = CGImageGetWidth(spriteImage);
-    size_t height = CGImageGetHeight(spriteImage);
+    // Get the context
+    size_t width = CGImageGetWidth(imageRef);
+    size_t height = CGImageGetHeight(imageRef);
+    GLubyte * imageData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
+                                                       CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);
+    // Flip the image
+    CGContextTranslateCTM(imageContext, 0, height);
+    CGContextScaleCTM(imageContext, 1.0, -1.0);
     
-    GLubyte * spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
-    
-    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4,
-                                                       CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
-    
-    // 3
-    CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
-    
-    CGContextRelease(spriteContext);
-    return spriteData;
+    // Draw the image
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), imageRef);
+    CGContextRelease(imageContext);
+    return imageData;
 }
 
 - (void)didReceiveMemoryWarning
