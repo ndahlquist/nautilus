@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface nativeGraphicsViewController : UIViewController
+@interface nativeGraphicsViewController : UIViewController 
 
 @end

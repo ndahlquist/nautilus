@@ -65,25 +65,30 @@ void *objResourceCB(NSString *fileName, NSString *fileType)
 
 void *imageResourceCB(NSString *fileName, NSString *fileType)
 {
+    // 1
     NSString *path = [[NSBundle mainBundle] pathForResource:fileName ofType:fileType];
     NSData *texData = [[NSData alloc] initWithContentsOfFile:path];
     UIImage *image = [[UIImage alloc] initWithData:texData];
-    if (image == nil)
-        NSLog(@"Do real error checking here");
+    CGImageRef spriteImage = image.CGImage;
+    if (!spriteImage) {
+        NSLog(@"Failed to load image %@", fileName);
+        exit(1);
+    }
     
-    GLuint width = CGImageGetWidth(image.CGImage);
-    GLuint height = CGImageGetHeight(image.CGImage);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    void *imageData = malloc( height * width * 4 );
-    CGContextRef context = CGBitmapContextCreate( imageData, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
-    CGColorSpaceRelease( colorSpace );
-    CGContextClearRect( context, CGRectMake( 0, 0, width, height ) );
-    CGContextTranslateCTM( context, 0, height - height );
-    CGContextDrawImage( context, CGRectMake( 0, 0, width, height ), image.CGImage );
+    // 2
+    size_t width = CGImageGetWidth(spriteImage);
+    size_t height = CGImageGetHeight(spriteImage);
     
-    CGContextRelease(context);
+    GLubyte * spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
     
-    return imageData;
+    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4,
+                                                       CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
+    
+    // 3
+    CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
+    
+    CGContextRelease(spriteContext);
+    return spriteData;
 }
 
 - (void)didReceiveMemoryWarning

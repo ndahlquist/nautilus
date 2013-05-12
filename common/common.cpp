@@ -65,17 +65,7 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "diffuse_f.glsl");
-    
-    // Load textures
-    /*
-    void *imageData = resourceCallback("raptor.jpg");
-    textureUniform = glGetUniformLocation(gProgram, "Texture");
-    
-    GLuint texName;
-    glGenTextures(1, &texName);
-    glBindTexture(GL_TEXTURE_2D, texName);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);*/
+    character->AddTexture("raptor.jpg");
     
     width = w;
     height = h;

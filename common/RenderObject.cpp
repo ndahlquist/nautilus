@@ -32,7 +32,26 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
     gvNormals = glGetAttribLocation(gProgram, "a_Normal");
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    textureUniform = glGetUniformLocation(gProgram, "Texture");
     checkGlError("glGetAttribLocation");
+    
+    texture_count = 0;
+}
+
+void RenderObject::AddTexture(const char *textureFilename)
+{
+    // Load textures
+    GLubyte *imageData = (GLubyte *)resourceCallback("raptor.jpg");
+     
+    GLuint texName;
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    free(imageData);
+    texture = texName;
+    texture_count++;
+    
 }
 
 void RenderObject::RenderFrame()
@@ -67,15 +86,17 @@ void RenderObject::RenderFrame()
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
     checkGlError("gvNormals");
     
-    /*
-     glActiveTexture(GL_TEXTURE0);
-     glUniform1i(textureUniform, 0);
-     checkGlError("texture");
-     */
-    // Texture
-    //glEnableVertexAttribArray(gvTexCoords);
-    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
-    //checkGlError("gvTexCoords");
+    if (texture_count > 0) {
+        // Texture
+        glEnableVertexAttribArray(gvTexCoords);
+        glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, (const GLvoid *) (6 * sizeof(GLfloat)));
+        checkGlError("gvTexCoords");
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glUniform1i(textureUniform, 0);
+        checkGlError("texture");
+    }
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");

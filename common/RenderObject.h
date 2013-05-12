@@ -25,11 +25,14 @@
 #include <stdio.h>
 #endif
 
+#include <vector>
+
 using namespace std;
 
 class RenderObject {
 public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
+    void AddTexture(const char *textureFilename);
     void RenderFrame();   
     
 private:
@@ -42,6 +45,9 @@ private:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     
+    GLuint texture;
+    vector<GLuint> textures;
+    int texture_count;
     int numVertices;
 };
 

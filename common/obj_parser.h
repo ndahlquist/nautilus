@@ -111,6 +111,8 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
             if(textureCoords) {
                 interleavedBuffer[bufferIndex++] = thisVertex->texture[0];
 			    interleavedBuffer[bufferIndex++] = thisVertex->texture[1];
+                
+                printf("%f, %f", thisVertex->texture[0], thisVertex->texture[1]);
 			}
 		}
 	}
