@@ -1,6 +1,9 @@
 #ifndef __nativeGraphics__common__
 #define __nativeGraphics__common__
 
+// Callback function to load resources.
+extern void*(*resourceCallback)(const char *);
+
 void SetResourceCallback(void*(*callbackfunc)(const char *));
 void Setup(int w, int h);
 void RenderFrame();

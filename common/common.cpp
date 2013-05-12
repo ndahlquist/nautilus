@@ -44,22 +44,6 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 RenderObject *cave;
 RenderObject *character;
 
-// Creates a render object given the filenames
-RenderObject *createRenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
-{
-    char *objFile = (char *)resourceCallback(objFilename);
-    char *vertexShaderFile = (char *)resourceCallback(vertexShaderFilename);
-    char *fragmentShaderFile = (char *)resourceCallback(fragmentShaderFilename);
-    
-    RenderObject *retObj = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
-    
-    free(objFile);
-    free(vertexShaderFile);
-    free(fragmentShaderFile);
-    
-    return retObj;
-}
-
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -79,8 +63,8 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
-    cave = createRenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");    
-    character = createRenderObject("raptor.obj", "standard_v.glsl", "diffuse_f.glsl");
+    cave = new RenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");
+    character = new RenderObject("raptor.obj", "standard_v.glsl", "diffuse_f.glsl");
     
     // Load textures
     /*

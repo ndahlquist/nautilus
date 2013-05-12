@@ -10,11 +10,12 @@
 #include "glsl_helper.h"
 #include "obj_parser.h"
 #include "transform.h"
+#include "common.h"
 
-RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile) {
-
+RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
+    
     // Parse obj file into an interleaved float buffe
-    GLfloat * interleavedBuffer = getInterleavedBuffer(objFile, numVertices, true, true);
+    GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
@@ -23,7 +24,7 @@ RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const ch
     free(interleavedBuffer);
     
     // Compile and link shader program
-    gProgram = createProgram(vertexShaderFile, fragmentShaderFile);
+    gProgram = createProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
     
     // Get uniform and attrib locations
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
