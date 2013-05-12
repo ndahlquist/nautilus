@@ -36,9 +36,15 @@ RenderObject::RenderObject(char *objFile, const char *vertexShaderFile, const ch
 
 void RenderObject::RenderFrame()
 {
+    if(numVertices == 0) {
+        LOGE("Setup not yet called.");
+        return;
+    }
+    
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     
+    // Matrices setup
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
     
@@ -50,14 +56,22 @@ void RenderObject::RenderFrame()
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
-    glEnableVertexAttribArray(gvNormals);
-    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
-    checkGlError("gvNormals");
-    
+    // Vertices
     glEnableVertexAttribArray(gvPositionHandle);
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
     
+    // Normals
+    glEnableVertexAttribArray(gvNormals);
+    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
+    checkGlError("gvNormals");
+    
+    /*
+     glActiveTexture(GL_TEXTURE0);
+     glUniform1i(textureUniform, 0);
+     checkGlError("texture");
+     */
+    // Texture
     //glEnableVertexAttribArray(gvTexCoords);
     //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
     //checkGlError("gvTexCoords");

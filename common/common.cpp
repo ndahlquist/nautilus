@@ -29,17 +29,7 @@
 #include "log.h"
 
 using namespace std;
-/*
-GLuint gProgram;
-GLuint gvPositionHandle;
-GLuint gmvMatrixHandle;
-GLuint gmvpMatrixHandle;
-GLuint textureUniform;
-GLuint gvTexCoords;
-GLuint gvNormals;
 
-GLuint gVertexBuffer; 
-*/
 GLuint depthRenderBuffer;
 
 int width = 0;
@@ -52,10 +42,24 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-//int numVertices = 0;
-
 RenderObject *cave;
 RenderObject *character;
+
+// Creates a render object given the filenames
+RenderObject *createRenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
+{
+    char *objFile = (char *)resourceCallback(objFilename);
+    char *vertexShaderFile = (char *)resourceCallback(vertexShaderFilename);
+    char *fragmentShaderFile = (char *)resourceCallback(fragmentShaderFilename);
+    
+    RenderObject *retObj = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
+    
+    free(objFile);
+    free(vertexShaderFile);
+    free(fragmentShaderFile);
+    
+    return retObj;
+}
 
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -75,45 +79,9 @@ void Setup(int w, int h) {
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-
-    char *objFile = (char *)resourceCallback("hex.obj");
-    char *vertexShaderFile = (char *)resourceCallback("standard_v.glsl");
-    char *fragmentShaderFile = (char *)resourceCallback("diffuse_f.glsl");
     
-    cave = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
-    
-    objFile = (char *)resourceCallback("raptor.obj");
-    vertexShaderFile = (char *)resourceCallback("standard_v.glsl");
-    fragmentShaderFile = (char *)resourceCallback("diffuse_f.glsl");
-    
-    character = new RenderObject(objFile, vertexShaderFile, fragmentShaderFile);
-    
-    free(objFile);
-    free(vertexShaderFile);
-    free(fragmentShaderFile);
-    /*
-    // Parse obj file into an interleaved float buffer
-    char * objFile = (char *)resourceCallback("raptor.obj");
-    GLfloat * interleavedBuffer = getInterleavedBuffer(objFile, numVertices, true, true);
-    free(objFile);
-    glGenBuffers(1, &gVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    checkGlError("VertexBuffer Generation");
-    free(interleavedBuffer);
-        
-    // Compile and link shader program
-    gProgram = createProgram((char*)resourceCallback("standard_v.glsl"), (char*)resourceCallback("diffuse_f.glsl"));
-    
-    // Get uniform and attrib locations
-    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
-    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
-    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
-    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
-    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
-    checkGlError("glGetAttribLocation");
-    */
+    cave = createRenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");    
+    character = createRenderObject("raptor.obj", "standard_v.glsl", "diffuse_f.glsl");
     
     // Load textures
     /*
@@ -132,16 +100,13 @@ void Setup(int w, int h) {
     checkGlError("glViewport");
 }
 
+
+
 float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 void RenderFrame() {
-    
-    /*if(numVertices == 0) {
-        LOGE("Setup not yet called.");
-        return;
-    }*/
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -160,46 +125,10 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
-    
-    //glUseProgram(gProgram);
-    //checkGlError("glUseProgram");
-    
+
     cave->RenderFrame();
     character->RenderFrame();
-    /*
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(textureUniform, 0);
-    checkGlError("texture");
-    */
-/*
-    GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
-    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
-    
-    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
-    checkGlError("glUniformMatrix4fv");
-    delete mv_Matrix;
-    delete mvp_Matrix;
-    
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    
-    glEnableVertexAttribArray(gvNormals);
-    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
-    checkGlError("gvNormals");
-    
-    glEnableVertexAttribArray(gvPositionHandle);
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
-    checkGlError("gvPositionHandle");
-    
-    //glEnableVertexAttribArray(gvTexCoords);
-    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, raptorVertices + (sizeof(GLfloat) * 6));
-    //checkGlError("gvTexCoords");
-    
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);
-    checkGlError("glDrawArrays");
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
- */
+
 }
 
 float lastPointer[2] = {0,0};
