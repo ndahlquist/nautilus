@@ -1,21 +1,33 @@
 package edu.stanford.nativegraphics;
 
-import android.util.Log;
 import android.content.Context;
+import android.util.Log;
 
 public class NativeLib {
-
+	private static final String TAG = "NativeLib";
+	private Context mContext;
+	
+	public NativeLib(Context context) {
+		mContext = context;
+	}
+	
     static {
         System.loadLibrary("nativegraphics");
     }
 
     // Called from native
-    public String stringCallback(String filename) {
-        Log.v("NativeLib", "Java" + filename);
-        return "Success!";
+    public String stringCallback(String fileName) {
+    	String splitName = fileName.split("\\.")[0];
+    	Log.i(TAG, "Looking up resource " + splitName);
+    	int resID = mContext.getResources().getIdentifier(splitName, "raw", "edu.stanford.nativegraphics");
+    	if(resID == 0) {
+    		Log.e(TAG, "Resource " + fileName + " not found.");
+    		return null;
+    	}
+        return RawResourceReader.readTextFileFromRawResource(mContext, resID);
     }
     
-    public void nativeInit(Context context, int width, int height) {
+    public void nativeInit(int width, int height) {
         // TODO: Unholy resource hack
         /*passResource("raptor.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
         passResource("hex.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
