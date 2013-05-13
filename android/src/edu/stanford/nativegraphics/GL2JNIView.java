@@ -19,7 +19,6 @@ package edu.stanford.nativegraphics;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -335,15 +334,18 @@ class GL2JNIView extends GLSurfaceView {
 	}
 
     private static class Renderer implements GLSurfaceView.Renderer {
-        private Context context;
-        private long lastMeterTime = 0;
-	    private int lastMeterFrame = 0;
+        private Context mContext;
+
+        NativeLib mNative;
+
+        //private long lastMeterTime = 0;
+	    //private int lastMeterFrame = 0;
 	    
 	    public static int width;
         public static int height;
 	    
         public Renderer(Context context) {
-            this.context = context;
+            mContext = context;
         }
         
         public void onDrawFrame(GL10 gl) {
@@ -356,17 +358,15 @@ class GL2JNIView extends GLSurfaceView {
 			    lastMeterTime = System.currentTimeMillis();
 			    lastMeterFrame = 0;
 		    }*/
-            NativeLib.renderFrame();
+            mNative.renderFrame();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             Renderer.width = width;
             Renderer.height = height;
-            NativeLib.nativeInit(context, width, height);
+            mNative = new NativeLib(mContext, width, height);
         }
 
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            // Do nothing.
-        }
+        public void onSurfaceCreated(GL10 gl, EGLConfig config) { }
     }
 }

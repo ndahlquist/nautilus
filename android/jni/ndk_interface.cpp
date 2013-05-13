@@ -1,24 +1,16 @@
 #include <jni.h>
 #include <android/log.h>
 
-#include <cstring>
-#include <vector>
-
 #include "common.h"
+
+#include <cstring>
 
 #define  LOG_TAG    "libnativerenderer"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 static JavaVM * javaVM;
-
-// TODO: Unholy resource hack
-struct resource {
-    const char * name;
-    const char * contents;
-};
-
-std::vector<struct resource> resources;
+static jobject callbackObject;
 
 jint JNI_OnLoad(JavaVM * vm, void * unused) {
     LOGI("JNI_OnLoad called");
@@ -26,28 +18,54 @@ jint JNI_OnLoad(JavaVM * vm, void * unused) {
     return JNI_VERSION_1_6;
 }
 
-// TODO: Unholy resource hack
-void * resourcecb(const char * filename) {
-    for(int i = 0; i < resources.size(); i++) {
-        if(strcmp(resources[i].name, filename) == 0)
-            return strdup(resources[i].contents);
-    }
-    LOGE("Resource \"%s\" not found", filename);
-    return NULL;
-}
+void * resourcecb(const char * fileName) {
+    int status;
+    JNIEnv *env;
+    int isAttached = 0;
 
-// TODO: Unholy resource hack
-extern "C"
-JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_passResource(JNIEnv * env, jobject obj, jstring jfileName, jstring jfileContents) {
-    struct resource mResource;
-    mResource.name = env->GetStringUTFChars(jfileName, NULL);
-    mResource.contents = env->GetStringUTFChars(jfileContents, NULL);
-    resources.push_back(mResource);
+    if(!callbackObject)
+    	return NULL;
+
+    if((status = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6)) < 0) {
+        if((status = javaVM->AttachCurrentThread(&env, NULL)) < 0)
+            return NULL;
+        isAttached = 1;
+    }
+
+    jclass cls = env->FindClass("edu/stanford/nativegraphics/NativeLib");
+    if(!cls) {
+        if(isAttached)
+            javaVM->DetachCurrentThread();
+        return NULL;
+    }
+
+    jmethodID method = env->GetMethodID(cls, "stringCallback", "(Ljava/lang/String;)Ljava/lang/String;");
+    if(!method) {
+        if(isAttached)
+            javaVM->DetachCurrentThread();
+        return NULL;
+    }
+
+    jstring jfileName = env->NewStringUTF(fileName);
+
+    LOGI("Pre-callvoidmethod");
+    jstring jfile = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
+    LOGI("Post-callvoidmethod");
+
+    const char *file = env->GetStringUTFChars(jfile, 0);
+    char * returnFile = strdup(file);
+    env->ReleaseStringUTFChars(jfile, file);
+
+    if(isAttached)
+        javaVM->DetachCurrentThread();
+
+    return returnFile;
 }
 
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_init(JNIEnv * env, jobject obj, jint w, jint h) {
     LOGI("Native Setup() called.");
+    callbackObject = env->NewGlobalRef(obj);
     SetResourceCallback(resourcecb);
     Setup(w, h);
 }
