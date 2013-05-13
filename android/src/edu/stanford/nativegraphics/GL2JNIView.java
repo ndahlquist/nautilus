@@ -351,7 +351,7 @@ class GL2JNIView extends GLSurfaceView {
 	}
 
     private static class Renderer implements GLSurfaceView.Renderer {
-        private Context context;
+        private Context mContext;
 
         NativeLib mNative;
 
@@ -362,7 +362,7 @@ class GL2JNIView extends GLSurfaceView {
         public static int height;
 	    
         public Renderer(Context context) {
-            this.context = context;
+            mContext = context;
         }
         
         public void onDrawFrame(GL10 gl) {
@@ -379,14 +379,11 @@ class GL2JNIView extends GLSurfaceView {
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            Renderer.width = width; // TODO
+            Renderer.width = width;
             Renderer.height = height;
-            mNative = new NativeLib(context); // TODO
-            mNative.nativeInit(width, height);
+            mNative = new NativeLib(mContext, width, height);
         }
 
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            // Do nothing.
-        }
+        public void onSurfaceCreated(GL10 gl, EGLConfig config) { }
     }
 }
