@@ -9,8 +9,8 @@
 
 #ifdef ANDROID_NDK
     #include <android/log.h>
-    #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-    #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+    #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,"NDK_LOG",__VA_ARGS__)
+    #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,"NDK_LOG",__VA_ARGS__)
 #else // linux & ios
     // TODO: does this work for ios?
     // TODO: Rewrite

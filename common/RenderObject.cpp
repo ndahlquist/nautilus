@@ -11,10 +11,11 @@
 #include "obj_parser.h"
 #include "transform.h"
 #include "common.h"
+#include "log.h"
 
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
     
-    // Parse obj file into an interleaved float buffe
+    // Parse obj file into an interleaved float buffer
     GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
@@ -35,8 +36,8 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     checkGlError("glGetAttribLocation");
 }
 
-void RenderObject::RenderFrame()
-{
+void RenderObject::RenderFrame() {
+
     if(numVertices == 0) {
         LOGE("Setup not yet called.");
         return;
