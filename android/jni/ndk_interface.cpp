@@ -48,9 +48,9 @@ void * resourcecb(const char * fileName) {
 
     jstring jfileName = env->NewStringUTF(fileName);
 
-    LOGI("Pre-callvoidmethod");
+    LOGI("Pre Java callback.");
     jstring jfile = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
-    LOGI("Post-callvoidmethod");
+    LOGI("Post Java callback.");
 
     const char *file = env->GetStringUTFChars(jfile, 0);
     char * returnFile = strdup(file);
