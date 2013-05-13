@@ -21,6 +21,7 @@ LOCAL_SRC_FILES := ndk_interface.cpp \
                    
 LOCAL_LDLIBS    := -llog \
                    -lGLESv2 \
+                   -ljnigraphics \
                    -ldl
                    
 APP_OPTIM       := release

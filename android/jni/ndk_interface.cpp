@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <android/log.h>
+#include <android/bitmap.h>
 
 #include "common.h"
 
@@ -16,6 +17,19 @@ jint JNI_OnLoad(JavaVM * vm, void * unused) {
     LOGI("JNI_OnLoad called");
     javaVM = vm;
     return JNI_VERSION_1_6;
+}
+
+static bool VerifyBitmap(JNIEnv * env, jobject bitmap, AndroidBitmapInfo & info) {
+	int ret;
+	if((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return false;
+	}
+	if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("Bitmap format is not RGBA_8888 !");
+		return false;
+	}
+	return true;
 }
 
 void * resourcecb(const char * fileName) {
@@ -48,18 +62,40 @@ void * resourcecb(const char * fileName) {
 
     jstring jfileName = env->NewStringUTF(fileName);
 
-    LOGI("Pre Java callback.");
+    LOGI("Pre Java string callback.");
     jstring jfile = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
-    LOGI("Post Java callback.");
+    LOGI("Post Java string callback.");
+    if(jfile != NULL) {
+        const char *file = env->GetStringUTFChars(jfile, 0);
+        char * returnFile = strdup(file);
+        env->ReleaseStringUTFChars(jfile, file);
 
-    const char *file = env->GetStringUTFChars(jfile, 0);
-    char * returnFile = strdup(file);
-    env->ReleaseStringUTFChars(jfile, file);
-
-    if(isAttached)
-        javaVM->DetachCurrentThread();
-
-    return returnFile;
+        if(isAttached)
+            javaVM->DetachCurrentThread();
+        return returnFile;
+    }
+    
+    LOGI("String callback unsuccessful. Proceeding to drawable callback.");
+    
+    method = env->GetMethodID(cls, "drawableCallback", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+    if(!method) {
+        if(isAttached)
+            javaVM->DetachCurrentThread();
+        return NULL;
+    }
+    
+    LOGI("Pre Java drawable callback.");
+    jobject mBitmap = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
+    LOGI("Post Java drawable callback.");
+    AndroidBitmapInfo info;
+    if(!VerifyBitmap(env, mBitmap, info))
+		return 0;
+    void * mPixels;
+    if(AndroidBitmap_lockPixels(env, mBitmap, &mPixels) < 0)
+		LOGE("AndroidBitmap_lockPixels() failed!");
+    return mPixels;
+    // TODO: AndroidBitmap_unlockPixels(env, mBitmap);
+    
 }
 
 extern "C"

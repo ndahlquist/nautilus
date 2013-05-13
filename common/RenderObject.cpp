@@ -39,10 +39,9 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     texture_count = 0;
 }
 
-void RenderObject::AddTexture(const char *textureFilename)
-{
+void RenderObject::AddTexture(const char *textureFilename) {
     // Load textures
-    GLubyte *imageData = (GLubyte *)resourceCallback("raptor.jpg");
+    GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename);
      
     GLuint texName;
     glGenTextures(1, &texName);
