@@ -289,7 +289,6 @@ static void parseObjLine(char * line, std::vector<struct Vertex> & vertices, std
 }
 
 static void parseObjString(char * objString, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
-	LOGI("parseObjString");
 
 	std::vector<struct Texture> textures;
 
