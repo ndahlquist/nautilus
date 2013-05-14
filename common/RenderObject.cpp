@@ -42,11 +42,15 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
 void RenderObject::AddTexture(const char *textureFilename) {
     // Load textures
     GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename); // TODO: Free this
-     
+    
+    for(int i = 0; i < 2 * 2 * 4; i++) {
+        LOGI("byte %i = %i", i, (int) * (imageData+i));
+    }
+    
     GLuint texName; // TODO
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
     free(imageData);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

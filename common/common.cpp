@@ -65,15 +65,13 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
-    character->AddTexture("raptor_albedo.jpg");
+    character->AddTexture("colortest.jpg");
     
     width = w;
     height = h;
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
 }
-
-
 
 float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
