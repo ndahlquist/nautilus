@@ -74,7 +74,7 @@ void MouseMotionCallback(int x, int y) {
 }
 
 void * stringResourceCB(const char * filename) {
-    const char * path = "res/";
+    const char * path = "../res/raw/";
     char * filePath = (char *) malloc(strlen(path) + strlen(filename) + 1);
     strcpy(filePath, path);
     strcat(filePath, filename);
