@@ -63,7 +63,7 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
-    cave = new RenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
@@ -81,9 +81,9 @@ float rot[2] = {0,0};
 
 void RenderFrame() {
     
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE); // TODO: Not working: why?
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0., 0., 0., .1f);
+    glClearColor(0., 0., 0., 0.);
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
@@ -100,6 +100,9 @@ void RenderFrame() {
     translatef(0.0f, -40.0f, 0.0f);
 
     cave->RenderFrame();
+    
+    // TODO: Per-object transforms.
+    translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
     character->RenderFrame();
 
 }

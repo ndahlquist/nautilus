@@ -33,7 +33,7 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
     gvNormals = glGetAttribLocation(gProgram, "a_Normal");
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
-    textureUniform = glGetUniformLocation(gProgram, "Texture");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
     checkGlError("glGetAttribLocation");
     
     texture_count = 0;
@@ -46,11 +46,18 @@ void RenderObject::AddTexture(const char *textureFilename) {
     GLuint texName; // TODO
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
     free(imageData);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    //glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    checkGlError("AddTexture");
     texture = texName;
     texture_count++;
     
@@ -88,10 +95,10 @@ void RenderObject::RenderFrame() {
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
     checkGlError("gvNormals");
     
-    if (texture_count > 0) {
-        // Texture
+    // Texture
+    if(texture_count > 0) {
         glEnableVertexAttribArray(gvTexCoords);
-        glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, (const GLvoid *) (6 * sizeof(GLfloat)));
+        glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
         checkGlError("gvTexCoords");
         
         glActiveTexture(GL_TEXTURE0);

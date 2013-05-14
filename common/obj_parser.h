@@ -86,7 +86,6 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
     numVertices = faces.size()*3;
     float * interleavedBuffer = (float *) malloc(numVertices * floatsPerVertex * sizeof(float));
     
-    
     int bufferIndex = 0;
     for(int i = 0; i < faces.size(); i++) {
 		for(int v = 0; v < 3; v++) {
@@ -308,8 +307,9 @@ static void parseObjString(char * objString, std::vector<struct Vertex> & vertic
 				vertices[faces[i].vertex[v]].texture[0] = 0;
 				vertices[faces[i].vertex[v]].texture[1] = 0;
 			} else {
-				//if(texIndex < 0 || texIndex >= (int) textures.size())
-				//	LOGE("texIndex %d out of bounds [0, %d]", texIndex, (int) textures.size()); // TODO: Why does this break on Linux?
+				if(texIndex < 0 || texIndex >= (int) textures.size()) {
+					LOGE("texIndex %d out of bounds [0, %d]", texIndex, (int) textures.size()); // TODO: Why does this break on Linux?
+			    }
 				vertices[faces[i].vertex[v]].texture[0] = textures[texIndex].coord[0];
 				vertices[faces[i].vertex[v]].texture[1] = textures[texIndex].coord[1];
 			}

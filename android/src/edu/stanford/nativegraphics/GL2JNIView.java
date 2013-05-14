@@ -19,6 +19,7 @@ package edu.stanford.nativegraphics;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -338,8 +339,8 @@ class GL2JNIView extends GLSurfaceView {
 
         NativeLib mNative;
 
-        //private long lastMeterTime = 0;
-	    //private int lastMeterFrame = 0;
+        private long lastMeterTime = 0;
+	    private int lastMeterFrame = 0;
 	    
 	    public static int width;
         public static int height;
@@ -349,7 +350,7 @@ class GL2JNIView extends GLSurfaceView {
         }
         
         public void onDrawFrame(GL10 gl) {
-            /*if(++lastMeterFrame >= 20) {
+            if(++lastMeterFrame >= 20) {
 			    float FramesPerSecond = lastMeterFrame / ((System.currentTimeMillis() - lastMeterTime) / 1000.0f);
 			    Message msg = new Message();
 			    msg.arg1 = MainActivity.overlayUpdater.FPS_UPDATE;
@@ -357,7 +358,7 @@ class GL2JNIView extends GLSurfaceView {
 			    MainActivity.overlayUpdater.sendMessage(msg);
 			    lastMeterTime = System.currentTimeMillis();
 			    lastMeterFrame = 0;
-		    }*/
+		    }
             mNative.renderFrame();
         }
 
