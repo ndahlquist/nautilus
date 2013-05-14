@@ -52,12 +52,6 @@ void Setup(int w, int h) {
         LOGE("Resource callback not set.");
         exit(-1);
     }
-
-    // Log device-specific GL info
-    printGLString("Version", GL_VERSION);
-    printGLString("Vendor", GL_VENDOR);
-    printGLString("Renderer", GL_RENDERER);
-    printGLString("Extensions", GL_EXTENSIONS);
     
     glGenRenderbuffers(1, &depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);

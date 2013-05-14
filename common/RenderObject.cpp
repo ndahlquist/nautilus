@@ -1,10 +1,5 @@
-//
 //  RenderObject.cpp
 //  nativeGraphics
-//
-//  Created by Ling-Ling Zhang on 5/9/13.
-//  Copyright (c) 2013 Ling-Ling Zhang. All rights reserved.
-//
 
 #include "RenderObject.h"
 #include "glsl_helper.h"
@@ -48,10 +43,9 @@ void RenderObject::AddTexture(const char *textureFilename) {
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     
     glBindTexture(GL_TEXTURE_2D, 0);
     free(imageData);
