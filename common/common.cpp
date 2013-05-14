@@ -64,7 +64,7 @@ void Setup(int w, int h) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
     cave = new RenderObject("hex.obj", "standard_v.glsl", "diffuse_f.glsl");
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "diffuse_f.glsl");
+    character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
     width = w;
@@ -94,7 +94,7 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
-    scalef(.05, .05, .05);
+    scalef(.2, .2, .2);
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);

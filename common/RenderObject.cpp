@@ -41,14 +41,16 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
 
 void RenderObject::AddTexture(const char *textureFilename) {
     // Load textures
-    GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename);
+    GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename); // TODO: Free this
      
-    GLuint texName;
+    GLuint texName; // TODO
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
     free(imageData);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     texture = texName;
     texture_count++;
     
