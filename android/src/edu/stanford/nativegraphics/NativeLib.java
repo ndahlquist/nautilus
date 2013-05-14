@@ -1,35 +1,50 @@
 package edu.stanford.nativegraphics;
 
-import android.util.Log;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class NativeLib {
-
+	private static final String TAG = "NativeLib";
+	private Context mContext;
+	
+	public NativeLib(Context context, int width, int height) {
+		mContext = context;
+		init(width, height);
+	}
+	
     static {
         System.loadLibrary("nativegraphics");
     }
 
     // Called from native
-    public void stringCallback() { // TODO
-        Log.v("NativeLib", "Java");
-        //return "Test successful";
+    public String stringCallback(String fileName) {
+    	String splitName = fileName.split("\\.")[0];
+    	Log.i(TAG, "Looking up resource " + splitName);
+    	int resID = mContext.getResources().getIdentifier(splitName, "raw", "edu.stanford.nativegraphics");
+    	if(resID == 0) {
+    		Log.e(TAG, "Resource " + fileName + " not found.");
+    		return null;
+    	}
+        return RawResourceReader.readTextFileFromRawResource(mContext, resID);
     }
     
-    public static void nativeInit(Context context, int width, int height) {
-        // TODO: Unholy resource hack
-        passResource("raptor.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.raptor));
-        passResource("hex.obj", RawResourceReader.readTextFileFromRawResource(context, R.raw.hex));
-        passResource("depth_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.depth_f));
-        passResource("standard_v.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.standard_v));
-        passResource("normals_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.normals_f));
-        passResource("diffuse_f.glsl", RawResourceReader.readTextFileFromRawResource(context, R.raw.diffuse_f));
-        init(width, height);
-    }   
+    // Called from native
+    public Bitmap drawableCallback(String fileName) {
+    	String splitName = fileName.split("\\.")[0];
+    	Log.i(TAG, "Looking up resource " + splitName);
+    	int resID = mContext.getResources().getIdentifier(splitName, "drawable", "edu.stanford.nativegraphics");
+    	if(resID == 0) {
+    		Log.e(TAG, "Resource " + fileName + " not found.");
+    		return null;
+    	}
+        return BitmapFactory.decodeResource(mContext.getResources(), resID);
+    }
 
     // Native Functions
-    private static native void passResource(String name, String contents); // TODO: Unholy resource hack
-    private static native void init(int width, int height);
-    public static native void renderFrame();
+    private native void init(int width, int height);
+    public native void renderFrame();
     public static native void pointerDown(float x, float y);
     public static native void pointerMove(float x, float y);
     public static native void pointerUp(float x, float y);

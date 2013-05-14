@@ -11,10 +11,11 @@
 #include "obj_parser.h"
 #include "transform.h"
 #include "common.h"
+#include "log.h"
 
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
     
-    // Parse obj file into an interleaved float buffe
+    // Parse obj file into an interleaved float buffer
     GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
@@ -32,7 +33,7 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
     gvNormals = glGetAttribLocation(gProgram, "a_Normal");
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
-    textureUniform = glGetUniformLocation(gProgram, "Texture");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
     checkGlError("glGetAttribLocation");
     
     texture_count = 0;
@@ -40,23 +41,11 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
 
 void RenderObject::AddTexture(const char *textureFilename)
 {
-    // Load texture
-    /*GLubyte *imageData = (GLubyte *)resourceCallback("raptor.jpg");
-     
-    GLuint texName;
-    glGenTextures(1, &texName);
-    glBindTexture(GL_TEXTURE_2D, texName);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);*/
-    
     textures.push_back((GLuint)resourceCallback("raptor.jpg"));
 }
 
-void RenderObject::RenderFrame()
-{
+void RenderObject::RenderFrame() {
+
     if(numVertices == 0) {
         LOGE("Setup not yet called.");
         return;
@@ -88,11 +77,19 @@ void RenderObject::RenderFrame()
     checkGlError("gvNormals");
     
     // Texture
+<<<<<<< HEAD
     glEnableVertexAttribArray(gvTexCoords);
     glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, (const GLvoid *) (6 * sizeof(GLfloat)));
     checkGlError("gvTexCoords");
     
     if (textures.size() > 0) {
+=======
+    if(texture_count > 0) {
+        glEnableVertexAttribArray(gvTexCoords);
+        glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+        checkGlError("gvTexCoords");
+        
+>>>>>>> 1193d2881533a578262eca79b57c2ddfa452a978
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glUniform1i(textureUniform, 0);
