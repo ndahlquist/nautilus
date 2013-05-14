@@ -23,7 +23,7 @@
         [self setupLayer];
         [self setupContext];
         Setup(self.bounds.size.width, self.bounds.size.height);
-        
+        [self setupDepthBuffer];
         [self setupRenderBuffer];
         [self setupFrameBuffer];
         [self setupDisplayLink];
@@ -54,6 +54,12 @@
         NSLog(@"Failed to set current OpenGL context");
         exit(1);
     }
+}
+
+- (void)setupDepthBuffer {
+    glGenRenderbuffers(1, &_depthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, self.frame.size.width, self.frame.size.height);
 }
 
 - (void)setupRenderBuffer {

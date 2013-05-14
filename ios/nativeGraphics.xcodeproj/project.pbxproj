@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55229A2E1741E699006AD313 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55229A2D1741E699006AD313 /* cave0.obj */; };
+		55229A301741E6A0006AD313 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55229A2F1741E6A0006AD313 /* tex_diffuse_f.glsl */; };
+		55229A321741E782006AD313 /* colortest.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 55229A311741E782006AD313 /* colortest.jpeg */; };
 		55906D9617302DDB00BD92BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9517302DDB00BD92BF /* UIKit.framework */; };
 		55906D9817302DDB00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		55906D9A17302DDB00BD92BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9917302DDB00BD92BF /* CoreGraphics.framework */; };
@@ -34,6 +37,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		55229A2D1741E699006AD313 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave0.obj; path = ../../android/res/raw/cave0.obj; sourceTree = "<group>"; };
+		55229A2F1741E6A0006AD313 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_diffuse_f.glsl; path = ../../android/res/raw/tex_diffuse_f.glsl; sourceTree = "<group>"; };
+		55229A311741E782006AD313 /* colortest.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = colortest.jpeg; sourceTree = "<group>"; };
 		55906D9217302DDB00BD92BF /* nativeGraphics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nativeGraphics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55906D9517302DDB00BD92BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		55906D9717302DDB00BD92BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -154,6 +160,8 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55229A311741E782006AD313 /* colortest.jpeg */,
+				55229A2D1741E699006AD313 /* cave0.obj */,
 				5594978E1737849D006E176F /* raptor.jpg */,
 				5594978717377359006E176F /* hex.obj */,
 				5594978417376E18006E176F /* raptor.obj */,
@@ -164,6 +172,7 @@
 		5594978917377361006E176F /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				55229A2F1741E6A0006AD313 /* tex_diffuse_f.glsl */,
 				55B66B99173B93A50094F000 /* normals_f.glsl */,
 				5594978A1737736F006E176F /* depth_f.glsl */,
 				5594978B1737736F006E176F /* standard_v.glsl */,
@@ -236,6 +245,9 @@
 				5594978F1737849D006E176F /* raptor.jpg in Resources */,
 				55B66B98173B8EFB0094F000 /* diffuse_f.glsl in Resources */,
 				55B66B9A173B93A50094F000 /* normals_f.glsl in Resources */,
+				55229A2E1741E699006AD313 /* cave0.obj in Resources */,
+				55229A301741E6A0006AD313 /* tex_diffuse_f.glsl in Resources */,
+				55229A321741E782006AD313 /* colortest.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

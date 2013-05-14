@@ -51,7 +51,7 @@ void *resourceCB(const char *cfileName)
     
     if ([fileType isEqualToString:@"obj"] || [fileType isEqualToString:@"glsl"]) {
         return objResourceCB([fileComponents objectAtIndex:0], fileType);
-    } else if ([fileType isEqualToString:@"jpg"]) {
+    } else if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"jpeg"]) {
         return imageResourceCB([fileComponents objectAtIndex:0], fileType);
     }
     return NULL;
@@ -83,22 +83,14 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
                                                        CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);
     // Flip the image
-    CGContextTranslateCTM(imageContext, 0, height);
+/*    CGContextTranslateCTM(imageContext, 0, height);
     CGContextScaleCTM(imageContext, 1.0, -1.0);
-    
+*/    
     // Draw image into context
     CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), imageRef);
     CGContextRelease(imageContext);
-    
-    GLuint texName;
-    glGenTextures(1, &texName);
-    glBindTexture(GL_TEXTURE_2D, texName);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    free(imageData);
-    //return imageData;
-    return (void *)texName;
+
+    return imageData;
 }
 
 - (void)didReceiveMemoryWarning
