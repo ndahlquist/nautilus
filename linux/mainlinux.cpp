@@ -73,19 +73,33 @@ void MouseMotionCallback(int x, int y) {
     PointerMove((float) x / (float)gWindowSizeX, (float) y / (float)gWindowSizeY);
 }
 
-void * stringResourceCB(const char * filename) {
-    const char * path = "res/";
-    char * filePath = (char *) malloc(strlen(path) + strlen(filename) + 1);
+/* OpenGL ES requires precision identifiers in shaders, while regular OpenGL
+   while not compile with precision specifiers. We get around this by skippinng
+   the first line of GLSL files. */
+bool isGLSL(const char * cfileName) {
+    char * fileName = strdup(cfileName);
+    strtok(fileName, ".");
+    char * fileExt = strtok(NULL, ".");
+    bool isGLSL = strcmp(fileExt, "glsl") || strcmp(fileExt, "GLSL");
+    free(fileName);
+    return isGLSL;
+}
+
+void * stringResourceCB(const char * fileName) {
+    const char * path = "../res/raw/";
+    char * filePath = (char *) malloc(strlen(path) + strlen(fileName) + 1);
     strcpy(filePath, path);
-    strcat(filePath, filename);
+    strcat(filePath, fileName);
     ifstream file(filePath);
     free(filePath);
     if(!file.is_open()) {
-        printf("Unable to open file %s", filename);
+        printf("Unable to open file %s\n", fileName);
         return NULL;
     }
     
     string returnStr;
+    if(isGLSL(fileName)) // Skip the precision line
+        getline(file, returnStr);
     getline(file, returnStr, '\0');
     file.close();
     

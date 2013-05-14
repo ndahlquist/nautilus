@@ -1,10 +1,5 @@
-//
 //  RenderObject.cpp
 //  nativeGraphics
-//
-//  Created by Ling-Ling Zhang on 5/9/13.
-//  Copyright (c) 2013 Ling-Ling Zhang. All rights reserved.
-//
 
 #include "RenderObject.h"
 #include "glsl_helper.h"
@@ -39,9 +34,28 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     texture_count = 0;
 }
 
-void RenderObject::AddTexture(const char *textureFilename)
-{
-    textures.push_back((GLuint)resourceCallback("raptor.jpg"));
+void RenderObject::AddTexture(const char *textureFilename) {
+    // Load textures
+    GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename); // TODO: Free this
+    
+    GLuint texName; // TODO
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
+    //free(imageData); TODO
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    checkGlError("AddTexture");
+    texture = texName;
+    texture_count++;
+    
+>>>>>>> bc01a2583c8f166ea3884a61e5007262cd4822b0
 }
 
 void RenderObject::RenderFrame() {
@@ -77,19 +91,11 @@ void RenderObject::RenderFrame() {
     checkGlError("gvNormals");
     
     // Texture
-<<<<<<< HEAD
-    glEnableVertexAttribArray(gvTexCoords);
-    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*8, (const GLvoid *) (6 * sizeof(GLfloat)));
-    checkGlError("gvTexCoords");
-    
-    if (textures.size() > 0) {
-=======
     if(texture_count > 0) {
         glEnableVertexAttribArray(gvTexCoords);
         glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
         checkGlError("gvTexCoords");
         
->>>>>>> 1193d2881533a578262eca79b57c2ddfa452a978
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glUniform1i(textureUniform, 0);
