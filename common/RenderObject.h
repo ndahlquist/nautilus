@@ -46,7 +46,6 @@ private:
     GLuint gVertexBuffer;
     
     vector<GLuint> textures;
-    int texture_count;
     int numVertices;
 };
 

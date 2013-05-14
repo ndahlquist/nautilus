@@ -30,8 +30,6 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     textureUniform = glGetUniformLocation(gProgram, "u_Texture");
     checkGlError("glGetAttribLocation");
-    
-    texture_count = 0;
 }
 
 void RenderObject::AddTexture(const char *textureFilename) {
@@ -42,7 +40,7 @@ void RenderObject::AddTexture(const char *textureFilename) {
     glGenTextures(1, &texName);
     glBindTexture(GL_TEXTURE_2D, texName);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
-    //free(imageData); TODO
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -50,12 +48,10 @@ void RenderObject::AddTexture(const char *textureFilename) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     
     glBindTexture(GL_TEXTURE_2D, 0);
+    free(imageData);
     
     checkGlError("AddTexture");
-    texture = texName;
-    texture_count++;
-    
->>>>>>> bc01a2583c8f166ea3884a61e5007262cd4822b0
+    textures.push_back(texName);
 }
 
 void RenderObject::RenderFrame() {
@@ -90,12 +86,13 @@ void RenderObject::RenderFrame() {
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
     checkGlError("gvNormals");
     
-    // Texture
-    if(texture_count > 0) {
-        glEnableVertexAttribArray(gvTexCoords);
-        glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
-        checkGlError("gvTexCoords");
-        
+    //Textures
+    glEnableVertexAttribArray(gvTexCoords);
+    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+    checkGlError("gvTexCoords");
+    
+    if (textures.size() > 0) {
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glUniform1i(textureUniform, 0);
