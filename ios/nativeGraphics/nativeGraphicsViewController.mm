@@ -83,9 +83,9 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
                                                        CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);
     // Flip the image
-/*    CGContextTranslateCTM(imageContext, 0, height);
+    CGContextTranslateCTM(imageContext, 0, height);
     CGContextScaleCTM(imageContext, 1.0, -1.0);
-*/    
+ 
     // Draw image into context
     CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), imageRef);
     CGContextRelease(imageContext);

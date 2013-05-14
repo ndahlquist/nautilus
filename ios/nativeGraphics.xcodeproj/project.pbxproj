@@ -10,6 +10,7 @@
 		55229A2E1741E699006AD313 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55229A2D1741E699006AD313 /* cave0.obj */; };
 		55229A301741E6A0006AD313 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55229A2F1741E6A0006AD313 /* tex_diffuse_f.glsl */; };
 		55229A321741E782006AD313 /* colortest.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 55229A311741E782006AD313 /* colortest.jpeg */; };
+		55229A341741EDDA006AD313 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55229A331741EDDA006AD313 /* raptor_albedo.jpg */; };
 		55906D9617302DDB00BD92BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9517302DDB00BD92BF /* UIKit.framework */; };
 		55906D9817302DDB00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		55906D9A17302DDB00BD92BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9917302DDB00BD92BF /* CoreGraphics.framework */; };
@@ -40,6 +41,7 @@
 		55229A2D1741E699006AD313 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave0.obj; path = ../../android/res/raw/cave0.obj; sourceTree = "<group>"; };
 		55229A2F1741E6A0006AD313 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_diffuse_f.glsl; path = ../../android/res/raw/tex_diffuse_f.glsl; sourceTree = "<group>"; };
 		55229A311741E782006AD313 /* colortest.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = colortest.jpeg; sourceTree = "<group>"; };
+		55229A331741EDDA006AD313 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = raptor_albedo.jpg; sourceTree = "<group>"; };
 		55906D9217302DDB00BD92BF /* nativeGraphics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nativeGraphics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55906D9517302DDB00BD92BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		55906D9717302DDB00BD92BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -160,6 +162,7 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55229A331741EDDA006AD313 /* raptor_albedo.jpg */,
 				55229A311741E782006AD313 /* colortest.jpeg */,
 				55229A2D1741E699006AD313 /* cave0.obj */,
 				5594978E1737849D006E176F /* raptor.jpg */,
@@ -248,6 +251,7 @@
 				55229A2E1741E699006AD313 /* cave0.obj in Resources */,
 				55229A301741E6A0006AD313 /* tex_diffuse_f.glsl in Resources */,
 				55229A321741E782006AD313 /* colortest.jpeg in Resources */,
+				55229A341741EDDA006AD313 /* raptor_albedo.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -65,7 +65,7 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
-    character->AddTexture("colortest.jpeg");
+    character->AddTexture("raptor_albedo.jpg");
     
     width = w;
     height = h;
