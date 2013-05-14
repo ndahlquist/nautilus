@@ -45,7 +45,6 @@ private:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     
-    GLuint texture;
     vector<GLuint> textures;
     int texture_count;
     int numVertices;

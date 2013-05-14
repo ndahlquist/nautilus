@@ -65,7 +65,7 @@ void *objResourceCB(NSString *fileName, NSString *fileType)
 
 void *imageResourceCB(NSString *fileName, NSString *fileType)
 {
-    // Get the image
+    // Get Core Graphics image referece
     NSString *path = [[NSBundle mainBundle] pathForResource:fileName ofType:fileType];
     NSData *texData = [[NSData alloc] initWithContentsOfFile:path];
     UIImage *image = [[UIImage alloc] initWithData:texData];
@@ -76,7 +76,7 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
         exit(1);
     }
     
-    // Get the context
+    // Create bitmap context
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
     GLubyte * imageData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
@@ -86,10 +86,19 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     CGContextTranslateCTM(imageContext, 0, height);
     CGContextScaleCTM(imageContext, 1.0, -1.0);
     
-    // Draw the image
+    // Draw image into context
     CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), imageRef);
     CGContextRelease(imageContext);
-    return imageData;
+    
+    GLuint texName;
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    free(imageData);
+    //return imageData;
+    return (void *)texName;
 }
 
 - (void)didReceiveMemoryWarning

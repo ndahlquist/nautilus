@@ -21,7 +21,6 @@
 		55906DC017303A9E00BD92BF /* renderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55906DBF17303A9D00BD92BF /* renderView.mm */; };
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
-		55907097173251CF00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
 		5594978517376E18006E176F /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978417376E18006E176F /* raptor.obj */; };
 		5594978817377359006E176F /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978717377359006E176F /* hex.obj */; };
@@ -33,18 +32,6 @@
 		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 		55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D577C3173CC9C800BE1A50 /* transform.cpp */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		55907094173251CF00BD92BF /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/${PRODUCT_NAME}";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		55906D9217302DDB00BD92BF /* nativeGraphics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nativeGraphics.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,50 +54,6 @@
 		55906DBF17303A9D00BD92BF /* renderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = renderView.mm; sourceTree = "<group>"; };
 		55906DC71731D05600BD92BF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		55907096173251CF00BD92BF /* liblibstObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibstObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		559070E5173254E200BD92BF /* STColor3f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor3f.cpp; path = ../common/libst/STColor3f.cpp; sourceTree = "<group>"; };
-		559070E6173254E200BD92BF /* STColor4f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor4f.cpp; path = ../common/libst/STColor4f.cpp; sourceTree = "<group>"; };
-		559070E7173254E200BD92BF /* STColor4ub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STColor4ub.cpp; path = ../common/libst/STColor4ub.cpp; sourceTree = "<group>"; };
-		559070E8173254E200BD92BF /* STFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STFont.cpp; path = ../common/libst/STFont.cpp; sourceTree = "<group>"; };
-		559070E9173254E200BD92BF /* STImage_jpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STImage_jpeg.cpp; path = ../common/libst/STImage_jpeg.cpp; sourceTree = "<group>"; };
-		559070EA173254E200BD92BF /* STImage_png.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STImage_png.cpp; path = ../common/libst/STImage_png.cpp; sourceTree = "<group>"; };
-		559070EB173254E200BD92BF /* STImage_ppm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STImage_ppm.cpp; path = ../common/libst/STImage_ppm.cpp; sourceTree = "<group>"; };
-		559070EC173254E200BD92BF /* STImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STImage.cpp; path = ../common/libst/STImage.cpp; sourceTree = "<group>"; };
-		559070ED173254E200BD92BF /* STJoystick_darwin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STJoystick_darwin.cpp; path = ../common/libst/STJoystick_darwin.cpp; sourceTree = "<group>"; };
-		559070EE173254E200BD92BF /* STJoystick_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STJoystick_linux.cpp; path = ../common/libst/STJoystick_linux.cpp; sourceTree = "<group>"; };
-		559070EF173254E200BD92BF /* STJoystick_win32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STJoystick_win32.cpp; path = ../common/libst/STJoystick_win32.cpp; sourceTree = "<group>"; };
-		559070F0173254E300BD92BF /* STJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STJoystick.cpp; path = ../common/libst/STJoystick.cpp; sourceTree = "<group>"; };
-		559070F1173254E300BD92BF /* STPoint2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STPoint2.cpp; path = ../common/libst/STPoint2.cpp; sourceTree = "<group>"; };
-		559070F2173254E300BD92BF /* STPoint3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STPoint3.cpp; path = ../common/libst/STPoint3.cpp; sourceTree = "<group>"; };
-		559070F3173254E300BD92BF /* STShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STShaderProgram.cpp; path = ../common/libst/STShaderProgram.cpp; sourceTree = "<group>"; };
-		559070F4173254E300BD92BF /* STShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STShape.cpp; path = ../common/libst/STShape.cpp; sourceTree = "<group>"; };
-		559070F5173254E300BD92BF /* STTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STTexture.cpp; path = ../common/libst/STTexture.cpp; sourceTree = "<group>"; };
-		559070F6173254E300BD92BF /* STTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STTimer.cpp; path = ../common/libst/STTimer.cpp; sourceTree = "<group>"; };
-		559070F7173254E300BD92BF /* STVector2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STVector2.cpp; path = ../common/libst/STVector2.cpp; sourceTree = "<group>"; };
-		559070F8173254E300BD92BF /* STVector3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = STVector3.cpp; path = ../common/libst/STVector3.cpp; sourceTree = "<group>"; };
-		5590710E173254FA00BD92BF /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
-		5590710F173254FA00BD92BF /* STColor3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STColor3f.h; sourceTree = "<group>"; };
-		55907110173254FA00BD92BF /* STColor4f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STColor4f.h; sourceTree = "<group>"; };
-		55907111173254FA00BD92BF /* STColor4ub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STColor4ub.h; sourceTree = "<group>"; };
-		55907112173254FA00BD92BF /* STFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STFont.h; sourceTree = "<group>"; };
-		55907113173254FA00BD92BF /* stForward.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stForward.h; sourceTree = "<group>"; };
-		55907114173254FA00BD92BF /* stgl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stgl.h; sourceTree = "<group>"; };
-		55907115173254FA00BD92BF /* stglut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stglut.h; sourceTree = "<group>"; };
-		55907116173254FA00BD92BF /* STImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STImage.h; sourceTree = "<group>"; };
-		55907117173254FA00BD92BF /* STJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STJoystick.h; sourceTree = "<group>"; };
-		55907118173254FA00BD92BF /* STPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPoint2.h; sourceTree = "<group>"; };
-		55907119173254FA00BD92BF /* STPoint2.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STPoint2.inl; sourceTree = "<group>"; };
-		5590711A173254FA00BD92BF /* STPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STPoint3.h; sourceTree = "<group>"; };
-		5590711B173254FA00BD92BF /* STPoint3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STPoint3.inl; sourceTree = "<group>"; };
-		5590711C173254FA00BD92BF /* STShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STShaderProgram.h; sourceTree = "<group>"; };
-		5590711D173254FA00BD92BF /* STShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STShape.h; sourceTree = "<group>"; };
-		5590711E173254FA00BD92BF /* STTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTexture.h; sourceTree = "<group>"; };
-		5590711F173254FA00BD92BF /* STTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTimer.h; sourceTree = "<group>"; };
-		55907120173254FA00BD92BF /* STUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STUtil.h; sourceTree = "<group>"; };
-		55907121173254FA00BD92BF /* STVector2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STVector2.h; sourceTree = "<group>"; };
-		55907122173254FA00BD92BF /* STVector2.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector2.inl; sourceTree = "<group>"; };
-		55907123173254FA00BD92BF /* STVector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STVector3.h; sourceTree = "<group>"; };
-		55907124173254FA00BD92BF /* STVector3.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = STVector3.inl; sourceTree = "<group>"; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
 		5594978417376E18006E176F /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = raptor.obj; sourceTree = "<group>"; };
@@ -139,21 +82,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		55907093173251CF00BD92BF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55907097173251CF00BD92BF /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		55906D8917302DDB00BD92BF = {
 			isa = PBXGroup;
 			children = (
-				559070A31732524900BD92BF /* libstObjC */,
 				55906DC91731E63100BD92BF /* OpenGLES.framework */,
 				55906DC71731D05600BD92BF /* QuartzCore.framework */,
 				55906D9B17302DDB00BD92BF /* nativeGraphics */,
@@ -166,7 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				55906D9217302DDB00BD92BF /* nativeGraphics.app */,
-				55907096173251CF00BD92BF /* liblibstObjC.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -218,65 +151,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		559070A31732524900BD92BF /* libstObjC */ = {
-			isa = PBXGroup;
-			children = (
-				5590710D173254FA00BD92BF /* include */,
-				559070E5173254E200BD92BF /* STColor3f.cpp */,
-				559070E6173254E200BD92BF /* STColor4f.cpp */,
-				559070E7173254E200BD92BF /* STColor4ub.cpp */,
-				559070E8173254E200BD92BF /* STFont.cpp */,
-				559070E9173254E200BD92BF /* STImage_jpeg.cpp */,
-				559070EA173254E200BD92BF /* STImage_png.cpp */,
-				559070EB173254E200BD92BF /* STImage_ppm.cpp */,
-				559070EC173254E200BD92BF /* STImage.cpp */,
-				559070ED173254E200BD92BF /* STJoystick_darwin.cpp */,
-				559070EE173254E200BD92BF /* STJoystick_linux.cpp */,
-				559070EF173254E200BD92BF /* STJoystick_win32.cpp */,
-				559070F0173254E300BD92BF /* STJoystick.cpp */,
-				559070F1173254E300BD92BF /* STPoint2.cpp */,
-				559070F2173254E300BD92BF /* STPoint3.cpp */,
-				559070F3173254E300BD92BF /* STShaderProgram.cpp */,
-				559070F4173254E300BD92BF /* STShape.cpp */,
-				559070F5173254E300BD92BF /* STTexture.cpp */,
-				559070F6173254E300BD92BF /* STTimer.cpp */,
-				559070F7173254E300BD92BF /* STVector2.cpp */,
-				559070F8173254E300BD92BF /* STVector3.cpp */,
-			);
-			name = libstObjC;
-			sourceTree = "<group>";
-		};
-		5590710D173254FA00BD92BF /* include */ = {
-			isa = PBXGroup;
-			children = (
-				5590710E173254FA00BD92BF /* st.h */,
-				5590710F173254FA00BD92BF /* STColor3f.h */,
-				55907110173254FA00BD92BF /* STColor4f.h */,
-				55907111173254FA00BD92BF /* STColor4ub.h */,
-				55907112173254FA00BD92BF /* STFont.h */,
-				55907113173254FA00BD92BF /* stForward.h */,
-				55907114173254FA00BD92BF /* stgl.h */,
-				55907115173254FA00BD92BF /* stglut.h */,
-				55907116173254FA00BD92BF /* STImage.h */,
-				55907117173254FA00BD92BF /* STJoystick.h */,
-				55907118173254FA00BD92BF /* STPoint2.h */,
-				55907119173254FA00BD92BF /* STPoint2.inl */,
-				5590711A173254FA00BD92BF /* STPoint3.h */,
-				5590711B173254FA00BD92BF /* STPoint3.inl */,
-				5590711C173254FA00BD92BF /* STShaderProgram.h */,
-				5590711D173254FA00BD92BF /* STShape.h */,
-				5590711E173254FA00BD92BF /* STTexture.h */,
-				5590711F173254FA00BD92BF /* STTimer.h */,
-				55907120173254FA00BD92BF /* STUtil.h */,
-				55907121173254FA00BD92BF /* STVector2.h */,
-				55907122173254FA00BD92BF /* STVector2.inl */,
-				55907123173254FA00BD92BF /* STVector3.h */,
-				55907124173254FA00BD92BF /* STVector3.inl */,
-			);
-			name = include;
-			path = ../common/libst/include;
-			sourceTree = "<group>";
-		};
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
@@ -318,23 +192,6 @@
 			productReference = 55906D9217302DDB00BD92BF /* nativeGraphics.app */;
 			productType = "com.apple.product-type.application";
 		};
-		55907095173251CF00BD92BF /* libstObjC */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 559070A1173251CF00BD92BF /* Build configuration list for PBXNativeTarget "libstObjC" */;
-			buildPhases = (
-				55907092173251CF00BD92BF /* Sources */,
-				55907093173251CF00BD92BF /* Frameworks */,
-				55907094173251CF00BD92BF /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = libstObjC;
-			productName = libstObjC;
-			productReference = 55907096173251CF00BD92BF /* liblibstObjC.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -358,7 +215,6 @@
 			projectRoot = "";
 			targets = (
 				55906D9117302DDB00BD92BF /* nativeGraphics */,
-				55907095173251CF00BD92BF /* libstObjC */,
 			);
 		};
 /* End PBXProject section */
@@ -397,13 +253,6 @@
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
 				55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */,
 				55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		55907092173251CF00BD92BF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,30 +366,6 @@
 			};
 			name = Release;
 		};
-		5590709F173251CF00BD92BF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/libstObjC.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libstObjC/libstObjC-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		559070A0173251CF00BD92BF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/libstObjC.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libstObjC/libstObjC-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -558,15 +383,6 @@
 			buildConfigurations = (
 				55906DB617302DDB00BD92BF /* Debug */,
 				55906DB717302DDB00BD92BF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		559070A1173251CF00BD92BF /* Build configuration list for PBXNativeTarget "libstObjC" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5590709F173251CF00BD92BF /* Debug */,
-				559070A0173251CF00BD92BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
