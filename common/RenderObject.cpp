@@ -99,7 +99,7 @@ void RenderObject::RenderFrame() {
     	checkGlError("gvTexCoords");
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0]);
+        glBindTexture(GL_TEXTURE_2D, textures[0]); // 
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
     }

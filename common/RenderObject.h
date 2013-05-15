@@ -35,7 +35,7 @@ public:
     void AddTexture(const char *textureFilename);
     void RenderFrame();   
     
-private:
+//private:
     GLuint gProgram;
     GLuint gvPositionHandle;
     GLuint gmvMatrixHandle;
