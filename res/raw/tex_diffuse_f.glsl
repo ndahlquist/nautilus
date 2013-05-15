@@ -18,5 +18,5 @@ void main() {
     vec3 tex = texture2D(u_Texture, v_TexCoordinate).xyz;
 
 	//gl_FragColor = vec4(diffuse * tex, 1.0);
-	gl_FragColor = vec4(tex.r, tex.g, .5, 1.0);
+	gl_FragColor = vec4(tex, 1.0);
 }

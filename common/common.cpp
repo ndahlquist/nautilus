@@ -29,8 +29,6 @@
 
 using namespace std;
 
-//GLuint depthRenderBuffer;
-
 int width = 0;
 int height = 0;
 
@@ -42,7 +40,6 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 }
 
 GLuint gFbo; // Frame buffer object
-//GLuint gColorBuffer;
 GLuint gDepthBuffer;
 GLuint gfbtexture;
 
@@ -81,6 +78,9 @@ void Setup(int w, int h) {
     glBindTexture(GL_TEXTURE_2D, gfbtexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // TODO: hardcoded size
     
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
@@ -91,24 +91,16 @@ void Setup(int w, int h) {
     glBindTexture(GL_TEXTURE_2D, 0);
     checkGlError("glFrame buffers");
     
-    /*glGenRenderbuffers(1, &gColorBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, gColorBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, gColorBuffer);*/
-    
-    //glGenRenderbuffers(1, &gDepthBuffer);
-    //glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
-    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
+    glGenRenderbuffers(1, &gDepthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if(status != GL_FRAMEBUFFER_COMPLETE)
         LOGE("Failed to allocate framebuffer object %x", status);
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    //square->textures.push_back(gfbtexture);
-    LOGI("gfbtexture %i", gfbtexture);
 }
 
 float cameraPos[4] = {0,0,0.9,1};
@@ -121,15 +113,14 @@ void RenderFrame() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gfbtexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if(status != GL_FRAMEBUFFER_COMPLETE)
         LOGE("Failed to allocate framebuffer object %x", status);
     
     glViewport(0, 0, width, height);
-    //glViewport(0, 0, width, height);
     
-    glDisable(GL_CULL_FACE); // TODO: Not working: why?
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(1., 0., 0., 0.);
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -152,17 +143,14 @@ void RenderFrame() {
     translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
     character->RenderFrame();
 
-////////////////////////////
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    ////////////////////////////////////////////////////
+    // Render from frame buffer
     
     glViewport(0, 0, width, height);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
-    glClearColor(0., 1., 0., 0.);
-    checkGlError("glClearColor");
-    glClear(GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
     
     pLoadIdentity();
     mvLoadIdentity();
