@@ -14,10 +14,9 @@ void main() {
 	float diffuse = dot(v_Normal, incidentLight);
 	if(diffuse <= 0.0)
 	    diffuse = 0.0;*/
-	    
-	float diffuse = 1.0;
 	   
     vec3 tex = texture2D(u_Texture, v_TexCoordinate).xyz;
 
-	gl_FragColor = vec4(diffuse * tex, 1.0);
+	//gl_FragColor = vec4(diffuse * tex, 1.0);
+	gl_FragColor = vec4(tex, 1.0);
 }
