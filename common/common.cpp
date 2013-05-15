@@ -39,9 +39,9 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-GLuint gFbo; // Frame buffer object
+GLuint gFrameBuffer;
 GLuint gDepthBuffer;
-GLuint gfbtexture;
+GLuint gFrameTexture;
 
 RenderObject *cave;
 RenderObject *character;
@@ -56,10 +56,6 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
-    //glGenRenderbuffers(1, &depthRenderBuffer);
-    //glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-    
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
@@ -70,26 +66,24 @@ void Setup(int w, int h) {
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
     
-    // Allocate frame buffer objects
-	glGenFramebuffers(1, &gFbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, gFbo);
+    // Allocate frame buffer
+	glGenFramebuffers(1, &gFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
     
-    glGenTextures(1, &gfbtexture);
-    glBindTexture(GL_TEXTURE_2D, gfbtexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // TODO: hardcoded size
-    
+    // Allocate texture to render to.
+    glGenTextures(1, &gFrameTexture);
+    glBindTexture(GL_TEXTURE_2D, gFrameTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
     checkGlError("AddTexture");
-    square->textures.push_back(gfbtexture);
     
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gfbtexture, 0);
+    square->textures.push_back(gFrameTexture);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFrameTexture, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
-    checkGlError("glFrame buffers");
     
     glGenRenderbuffers(1, &gDepthBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
@@ -101,6 +95,7 @@ void Setup(int w, int h) {
         LOGE("Failed to allocate framebuffer object %x", status);
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    checkGlError("Common::setup");
 }
 
 float cameraPos[4] = {0,0,0.9,1};
@@ -108,9 +103,12 @@ float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 void RenderFrame() {
+
+    //////////////////////////////////
+    // Render to frame buffer
     
-    glBindFramebuffer(GL_FRAMEBUFFER, gFbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gfbtexture, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFrameTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -148,14 +146,12 @@ void RenderFrame() {
     ////////////////////////////////////////////////////
     // Render from frame buffer
     
-    glViewport(0, 0, width, height);
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     
     pLoadIdentity();
     mvLoadIdentity();
     square->RenderFrame();
-
 }
 
 float lastPointer[2] = {0,0};
