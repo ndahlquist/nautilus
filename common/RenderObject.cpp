@@ -20,9 +20,25 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     free(interleavedBuffer);
     
     // Compile and link shader program
-    gProgram = createProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
+    gProgram = createShaderProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
     
     // Get uniform and attrib locations
+    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
+    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
+    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
+    checkGlError("glGetAttribLocation");
+}
+
+void RenderObject::SetShader(const GLuint shaderProgram) {
+
+    gProgram = shaderProgram;
+
+    glUseProgram(gProgram);
+    checkGlError("glUseProgram");
+
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
     gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");

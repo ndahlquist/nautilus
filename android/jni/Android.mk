@@ -17,7 +17,8 @@ LIBST_SOURCES   := $(wildcard $(PROJECT_ROOT_PATH)/common/libst/*.cpp)
 LOCAL_SRC_FILES := ndk_interface.cpp \
                    $(PROJECT_ROOT_PATH)/common/common.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderObject.cpp \
-                   $(PROJECT_ROOT_PATH)/common/transform.cpp
+                   $(PROJECT_ROOT_PATH)/common/transform.cpp \
+                   $(PROJECT_ROOT_PATH)/common/glsl_helper.cpp
                    
 LOCAL_LDLIBS    := -llog \
                    -lGLESv2 \

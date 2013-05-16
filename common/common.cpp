@@ -23,6 +23,7 @@
 
 #include "transform.h"
 #include "RenderObject.h"
+#include "glsl_helper.h"
 
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
@@ -41,7 +42,12 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 
 GLuint gFrameBuffer;
 GLuint gDepthBuffer;
-GLuint gFrameTexture;
+GLuint gPositionTexture;
+GLuint gAlbedoTexture;
+
+GLuint positionShader;
+GLuint albedoShader;
+GLuint brownShader;
 
 RenderObject *cave;
 RenderObject *character;
@@ -56,10 +62,14 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
-    cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     square = new RenderObject("square.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
+    
+    positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
+    albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("tex_diffuse_f.glsl"));
+    brownShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("solid_color_f.glsl"));
     
     width = w;
     height = h;
@@ -70,9 +80,9 @@ void Setup(int w, int h) {
 	glGenFramebuffers(1, &gFrameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
     
-    // Allocate texture to render to.
-    glGenTextures(1, &gFrameTexture);
-    glBindTexture(GL_TEXTURE_2D, gFrameTexture);
+    // Allocate position texture to render to.
+    glGenTextures(1, &gPositionTexture);
+    glBindTexture(GL_TEXTURE_2D, gPositionTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -80,9 +90,19 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
     
-    square->textures.push_back(gFrameTexture);
+    square->textures.push_back(gPositionTexture);
     
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFrameTexture, 0);
+    // Allocate albedo texture to render to.
+    glGenTextures(1, &gAlbedoTexture);
+    glBindTexture(GL_TEXTURE_2D, gAlbedoTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    checkGlError("AddTexture");
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
     
     glGenRenderbuffers(1, &gDepthBuffer);
@@ -108,7 +128,7 @@ void RenderFrame() {
     // Render to frame buffer
     
     glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFrameTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -135,16 +155,31 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
 
+    // Render position
+    cave->SetShader(positionShader);
     cave->RenderFrame();
     
     // TODO: Per-object transforms.
-    translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
+    //translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
+    character->SetShader(positionShader);
     character->RenderFrame();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    
+    // Render albedo
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
+    
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError("glClear");
+    
+    cave->SetShader(brownShader);
+    cave->RenderFrame();
+    
+    character->SetShader(albedoShader);
+    character->RenderFrame();
+    
     ////////////////////////////////////////////////////
     // Render from frame buffer
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Default frame buffer
     
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);

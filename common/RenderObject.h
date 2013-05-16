@@ -32,6 +32,7 @@ using namespace std;
 class RenderObject {
 public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
+    void SetShader(const GLuint shaderProgram);
     void AddTexture(const char *textureFilename);
     void RenderFrame();   
     
