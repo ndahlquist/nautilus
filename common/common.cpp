@@ -199,7 +199,9 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);*/
     
-    //gmvMatrixHandle = glGetUniformLocation(square->gProgram, "u_MVMatrix");
+    glUseProgram(square->gProgram);
+    GLuint u_LightPosHandle = glGetUniformLocation(square->gProgram, "u_LightPos");
+    glUniform3f(u_LightPosHandle, -300.0, -300.0, 10.0);
     
     square->RenderFrame();
 }
