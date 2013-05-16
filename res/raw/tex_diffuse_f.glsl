@@ -15,8 +15,7 @@ void main() {
 	if(diffuse <= 0.0)
 	    diffuse = 0.0;*/
 	   
-    vec3 tex = texture2D(u_Texture, v_TexCoordinate).xyz;
+    //vec3 tex = texture2D(u_Texture, v_TexCoordinate.xy).xyz;
 
-	//gl_FragColor = vec4(diffuse * tex, 1.0);
-	gl_FragColor = vec4(tex, 1.0);
+	gl_FragColor = vec4(v_TexCoordinate.xy, .5, 1.0);
 }

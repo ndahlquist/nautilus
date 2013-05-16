@@ -65,7 +65,7 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
-    square = new RenderObject("square.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
+    square = new RenderObject("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("tex_diffuse_f.glsl"));
@@ -181,11 +181,26 @@ void RenderFrame() {
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // Default frame buffer
     
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE); //
     glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
     
     pLoadIdentity();
     mvLoadIdentity();
+    
+    /*pLoadIdentity();
+    perspective(20, (float) width / (float) height, 10, 1000);
+    
+    mvLoadIdentity();
+    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    
+    scalef(1.0, 1.0, 1.0);
+    translatef(0.0f, 0.0f, -600.0f);
+    rotate(rot[1],rot[0],0);
+    translatef(0.0f, -40.0f, 0.0f);*/
+    
+    //gmvMatrixHandle = glGetUniformLocation(square->gProgram, "u_MVMatrix");
+    
     square->RenderFrame();
 }
 
