@@ -4,6 +4,8 @@
 // Callback function to load resources.
 extern void*(*resourceCallback)(const char *);
 
+void setFrameBuffer(int handle);
+
 void SetResourceCallback(void*(*callbackfunc)(const char *));
 void Setup(int w, int h);
 void RenderFrame();

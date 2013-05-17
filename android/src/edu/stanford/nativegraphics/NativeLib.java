@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class NativeLib {
 	private static final String TAG = "NativeLib";
@@ -22,24 +21,18 @@ public class NativeLib {
     // Called from native
     public String stringCallback(String fileName) {
     	String splitName = fileName.split("\\.")[0];
-    	Log.i(TAG, "Looking up resource " + splitName);
     	int resID = mContext.getResources().getIdentifier(splitName, "raw", "edu.stanford.nativegraphics");
-    	if(resID == 0) {
-    		Log.e(TAG, "Resource " + fileName + " not found.");
+    	if(resID == 0)
     		return null;
-    	}
         return RawResourceReader.readTextFileFromRawResource(mContext, resID);
     }
     
     // Called from native
 	public Bitmap drawableCallback(String fileName) {
     	String splitName = fileName.split("\\.")[0];
-    	Log.i(TAG, "Looking up resource " + splitName);
     	int resID = mContext.getResources().getIdentifier(splitName, "drawable", "edu.stanford.nativegraphics");
-    	if(resID == 0) {
-    		Log.e(TAG, "Resource " + fileName + " not found.");
+    	if(resID == 0)
     		return null;
-    	}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;	// No pre-scaling
 		System.gc();

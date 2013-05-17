@@ -53,6 +53,12 @@ RenderObject *cave;
 RenderObject *character;
 RenderObject *square;
 
+GLuint framebuffer;
+
+void setFrameBuffer(int handle) {
+    framebuffer = handle;
+}
+
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -110,9 +116,9 @@ void Setup(int w, int h) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-        LOGE("Failed to allocate framebuffer object %x", status);
+    //GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
+    //    LOGE("Failed to allocate framebuffer object %x", status);
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     checkGlError("Common::setup");
@@ -131,9 +137,9 @@ void RenderFrame() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-        LOGE("Failed to allocate framebuffer object %x", status);
+    //GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    //if(status != GL_FRAMEBUFFER_COMPLETE)
+    //    LOGE("Failed to allocate framebuffer object %x", status);
     
     glViewport(0, 0, width, height);
     
@@ -145,7 +151,7 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(20, (float) width / (float) height, 10, 1000);
+    perspective(20, (float) width / (float) height, 80, 180);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
@@ -153,35 +159,25 @@ void RenderFrame() {
     scalef(.2, .2, .2);
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
+    
+    mvPushMatrix();
     translatef(0.0f, -40.0f, 0.0f);
-
-    // Render position
     cave->SetShader(positionShader);
     cave->RenderFrame();
+    mvPopMatrix();
     
-    // TODO: Per-object transforms.
-    //translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
-    character->SetShader(positionShader);
+    mvPushMatrix();
+    translatef(68.0f, -40.0f, -20.0f); // Translate raptor onto rock.
+    character->SetShader(positionShader);    
     character->RenderFrame();
-    
-    // Render albedo
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
-    
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
-    
-    cave->SetShader(brownShader);
-    cave->RenderFrame();
-    
-    character->SetShader(albedoShader);
-    character->RenderFrame();
-    
+    mvPopMatrix();
+
     ////////////////////////////////////////////////////
     // Render from frame buffer
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Default frame buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     
-    glDisable(GL_CULL_FACE); //
+    glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
     

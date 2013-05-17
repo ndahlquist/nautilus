@@ -7,10 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		55229A321741E782006AD313 /* colortest.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 55229A311741E782006AD313 /* colortest.jpeg */; };
-		55229A341741EDDA006AD313 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55229A331741EDDA006AD313 /* raptor_albedo.jpg */; };
-		558ED1291742B162000DD7F3 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED1281742B162000DD7F3 /* cave0.obj */; };
-		558ED12B1742B178000DD7F3 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12A1742B178000DD7F3 /* tex_diffuse_f.glsl */; };
+		558ED131174598A7000DD7F3 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12C174598A7000DD7F3 /* cave0.obj */; };
+		558ED132174598A7000DD7F3 /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12D174598A7000DD7F3 /* hex.obj */; };
+		558ED133174598A7000DD7F3 /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12E174598A7000DD7F3 /* raptor.obj */; };
+		558ED134174598A7000DD7F3 /* shirt.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12F174598A7000DD7F3 /* shirt.obj */; };
+		558ED135174598A7000DD7F3 /* square.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED130174598A7000DD7F3 /* square.obj */; };
+		558ED13B174598B1000DD7F3 /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED136174598B1000DD7F3 /* depth_f.glsl */; };
+		558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED137174598B1000DD7F3 /* diffuse_f.glsl */; };
+		558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* normals_f.glsl */; };
+		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
+		558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */; };
+		558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14217459905000DD7F3 /* raptor_albedo.jpg */; };
 		55906D9617302DDB00BD92BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9517302DDB00BD92BF /* UIKit.framework */; };
 		55906D9817302DDB00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		55906D9A17302DDB00BD92BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9917302DDB00BD92BF /* CoreGraphics.framework */; };
@@ -26,22 +33,22 @@
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
-		5594978517376E18006E176F /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978417376E18006E176F /* raptor.obj */; };
-		5594978817377359006E176F /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 5594978717377359006E176F /* hex.obj */; };
-		5594978C1737736F006E176F /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978A1737736F006E176F /* depth_f.glsl */; };
-		5594978D1737736F006E176F /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 5594978B1737736F006E176F /* standard_v.glsl */; };
-		5594978F1737849D006E176F /* raptor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5594978E1737849D006E176F /* raptor.jpg */; };
-		55B66B98173B8EFB0094F000 /* diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B66B96173B8EFB0094F000 /* diffuse_f.glsl */; };
-		55B66B9A173B93A50094F000 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B66B99173B93A50094F000 /* normals_f.glsl */; };
 		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 		55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D577C3173CC9C800BE1A50 /* transform.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		55229A311741E782006AD313 /* colortest.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = colortest.jpeg; sourceTree = "<group>"; };
-		55229A331741EDDA006AD313 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = raptor_albedo.jpg; sourceTree = "<group>"; };
-		558ED1281742B162000DD7F3 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cave0.obj; sourceTree = "<group>"; };
-		558ED12A1742B178000DD7F3 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tex_diffuse_f.glsl; sourceTree = "<group>"; };
+		558ED12C174598A7000DD7F3 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave0.obj; path = ../../res/raw/cave0.obj; sourceTree = "<group>"; };
+		558ED12D174598A7000DD7F3 /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = hex.obj; path = ../../res/raw/hex.obj; sourceTree = "<group>"; };
+		558ED12E174598A7000DD7F3 /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = raptor.obj; path = ../../res/raw/raptor.obj; sourceTree = "<group>"; };
+		558ED12F174598A7000DD7F3 /* shirt.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = shirt.obj; path = ../../res/raw/shirt.obj; sourceTree = "<group>"; };
+		558ED130174598A7000DD7F3 /* square.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = square.obj; path = ../../res/raw/square.obj; sourceTree = "<group>"; };
+		558ED136174598B1000DD7F3 /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_f.glsl; path = ../../res/raw/depth_f.glsl; sourceTree = "<group>"; };
+		558ED137174598B1000DD7F3 /* diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = diffuse_f.glsl; path = ../../res/raw/diffuse_f.glsl; sourceTree = "<group>"; };
+		558ED138174598B1000DD7F3 /* normals_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = normals_f.glsl; path = ../../res/raw/normals_f.glsl; sourceTree = "<group>"; };
+		558ED139174598B1000DD7F3 /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = standard_v.glsl; path = ../../res/raw/standard_v.glsl; sourceTree = "<group>"; };
+		558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_diffuse_f.glsl; path = ../../res/raw/tex_diffuse_f.glsl; sourceTree = "<group>"; };
+		558ED14217459905000DD7F3 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = raptor_albedo.jpg; path = ../../res/drawable/raptor_albedo.jpg; sourceTree = "<group>"; };
 		55906D9217302DDB00BD92BF /* nativeGraphics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nativeGraphics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55906D9517302DDB00BD92BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		55906D9717302DDB00BD92BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -64,13 +71,6 @@
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
-		5594978417376E18006E176F /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = raptor.obj; sourceTree = "<group>"; };
-		5594978717377359006E176F /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hex.obj; sourceTree = "<group>"; };
-		5594978A1737736F006E176F /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = depth_f.glsl; sourceTree = "<group>"; };
-		5594978B1737736F006E176F /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = standard_v.glsl; sourceTree = "<group>"; };
-		5594978E1737849D006E176F /* raptor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = raptor.jpg; sourceTree = "<group>"; };
-		55B66B96173B8EFB0094F000 /* diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = diffuse_f.glsl; sourceTree = "<group>"; };
-		55B66B99173B93A50094F000 /* normals_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = normals_f.glsl; sourceTree = "<group>"; };
 		55B66B9E173CAA440094F000 /* RenderObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderObject.cpp; path = ../../common/RenderObject.cpp; sourceTree = "<group>"; };
 		55B66B9F173CAA440094F000 /* RenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderObject.h; path = ../../common/RenderObject.h; sourceTree = "<group>"; };
 		55D577C3173CC9C800BE1A50 /* transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = transform.cpp; path = ../../common/transform.cpp; sourceTree = "<group>"; };
@@ -93,6 +93,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		558ED141174598F2000DD7F3 /* drawables */ = {
+			isa = PBXGroup;
+			children = (
+				558ED14217459905000DD7F3 /* raptor_albedo.jpg */,
+			);
+			name = drawables;
+			sourceTree = "<group>";
+		};
 		55906D8917302DDB00BD92BF = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +146,7 @@
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				55D577C4173CC9C800BE1A50 /* transform.h */,
 				55D577C3173CC9C800BE1A50 /* transform.cpp */,
+				558ED141174598F2000DD7F3 /* drawables */,
 				5594978917377361006E176F /* shaders */,
 				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
@@ -162,12 +171,11 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
-				558ED1281742B162000DD7F3 /* cave0.obj */,
-				55229A331741EDDA006AD313 /* raptor_albedo.jpg */,
-				55229A311741E782006AD313 /* colortest.jpeg */,
-				5594978E1737849D006E176F /* raptor.jpg */,
-				5594978717377359006E176F /* hex.obj */,
-				5594978417376E18006E176F /* raptor.obj */,
+				558ED12C174598A7000DD7F3 /* cave0.obj */,
+				558ED12D174598A7000DD7F3 /* hex.obj */,
+				558ED12E174598A7000DD7F3 /* raptor.obj */,
+				558ED12F174598A7000DD7F3 /* shirt.obj */,
+				558ED130174598A7000DD7F3 /* square.obj */,
 			);
 			name = obj;
 			sourceTree = "<group>";
@@ -175,11 +183,11 @@
 		5594978917377361006E176F /* shaders */ = {
 			isa = PBXGroup;
 			children = (
-				558ED12A1742B178000DD7F3 /* tex_diffuse_f.glsl */,
-				55B66B99173B93A50094F000 /* normals_f.glsl */,
-				5594978A1737736F006E176F /* depth_f.glsl */,
-				5594978B1737736F006E176F /* standard_v.glsl */,
-				55B66B96173B8EFB0094F000 /* diffuse_f.glsl */,
+				558ED136174598B1000DD7F3 /* depth_f.glsl */,
+				558ED137174598B1000DD7F3 /* diffuse_f.glsl */,
+				558ED138174598B1000DD7F3 /* normals_f.glsl */,
+				558ED139174598B1000DD7F3 /* standard_v.glsl */,
+				558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
@@ -241,17 +249,17 @@
 				55906DAA17302DDB00BD92BF /* Default@2x.png in Resources */,
 				55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */,
 				55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */,
-				5594978517376E18006E176F /* raptor.obj in Resources */,
-				5594978817377359006E176F /* hex.obj in Resources */,
-				5594978C1737736F006E176F /* depth_f.glsl in Resources */,
-				5594978D1737736F006E176F /* standard_v.glsl in Resources */,
-				5594978F1737849D006E176F /* raptor.jpg in Resources */,
-				55B66B98173B8EFB0094F000 /* diffuse_f.glsl in Resources */,
-				55B66B9A173B93A50094F000 /* normals_f.glsl in Resources */,
-				55229A321741E782006AD313 /* colortest.jpeg in Resources */,
-				55229A341741EDDA006AD313 /* raptor_albedo.jpg in Resources */,
-				558ED1291742B162000DD7F3 /* cave0.obj in Resources */,
-				558ED12B1742B178000DD7F3 /* tex_diffuse_f.glsl in Resources */,
+				558ED131174598A7000DD7F3 /* cave0.obj in Resources */,
+				558ED132174598A7000DD7F3 /* hex.obj in Resources */,
+				558ED133174598A7000DD7F3 /* raptor.obj in Resources */,
+				558ED134174598A7000DD7F3 /* shirt.obj in Resources */,
+				558ED135174598A7000DD7F3 /* square.obj in Resources */,
+				558ED13B174598B1000DD7F3 /* depth_f.glsl in Resources */,
+				558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */,
+				558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */,
+				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
+				558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */,
+				558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
