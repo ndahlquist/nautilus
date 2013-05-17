@@ -47,6 +47,12 @@ RenderObject *cave;
 RenderObject *character;
 RenderObject *square;
 
+GLuint framebuffer;
+
+void setFrameBuffer(int handle) {
+    framebuffer = handle;
+}
+
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -102,6 +108,8 @@ float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
+
+
 void RenderFrame() {
 
     //////////////////////////////////
@@ -141,7 +149,7 @@ void RenderFrame() {
     translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
     character->RenderFrame();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     ////////////////////////////////////////////////////
     // Render from frame buffer

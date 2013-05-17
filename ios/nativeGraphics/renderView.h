@@ -13,6 +13,7 @@
 @interface renderView : UIView {
     CAEAGLLayer* _eaglLayer;
     EAGLContext* _context;
+    GLuint _framebuffer;
     GLuint _colorRenderBuffer;
     GLuint _depthRenderBuffer;
 }

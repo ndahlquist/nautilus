@@ -27,7 +27,6 @@
         [self setupRenderBuffer];
         [self setupFrameBuffer];
         [self setupDisplayLink];
-        
     }
     return self;
 }
@@ -69,12 +68,12 @@
 }
 
 - (void)setupFrameBuffer {
-    GLuint framebuffer;
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glGenFramebuffers(1, &_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                               GL_RENDERBUFFER, _colorRenderBuffer);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
+    setFrameBuffer(_framebuffer);
 }
 
 - (void)setupDisplayLink {
