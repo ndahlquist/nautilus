@@ -131,7 +131,7 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(20, (float) width / (float) height, 10, 1000);
+    perspective(20, (float) width / (float) height, 80, 180);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
@@ -139,18 +139,19 @@ void RenderFrame() {
     scalef(.2, .2, .2);
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, -40.0f, 0.0f);
-
-    cave->RenderFrame();
     
-    // TODO: Per-object transforms.
-    translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
+    mvPushMatrix();
+    translatef(0.0f, -40.0f, 0.0f);
+    cave->RenderFrame();
+    mvPopMatrix();
+    
+    translatef(68.0f, -40.0f, -20.0f); // Translate raptor onto rock.
     character->RenderFrame();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     ////////////////////////////////////////////////////
     // Render from frame buffer
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
