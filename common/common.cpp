@@ -97,8 +97,8 @@ void Setup(int w, int h) {
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-        LOGE("Failed to allocate framebuffer object %x", status);
+    //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
+    //    LOGE("Failed to allocate framebuffer object %x", status);
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     checkGlError("Common::setup");
@@ -107,8 +107,6 @@ void Setup(int w, int h) {
 float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
-
-
 
 void RenderFrame() {
 
@@ -120,8 +118,8 @@ void RenderFrame() {
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-        LOGE("Failed to allocate framebuffer object %x", status);
+    //if(status != GL_FRAMEBUFFER_COMPLETE)
+    //    LOGE("Failed to allocate framebuffer object %x", status);
     
     glViewport(0, 0, width, height);
     
