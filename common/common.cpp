@@ -119,11 +119,10 @@ void RenderFrame() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gFrameTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    /*GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if(status != GL_FRAMEBUFFER_COMPLETE)
-        LOGE("Failed to allocate framebuffer object %x", status);
-    */
-    
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    //if(status != GL_FRAMEBUFFER_COMPLETE)
+    //    LOGE("Failed to allocate framebuffer object %x", status);
+
     glViewport(0, 0, width, height);
     
     glEnable(GL_CULL_FACE);

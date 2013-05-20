@@ -62,9 +62,7 @@ void * resourcecb(const char * fileName) {
 
     jstring jfileName = env->NewStringUTF(fileName);
 
-    LOGI("Pre Java string callback.");
     jstring jfile = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
-    LOGI("Post Java string callback.");
     if(jfile != NULL) {
         const char *file = env->GetStringUTFChars(jfile, 0);
         char * returnFile = strdup(file);
@@ -75,8 +73,6 @@ void * resourcecb(const char * fileName) {
         return returnFile;
     }
     
-    LOGI("String callback unsuccessful. Proceeding to drawable callback.");
-    
     method = env->GetMethodID(cls, "drawableCallback", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
     if(!method) {
         if(isAttached)
@@ -84,12 +80,12 @@ void * resourcecb(const char * fileName) {
         return NULL;
     }
     
-    LOGI("Pre Java drawable callback.");
     jobject mBitmap = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
-    LOGI("Post Java drawable callback.");
     AndroidBitmapInfo info;
-    if(!VerifyBitmap(env, mBitmap, info))
+    if(!VerifyBitmap(env, mBitmap, info)) {
+        LOGE("Unable to locate resource %s.", fileName);
 		return 0;
+    }
     void * mPixels;
     if(AndroidBitmap_lockPixels(env, mBitmap, &mPixels) < 0)
 		LOGE("AndroidBitmap_lockPixels() failed!");
