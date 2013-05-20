@@ -9,13 +9,16 @@
 #import "nativeGraphicsViewController.h"
 #import "renderView.h"
 #import "common.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface nativeGraphicsViewController ()
 @property (nonatomic, retain) IBOutlet renderView *glview;
+@property (nonatomic, retain) AVAudioPlayer *effectPlayer;
 @end
 
 @implementation nativeGraphicsViewController
 @synthesize glview = _glview;
+@synthesize effectPlayer;
 
 - (void)viewDidLoad
 {
@@ -27,6 +30,15 @@
     self.glview = [[renderView alloc] initWithFrame:screenBounds];
     [self.view addSubview:self.glview];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    NSURL* url = [[NSBundle mainBundle] URLForResource:@"bomb-04" withExtension:@"wav"];
+    NSAssert(url, @"URL is valid.");
+    NSError* error = nil;
+    self.effectPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+    if(!self.effectPlayer)
+    {
+        NSLog(@"Error creating player: %@", error);
+    }
 }
 
 - (void)setResources
@@ -102,9 +114,32 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     UITouch * touch = [touches anyObject];
+    NSUInteger tapCount = [touch tapCount];
     CGPoint location = [touch locationInView:self.view];
+    NSArray *locArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:location.x], [NSNumber numberWithInt:location.y], nil];
     
+    switch (tapCount) {
+        case 1:
+            [self performSelector:@selector(singleTapMethod:) withObject:locArray afterDelay:.4];
+            break;
+        case 2:
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(singleTapMethod) object:locArray];
+            [self performSelector:@selector(doubleTapMethod) withObject:nil afterDelay:.4];
+            break;
+    }
+    
+    
+}
+
+- (void)singleTapMethod:(NSArray *)objects
+{
+    CGPoint location = CGPointMake([[objects objectAtIndex:0] intValue], [[objects objectAtIndex:1] intValue]);
     PointerDown(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
+}
+
+- (void)doubleTapMethod
+{
+    [self.effectPlayer play];
 }
 
 // Add new touchesMoved method

@@ -8,11 +8,14 @@
 
 #import "renderView.h"
 #import "common.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface renderView()
+@property (nonatomic, retain) AVAudioPlayer *player;
 @end
 
 @implementation renderView
+@synthesize player = _player;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -27,6 +30,9 @@
         [self setupRenderBuffer];
         [self setupFrameBuffer];
         [self setupDisplayLink];
+        
+       
+
     }
     return self;
 }
@@ -81,8 +87,38 @@
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
+- (NSURL *)getSoundURL
+{
+    int sound = rand()%4;
+    if (sound == 1)
+        return [[NSBundle mainBundle] URLForResource:@"water-droplet-1" withExtension:@"wav"];
+    else if (sound == 2)
+        return [[NSBundle mainBundle] URLForResource:@"water-droplet-2" withExtension:@"wav"];
+    else if (sound == 3)
+        return [[NSBundle mainBundle] URLForResource:@"water-droplets-1" withExtension:@"wav"];
+    else
+        return [[NSBundle mainBundle] URLForResource:@"water-droplets-2" withExtension:@"wav"];
+}
+
 - (void)render:(CADisplayLink*)displayLink
 {
+    static int time = 0;
+    static int interval = 60;
+    
+    if (time >= interval) {
+        NSURL* url = [self getSoundURL];
+        NSAssert(url, @"URL is valid.");
+        NSError* error = nil;
+        self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+        if(!self.player)
+        {
+            NSLog(@"Error creating player: %@", error);
+        }
+        [self.player play];
+        interval += 60 * (rand()%4 + 1);
+    }
+    time++;
+    
     RenderFrame();
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }

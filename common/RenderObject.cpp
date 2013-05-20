@@ -86,11 +86,13 @@ void RenderObject::RenderFrame() {
     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
     checkGlError("gvNormals");
     
+    glEnableVertexAttribArray(gvTexCoords);
+    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+    checkGlError("gvTexCoords");
+    
     //Textures
     if(textures.size() > 0) {
-    	glEnableVertexAttribArray(gvTexCoords);
-    	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
-    	checkGlError("gvTexCoords");
+    	
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
