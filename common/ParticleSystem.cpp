@@ -55,60 +55,28 @@ Fluid::Fluid(){
 float* Fluid::GenVertexArray(){
     float* vertices = new float[6*8*listParticles.size()];
     int bufferIndex = 0;
-    float radius = 0.1;
+    float radius = .001;
     for(list<Vector2f>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
+        // Triangle 1
         vertices[bufferIndex++] =(*iter)(0)-radius;
         vertices[bufferIndex++] =(*iter)(1)-radius;
         vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        
         vertices[bufferIndex++] =(*iter)(0)+radius;
         vertices[bufferIndex++] =(*iter)(1)-radius;
         vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        
         vertices[bufferIndex++] =(*iter)(0)+radius;
         vertices[bufferIndex++] =(*iter)(1)+radius;
         vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
         
-        vertices[bufferIndex++] =(*iter)(0)+radius;
+        // Triangle 2
+        vertices[bufferIndex++] =(*iter)(0)-radius;
         vertices[bufferIndex++] =(*iter)(1)-radius;
         vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        
-        vertices[bufferIndex++] =(*iter)(0)+radius;
-        vertices[bufferIndex++] =(*iter)(1)+radius;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        
         vertices[bufferIndex++] =(*iter)(0)-radius;
         vertices[bufferIndex++] =(*iter)(1)+radius;
         vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =0.f;
-        vertices[bufferIndex++] =1.f;
-        vertices[bufferIndex++] =0.f;
+        vertices[bufferIndex++] =(*iter)(0)+radius;
+        vertices[bufferIndex++] =(*iter)(1)+radius;
         vertices[bufferIndex++] =0.f;
     }
     return vertices;
