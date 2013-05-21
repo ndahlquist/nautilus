@@ -42,7 +42,7 @@ public class NativeLib {
     // Native Functions
     private native void init(int width, int height);
     public native void renderFrame();
-    public static native void pointerDown(float x, float y);
-    public static native void pointerMove(float x, float y);
-    public static native void pointerUp(float x, float y);
+    public static native void pointerDown(float x, float y, int pointerID);
+    public static native void pointerMove(float x, float y, int pointerID);
+    public static native void pointerUp(float x, float y, int pointerID);
 }

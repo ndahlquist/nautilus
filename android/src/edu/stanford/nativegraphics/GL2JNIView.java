@@ -309,29 +309,48 @@ class GL2JNIView extends GLSurfaceView {
     }
     
     @Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if(event == null)
+	public boolean onTouchEvent(MotionEvent ev) {
+		if(ev == null)
 		    return false;
-		
-		float x = (float) event.getX() / (float) Renderer.width;
-	    float y = (float) event.getY() / (float) Renderer.height;
+		    
+		final int action = ev.getActionMasked();
 
-		if(event.getAction() == MotionEvent.ACTION_DOWN) {
-			NativeLib.pointerDown(x, y);
-			return true;
-	    }
-	    
-		if(event.getAction() == MotionEvent.ACTION_MOVE) {
-			NativeLib.pointerMove(x, y);
-			return true;
-	    }
-			
-		if(event.getAction() == MotionEvent.ACTION_UP) {
-			NativeLib.pointerUp(x, y);
-	        return true;
-	    }
-
-		return super.onTouchEvent(event);	
+        if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+	        final int actionIndex = ev.getActionIndex();
+			final int pointerID = ev.getPointerId(actionIndex);
+			final float x = ev.getX(actionIndex) / (float) Renderer.width;
+		    final float y = ev.getY(actionIndex) / (float) Renderer.height;
+		    NativeLib.pointerDown(x, y, pointerID);
+		    return true;
+        }
+		        
+        if(action == MotionEvent.ACTION_MOVE) {
+		    // ACTION_MOVE events are batched, so we have to iterate over the pointers.
+		    for(int i=0; i<ev.getPointerCount(); i++) {
+			    final int pointerID = ev.getPointerId(i);
+			    final float x = ev.getX(i) / (float) Renderer.width;
+		        final float y = ev.getY(i) / (float) Renderer.height;
+		        NativeLib.pointerMove(x, y, pointerID);
+		    }
+            return true;
+        }
+		    
+        if(action == MotionEvent.ACTION_POINTER_UP) {
+			final int actionIndex = ev.getActionIndex();
+			final int pointerID = ev.getPointerId(actionIndex);
+			final float x = ev.getX(actionIndex) / (float) Renderer.width;
+		    final float y = ev.getY(actionIndex) / (float) Renderer.height;
+            NativeLib.pointerUp(x, y, pointerID);
+            return true;
+        }
+		        
+        if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+		    NativeLib.pointerUp(-1, -1, -1);
+            return true;
+        }
+		    
+        Log.e(TAG, "Unhandled touch action " + action);
+        return super.onTouchEvent(ev);	
 	}
 
     private static class Renderer implements GLSurfaceView.Renderer {
