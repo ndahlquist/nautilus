@@ -50,8 +50,7 @@ Fluid::Fluid(){
     for(int i=i_low-1;i<i_high;i++){
         status[i][j_low-1]=SOLID_WALL;
     }
-    renderer = new RenderObject("standard_v.glsl", "diffuse_f.glsl");
-    renderer->AddVertex(GenVertexArray(),listParticles.size()*6);
+    renderer = new RenderObject("standard_v.glsl", "depth_f.glsl");
 }
 float* Fluid::GenVertexArray(){
     float* vertices = new float[6*8*listParticles.size()];
@@ -114,11 +113,12 @@ float* Fluid::GenVertexArray(){
     }
     return vertices;
 }
+
 void Fluid::RenderFrame(){
     update();
-    renderer->AddVertex(GenVertexArray(),listParticles.size()*6);
-    renderer->RenderFrame();
+    renderer->RenderFrame(GenVertexArray(),listParticles.size()*6);
 }
+
 void Fluid::updateDeltaTime()
 {
 	deltaTime = KCFL * CELL_WIDTH / maxVelocity;

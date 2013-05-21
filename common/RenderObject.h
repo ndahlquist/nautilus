@@ -35,7 +35,8 @@ public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void AddVertex(float *vertices,int num);
     void AddTexture(const char *textureFilename);
-    void RenderFrame();   
+    void RenderFrame();
+    void RenderFrame(float *buffer, int num);
     
 private:
     GLuint gProgram;

@@ -77,15 +77,15 @@ float rot[2] = {0,0};
 
 void RenderFrame() {
     
-    glEnable(GL_CULL_FACE); // TODO: Not working: why?
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0., 0., 0., 0.);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glClearColor(0., 0.5, 0., 0.);
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(20, (float) width / (float) height, 10, 1000);
+    perspective(.1, (float) width / (float) height, 10, 1000);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
@@ -93,7 +93,7 @@ void RenderFrame() {
     scalef(.2, .2, .2);
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, -40.0f, 0.0f);
+    //translatef(0.0f, -40.0f, 0.0f);
 
     //cave->RenderFrame();
 

@@ -46,16 +46,6 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     checkGlError("glGetAttribLocation");
 }
 
-void RenderObject::AddVertex(float *buffer, int num){
-    this->numVertices = num;
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), buffer, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    checkGlError("VertexBuffer Generation");
-    free(buffer);
-
-}
-
 void RenderObject::AddTexture(const char *textureFilename) {
     // Load textures
     GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename); // TODO: Free this
@@ -76,6 +66,52 @@ void RenderObject::AddTexture(const char *textureFilename) {
     
     checkGlError("AddTexture");
     textures.push_back(texName);
+}
+
+void RenderObject::RenderFrame(float *buffer, int num) {
+    
+    glUseProgram(gProgram);
+    checkGlError("glUseProgram");
+    
+    // Matrices setup
+    GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
+    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
+    
+    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
+    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
+    checkGlError("glUniformMatrix4fv");
+    delete mv_Matrix;
+    delete mvp_Matrix;
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // Vertices
+    glEnableVertexAttribArray(gvPositionHandle);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*) buffer);
+    checkGlError("gvPositionHandle");
+    
+    // Normals
+    /*glEnableVertexAttribArray(gvNormals);
+    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
+    checkGlError("gvNormals");*/
+    
+    //Textures
+    /*glEnableVertexAttribArray(gvTexCoords);
+    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+    checkGlError("gvTexCoords");
+    
+    if (textures.size() > 0) {
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
+        glUniform1i(textureUniform, 0);
+        checkGlError("texture");
+    }*/
+    
+    glDrawArrays(GL_LINES, 0, num);
+    checkGlError("glDrawArrays");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void RenderObject::RenderFrame() {
