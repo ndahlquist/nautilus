@@ -44,7 +44,8 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 
 //RenderObject *cave;
 //RenderObject *character;
-Fluid* Water = new Fluid();
+Fluid* Water;
+
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -66,6 +67,8 @@ void Setup(int w, int h) {
     height = h;
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
+    
+    Water = new Fluid();
 }
 
 float cameraPos[4] = {0,0,0.9,1};
