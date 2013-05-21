@@ -116,14 +116,15 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     UITouch * touch = [touches anyObject];
     NSUInteger tapCount = [touch tapCount];
     CGPoint location = [touch locationInView:self.view];
-    NSArray *locArray = [NSArray arrayWithObjects:[NSNumber numberWithInt:location.x], [NSNumber numberWithInt:location.y], nil];
-    
+
+    NSArray *locArray = [NSArray arrayWithObjects:[NSNumber numberWithFloat:location.x], [NSNumber numberWithFloat:location.y], nil];
+    PointerDown(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
     switch (tapCount) {
-        case 1:
+        /*case 1:
             [self performSelector:@selector(singleTapMethod:) withObject:locArray afterDelay:.4];
-            break;
+            break;*/
         case 2:
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(singleTapMethod) object:locArray];
+            //[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(singleTapMethod) object:locArray];
             [self performSelector:@selector(doubleTapMethod) withObject:nil afterDelay:.4];
             break;
     }
@@ -133,7 +134,7 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
 
 - (void)singleTapMethod:(NSArray *)objects
 {
-    CGPoint location = CGPointMake([[objects objectAtIndex:0] intValue], [[objects objectAtIndex:1] intValue]);
+    CGPoint location = CGPointMake([[objects objectAtIndex:0] floatValue], [[objects objectAtIndex:1] floatValue]);
     PointerDown(location.x/self.view.bounds.size.width, location.y/self.view.bounds.size.height);
 }
 
