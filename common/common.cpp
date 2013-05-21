@@ -96,10 +96,12 @@ void Setup(int w, int h) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
-    //    LOGE("Failed to allocate framebuffer object %x", status);
-        
+    //TODO: Status code incorrect for ios
+    /*GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if(status != GL_FRAMEBUFFER_COMPLETE)
+        LOGE("Failed to allocate framebuffer object %x", status);
+    */
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     checkGlError("Common::setup");
 }
@@ -109,7 +111,7 @@ float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 void RenderFrame() {
-
+    
     //////////////////////////////////
     // Render to frame buffer
     
@@ -120,7 +122,7 @@ void RenderFrame() {
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     //if(status != GL_FRAMEBUFFER_COMPLETE)
     //    LOGE("Failed to allocate framebuffer object %x", status);
-    
+
     glViewport(0, 0, width, height);
     
     glEnable(GL_CULL_FACE);

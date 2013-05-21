@@ -18,6 +18,12 @@
 		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
 		558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */; };
 		558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14217459905000DD7F3 /* raptor_albedo.jpg */; };
+		558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */; };
+		558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */; };
+		558ED14B174ADBA4000DD7F3 /* water_droplets_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED147174ADBA4000DD7F3 /* water_droplets_1.wav */; };
+		558ED14C174ADBA4000DD7F3 /* water_droplets_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED148174ADBA4000DD7F3 /* water_droplets_2.wav */; };
+		558ED14E174ADC41000DD7F3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 558ED14D174ADC41000DD7F3 /* AVFoundation.framework */; };
+		558ED150174AE552000DD7F3 /* bomb_04.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14F174AE552000DD7F3 /* bomb_04.wav */; };
 		55906D9617302DDB00BD92BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9517302DDB00BD92BF /* UIKit.framework */; };
 		55906D9817302DDB00BD92BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9717302DDB00BD92BF /* Foundation.framework */; };
 		55906D9A17302DDB00BD92BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906D9917302DDB00BD92BF /* CoreGraphics.framework */; };
@@ -49,6 +55,12 @@
 		558ED139174598B1000DD7F3 /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = standard_v.glsl; path = ../../res/raw/standard_v.glsl; sourceTree = "<group>"; };
 		558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_diffuse_f.glsl; path = ../../res/raw/tex_diffuse_f.glsl; sourceTree = "<group>"; };
 		558ED14217459905000DD7F3 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = raptor_albedo.jpg; path = ../../res/drawable/raptor_albedo.jpg; sourceTree = "<group>"; };
+		558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "water_droplet_1.wav"; path = "../../res/raw/water_droplet_1.wav"; sourceTree = "<group>"; };
+		558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "water_droplet_2.wav"; path = "../../res/raw/water_droplet_2.wav"; sourceTree = "<group>"; };
+		558ED147174ADBA4000DD7F3 /* water_droplets_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "water_droplets_1.wav"; path = "../../res/raw/water_droplets_1.wav"; sourceTree = "<group>"; };
+		558ED148174ADBA4000DD7F3 /* water_droplets_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "water_droplets_2.wav"; path = "../../res/raw/water_droplets_2.wav"; sourceTree = "<group>"; };
+		558ED14D174ADC41000DD7F3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		558ED14F174AE552000DD7F3 /* bomb_04.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "bomb_04.wav"; path = "../../res/raw/bomb_04.wav"; sourceTree = "<group>"; };
 		55906D9217302DDB00BD92BF /* nativeGraphics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nativeGraphics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55906D9517302DDB00BD92BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		55906D9717302DDB00BD92BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -82,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				558ED14E174ADC41000DD7F3 /* AVFoundation.framework in Frameworks */,
 				55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */,
 				55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */,
 				55906D9617302DDB00BD92BF /* UIKit.framework in Frameworks */,
@@ -101,9 +114,22 @@
 			name = drawables;
 			sourceTree = "<group>";
 		};
+		558ED144174ADB86000DD7F3 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				558ED14F174AE552000DD7F3 /* bomb_04.wav */,
+				558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */,
+				558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */,
+				558ED147174ADBA4000DD7F3 /* water_droplets_1.wav */,
+				558ED148174ADBA4000DD7F3 /* water_droplets_2.wav */,
+			);
+			name = sounds;
+			sourceTree = "<group>";
+		};
 		55906D8917302DDB00BD92BF = {
 			isa = PBXGroup;
 			children = (
+				558ED14D174ADC41000DD7F3 /* AVFoundation.framework */,
 				55906DC91731E63100BD92BF /* OpenGLES.framework */,
 				55906DC71731D05600BD92BF /* QuartzCore.framework */,
 				55906D9B17302DDB00BD92BF /* nativeGraphics */,
@@ -146,8 +172,9 @@
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				55D577C4173CC9C800BE1A50 /* transform.h */,
 				55D577C3173CC9C800BE1A50 /* transform.cpp */,
-				558ED141174598F2000DD7F3 /* drawables */,
+				558ED144174ADB86000DD7F3 /* sounds */,
 				5594978917377361006E176F /* shaders */,
+				558ED141174598F2000DD7F3 /* drawables */,
 				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
 			);
@@ -260,6 +287,11 @@
 				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
 				558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */,
 				558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */,
+				558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */,
+				558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */,
+				558ED14B174ADBA4000DD7F3 /* water_droplets_1.wav in Resources */,
+				558ED14C174ADBA4000DD7F3 /* water_droplets_2.wav in Resources */,
+				558ED150174AE552000DD7F3 /* bomb_04.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
