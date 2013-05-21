@@ -1,0 +1,100 @@
+#ifndef __PARTICLE_SYSTEM_H
+#define __PARTICLE_SYSTEM_H
+
+#include "Eigen/Core"
+
+#define BUFFER 2
+#define CELL_WIDTH 1.0f
+#define NOTHING 0
+#define FLUID 1
+#define AIR 2
+#define SOLID 3
+using Eigen::Vector3f;
+using Eigen::Vector2f;
+
+struct Particle
+{
+	Vector3f position;
+	Vector3f velocity;
+	
+	Particle(float _x, float _y, float _z)
+	{
+	
+		this->position.x = _x;
+		this->position.y = _y;
+		this->position.z = _z;
+		this->velocity.x = 0.0f;
+		this->velocity.y = 0.0f;
+		this->velocity.z = 0.0f;
+	}
+};
+
+class Fluid
+{
+public:
+	double p[SIZE][SIZE];
+	double u[SIZE+1][SIZE+1];
+	double v[SIZE+1][SIZE+1];
+	
+  double newu[SIZE+1][SIZE+1];
+	double newv[SIZE+1][SIZE+1];
+	int status[SIZE][SIZE];
+	int layer[SIZE][SIZE];
+
+	list<Vector2f> listParticles;
+	double particleRadius;
+	double liquid_phi[SIZE+1][SIZE+1];
+	
+	double deltaTime;
+	double remainderTime;
+	double maxVelocity
+	Fluid();
+	Vector2f getVelocity(double x,double y);
+	double getInterpolatedValue(double x, double y, int direction);
+	void updateDeltaTime();
+	void updateCells();
+	void advection();
+	void addGravity();
+	void getPressure();
+	void updateStep();
+	void update();
+	void moveParticles(float);
+	Vector_2D traceParticle(double x, double y, double t);
+
+};
+
+class ParticleSystem
+{
+public:
+	Cell*** grid;
+  [Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+	list<Cell *> listCells;
+	list<Particle *> listParticles; 
+	float maxVelocity;
+	float deltaTime;
+	float remainderTime;
+
+	void CreateBuffer(Cell *N, int i);
+	bool isInBound(Cell *pCell);
+	Cell *getCell(Vector &pos);
+	float divVelocity(Cell *g);
+	Vector gradPressure(Cell *C);
+	Vector traceParticle(float x, float y, float z, float t);
+	Vector getVelocity(float x, float y, float z);
+	float getInterpolatedValue(float x, float y, float z, int direction);
+
+	void Update();
+	void UpdateDeltaTime();
+	void UpdateSolid();
+	void UpdateCells();
+	void ApplyConvection();
+	void ApplyGravity();
+	void ApplyPressure();
+	void UpdateBufferVelocity();
+	void SetSolidCells();
+	void MoveParticles(float time);
+
+  private:
+     
+};
+

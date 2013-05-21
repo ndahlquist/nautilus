@@ -23,7 +23,6 @@
 
 #include "transform.h"
 #include "RenderObject.h"
-#include "ParticleSystem.h"
 
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
@@ -44,7 +43,7 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 
 //RenderObject *cave;
 //RenderObject *character;
-Fluid* Water = new Fluid();
+
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -61,6 +60,43 @@ void Setup(int w, int h) {
     //cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     //character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     //character->AddTexture("raptor_albedo.jpg");
+   Water = new Fluid();
+   int particlecounter=0;
+   for(int i = 0; i < 10000; ++i) {
+        float x = randhashf(i*2, 0,1);
+        float y = randhashf(i*2+1, 0,1);
+        if(x<=i_high*CELL_WIDTH&&x>=0.50&&y>=j_low*CELL_WIDTH&&y<=(j_high-10)*CELL_WIDTH){
+              Vector2f newParticle;
+              newParticle.set(x,y); 
+              Water->listParticles.push_back(newParticle);  
+              //particlecounter++;
+        } 
+   }                                
+   //printf("%d\n",particlecounter);i
+    for(int j=j_low;j<j_high;j++){    
+      Water->status[i_low-1][j]=SOLID_WALL;                                 
+      Water->status[i_high][j]=SOLID_WALL;
+    }
+    for(int i=i_low-1;i<i_high;i++){  
+      Water->status[i][j_low-1]=SOLID_WALL;                                   
+    }
+    glGenBuffers(1, &gVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    checkGlError("VertexBuffer Generation");
+    
+    // Compile and link shader program
+    gProgram = createProgram((char *)resourceCallback(standard_v.glsl), (char *)resourceCallback(diffuse_f.glsl));
+    
+    // Get uniform and attrib locations
+    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
+    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
+    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
+    checkGlError("glGetAttribLocation");
 
     width = w;
     height = h;
@@ -92,17 +128,11 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
 
-    //cave->RenderFrame();
-
-    Water->RenderFrame();
+    cave->RenderFrame();
     
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
     // TODO: Per-object transforms.
-    //translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
-    //character->RenderFrame();
+    translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
+    character->RenderFrame();
 
 }
 

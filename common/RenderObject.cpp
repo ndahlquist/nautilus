@@ -8,6 +8,20 @@
 #include "common.h"
 #include "log.h"
 
+RenderObject::RenderObject(const char *vertexShaderFilename, const char *fragmentShaderFilename){
+    numVertices=0;
+    glGenBuffers(1, &gVertexBuffer);
+    gProgram = createProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
+    // Get uniform and attrib locations
+    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
+    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
+    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
+    checkGlError("glGetAttribLocation");
+}
+
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
     
     // Parse obj file into an interleaved float buffer
@@ -30,6 +44,16 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
     textureUniform = glGetUniformLocation(gProgram, "u_Texture");
     checkGlError("glGetAttribLocation");
+}
+
+void RenderObject::AddVertex(float *buffer, int num){
+    this->numVertices = num;
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), buffer, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    checkGlError("VertexBuffer Generation");
+    free(buffer);
+
 }
 
 void RenderObject::AddTexture(const char *textureFilename) {

@@ -35,6 +35,7 @@
 		55B66B9A173B93A50094F000 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B66B99173B93A50094F000 /* normals_f.glsl */; };
 		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 		55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D577C3173CC9C800BE1A50 /* transform.cpp */; };
+		95BFB94A174AEC24000B2C98 /* ParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95BFB948174AEC24000B2C98 /* ParticleSystem.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,8 @@
 		55B66B9F173CAA440094F000 /* RenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderObject.h; path = ../../common/RenderObject.h; sourceTree = "<group>"; };
 		55D577C3173CC9C800BE1A50 /* transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = transform.cpp; path = ../../common/transform.cpp; sourceTree = "<group>"; };
 		55D577C4173CC9C800BE1A50 /* transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transform.h; path = ../../common/transform.h; sourceTree = "<group>"; };
+		95BFB948174AEC24000B2C98 /* ParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParticleSystem.cpp; path = ../../common/ParticleSystem.cpp; sourceTree = "<group>"; };
+		95BFB949174AEC24000B2C98 /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParticleSystem.h; path = ../../common/ParticleSystem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +128,8 @@
 		55906D9B17302DDB00BD92BF /* nativeGraphics */ = {
 			isa = PBXGroup;
 			children = (
+				95BFB948174AEC24000B2C98 /* ParticleSystem.cpp */,
+				95BFB949174AEC24000B2C98 /* ParticleSystem.h */,
 				55906DA417302DDB00BD92BF /* nativeGraphicsAppDelegate.h */,
 				55906DA517302DDB00BD92BF /* nativeGraphicsAppDelegate.m */,
 				55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */,
@@ -269,6 +274,7 @@
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
 				55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */,
 				55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */,
+				95BFB94A174AEC24000B2C98 /* ParticleSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
