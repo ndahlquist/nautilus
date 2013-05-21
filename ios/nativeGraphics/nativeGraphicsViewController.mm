@@ -31,7 +31,7 @@
     [self.view addSubview:self.glview];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    NSURL* url = [[NSBundle mainBundle] URLForResource:@"bomb-04" withExtension:@"wav"];
+    NSURL* url = [[NSBundle mainBundle] URLForResource:@"bomb_04" withExtension:@"wav"];
     NSAssert(url, @"URL is valid.");
     NSError* error = nil;
     self.effectPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];

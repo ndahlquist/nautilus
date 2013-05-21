@@ -91,13 +91,13 @@
 {
     int sound = rand()%4;
     if (sound == 1)
-        return [[NSBundle mainBundle] URLForResource:@"water-droplet-1" withExtension:@"wav"];
+        return [[NSBundle mainBundle] URLForResource:@"water_droplet_1" withExtension:@"wav"];
     else if (sound == 2)
-        return [[NSBundle mainBundle] URLForResource:@"water-droplet-2" withExtension:@"wav"];
+        return [[NSBundle mainBundle] URLForResource:@"water_droplet_2" withExtension:@"wav"];
     else if (sound == 3)
-        return [[NSBundle mainBundle] URLForResource:@"water-droplets-1" withExtension:@"wav"];
+        return [[NSBundle mainBundle] URLForResource:@"water_droplets_1" withExtension:@"wav"];
     else
-        return [[NSBundle mainBundle] URLForResource:@"water-droplets-2" withExtension:@"wav"];
+        return [[NSBundle mainBundle] URLForResource:@"water_droplets_2" withExtension:@"wav"];
 }
 
 - (void)render:(CADisplayLink*)displayLink
