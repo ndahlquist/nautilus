@@ -165,6 +165,7 @@ void RenderFrame() {
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
+    glDisable(GL_BLEND);
 
     pLoadIdentity();
     perspective(20, (float) width / (float) height, 80, 180);
@@ -195,8 +196,6 @@ void RenderFrame() {
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(1., 0., 0., 0.);
-    checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
     
@@ -222,9 +221,8 @@ void RenderFrame() {
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    rotate(rot[1],rot[0],0);
-    translatef(60.0 * cos(frameNum++ / 50.0f), 0.0f, 60.0 * sin(frameNum++ / 100.0f));
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     
     glUseProgram(square->gProgram);
     
@@ -234,7 +232,25 @@ void RenderFrame() {
     GLuint u_FragHeight = glGetUniformLocation(square->gProgram, "u_FragHeight");
     glUniform1i(u_FragHeight, height);
     
+    mvPushMatrix();
+    rotate(rot[1],rot[0],0);
+    translatef(60.0 * cos(frameNum / 50.0f), 0.0f, 60.0 * sin(frameNum / 100.0f));
     square->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    rotate(rot[1],rot[0],0);
+    translatef(20.0 * sin(frameNum / 20.0f), 0.0f, 30.0 * cos(frameNum / 20.0f));
+    square->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    rotate(rot[1],rot[0],0);
+    translatef(4.0 * sin(frameNum / 111.0f), 0.0f, 0.0 + 4.0 * cos(frameNum / 111.0f));
+    square->RenderFrame();
+    mvPopMatrix();
+    
+    frameNum++;
 }
 
 float lastPointer[2] = {0,0};
