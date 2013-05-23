@@ -29,7 +29,7 @@ void main() {
 	
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
-    float val = 40.0 / distsq;
+    float val = 60.0 / distsq;
 
 	gl_FragColor = val * texture2D(u_AlbTexture, samplePoint);
 }

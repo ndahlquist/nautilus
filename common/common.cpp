@@ -75,7 +75,7 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
-    light = new RenderLight("icosphere_large.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
@@ -173,10 +173,9 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
-    scalef(.2, .2, .2);
-    translatef(0.0f, 0.0f, -600.0f);
-    
     mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
     cave->SetShader(positionShader);
@@ -184,6 +183,8 @@ void RenderFrame() {
     mvPopMatrix();
     
     mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
     character->SetShader(positionShader);    
@@ -200,6 +201,8 @@ void RenderFrame() {
     checkGlError("glClear");
     
     mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
     cave->SetShader(brownShader);
@@ -207,6 +210,8 @@ void RenderFrame() {
     mvPopMatrix();
     
     mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
     character->SetShader(albedoShader);    
@@ -232,21 +237,28 @@ void RenderFrame() {
     GLuint u_FragHeight = glGetUniformLocation(light->gProgram, "u_FragHeight");
     glUniform1i(u_FragHeight, height);
     
+    float lightScale = 15.0f;
+    
     mvPushMatrix();
+    scalef(lightScale);
+    translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(150.0 * cos(frameNum / 50.0f), -20.0f, 150.0 * sin(frameNum / 100.0f));
+    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -4.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
     light->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
+    scalef(lightScale);
+    translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(80.0 * sin(frameNum / 20.0f), -20.0f, 80.0 * cos(frameNum / 20.0f));
+    translatef(16.0 * sin(frameNum / 20.0f) / lightScale, -4.0f / lightScale, 16.0 * cos(frameNum / 20.0f) / lightScale);
     light->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
+    scalef(lightScale);
+    translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(4.0 * sin(frameNum / 111.0f), 0.0f, 0.0 + 4.0 * cos(frameNum / 111.0f));
     light->RenderFrame();
     mvPopMatrix();
     

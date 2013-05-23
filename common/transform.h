@@ -21,6 +21,7 @@ void mvPopMatrix();
 //Load Identity
 void mvLoadIdentity();
 //Scale
+void scalef(float s);
 void scalef(float sx, float sy, float sz);
 //Translate
 void translatef(float x, float y, float z);

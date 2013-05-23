@@ -36,6 +36,9 @@ void mvLoadIdentity(){
     model_view.push(Matrix4f::Identity());
 }
 //Scale
+void scalef(float s) {
+    scalef(s, s, s);
+}
 void scalef(float sx, float sy, float sz){
     Matrix4f scale;
     scale<<sx,0,0,0,0,sy,0,0,0,0,sz,0,0,0,0,1;
