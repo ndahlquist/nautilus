@@ -129,6 +129,8 @@ float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
+unsigned int frameNum = 0;
+
 void RenderFrame() {
 
     //////////////////////////////////
@@ -168,7 +170,7 @@ void RenderFrame() {
     mvPopMatrix();
     
     mvPushMatrix();
-    translatef(68.0f, -40.0f, -20.0f); // Translate raptor onto rock.
+    translatef(68.0f, -40.0f, -20.0f);
     character->SetShader(positionShader);    
     character->RenderFrame();
     mvPopMatrix();
@@ -198,7 +200,7 @@ void RenderFrame() {
     
     glUseProgram(square->gProgram);
     GLuint u_LightPosHandle = glGetUniformLocation(square->gProgram, "u_LightPos");
-    glUniform3f(u_LightPosHandle, -300.0, -300.0, 10.0);
+    glUniform3f(u_LightPosHandle, 10.0f * cos(frameNum++ / 50.0f), 0.0, -100 + 100.0f * sin(frameNum++ / 200.0f));
     
     GLuint u_FragWidth = glGetUniformLocation(square->gProgram, "u_FragWidth");
     glUniform1i(u_FragWidth, width);
