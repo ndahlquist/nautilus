@@ -7,15 +7,6 @@ varying vec3 v_Normal;         	// Interpolated normal for this fragment.
 varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
 
 void main() {
-    
-    /*vec3 u_LightPos = vec3(-300.0, -300.0, 10.0);
-    vec3 incidentLight = normalize(u_LightPos - v_Position);
-    
-	float diffuse = dot(v_Normal, incidentLight);
-	if(diffuse <= 0.0)
-	    diffuse = 0.0;*/
-	   
-    //vec3 tex = texture2D(u_Texture, v_TexCoordinate.xy).xyz;
-
-	gl_FragColor = vec4(v_TexCoordinate.xy, .5, 1.0);
+    vec3 tex = texture2D(u_Texture, v_TexCoordinate).rgb;
+	gl_FragColor = vec4(tex, 1.0);
 }

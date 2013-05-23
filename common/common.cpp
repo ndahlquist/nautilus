@@ -44,6 +44,9 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 GLuint gFrameBuffer;
 GLuint gDepthBuffer;
 GLuint gPositionTexture;
+
+GLuint gFrameBuffer2;
+GLuint gDepthBuffer2;
 GLuint gAlbedoTexture;
 
 GLuint positionShader;
@@ -69,13 +72,13 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
-    cave = new RenderObject("cave0.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
+    character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     square = new RenderLight("icosphere_large.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
-    albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("tex_diffuse_f.glsl"));
+    albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
     brownShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("solid_color_f.glsl"));
     
     width = w;
@@ -96,10 +99,19 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
+    square->positionTex = gPositionTexture;
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     
-    square->textures.push_back(gPositionTexture);
+    glGenRenderbuffers(1, &gDepthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    // Allocate albedo texture to render to.
+    // Allocate frame buffer 2
+	glGenFramebuffers(1, &gFrameBuffer2);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer2);
+    
+     // Allocate albedo texture to render to.
     glGenTextures(1, &gAlbedoTexture);
     glBindTexture(GL_TEXTURE_2D, gAlbedoTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -108,14 +120,15 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
+    square->albedoTex = gAlbedoTexture;
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
     
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
     
-    glGenRenderbuffers(1, &gDepthBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
+    glGenRenderbuffers(1, &gDepthBuffer2);
+    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer2);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
     
     //GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
@@ -173,6 +186,31 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
     character->SetShader(positionShader);    
+    character->RenderFrame();
+    mvPopMatrix();
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer2);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
+    
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(1., 0., 0., 0.);
+    checkGlError("glClearColor");
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError("glClear");
+    
+    mvPushMatrix();
+    rotate(rot[1],rot[0],0);
+    translatef(0.0f, -40.0f, 0.0f);
+    cave->SetShader(brownShader);
+    cave->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    rotate(rot[1],rot[0],0);
+    translatef(68.0f, -40.0f, -20.0f);
+    character->SetShader(albedoShader);    
     character->RenderFrame();
     mvPopMatrix();
 

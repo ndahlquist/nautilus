@@ -30,6 +30,9 @@ class RenderLight : public RenderObject {
 public:
     RenderLight(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void RenderFrame();
+    
+    GLuint positionTex;
+    GLuint albedoTex;
 };
 
 
