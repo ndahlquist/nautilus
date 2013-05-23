@@ -27,7 +27,7 @@ void main() {
 	
 	vec3 delta = LightPos - mvPos;
 	
-	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z / 60.0;
+	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
     float val = 40.0 / distsq;
 

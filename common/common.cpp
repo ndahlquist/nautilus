@@ -234,13 +234,13 @@ void RenderFrame() {
     
     mvPushMatrix();
     rotate(rot[1],rot[0],0);
-    translatef(150.0 * cos(frameNum / 50.0f), 0.0f, 150.0 * sin(frameNum / 100.0f));
+    translatef(150.0 * cos(frameNum / 50.0f), -20.0f, 150.0 * sin(frameNum / 100.0f));
     light->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
     rotate(rot[1],rot[0],0);
-    translatef(80.0 * sin(frameNum / 20.0f), 0.0f, 80.0 * cos(frameNum / 20.0f));
+    translatef(80.0 * sin(frameNum / 20.0f), -20.0f, 80.0 * cos(frameNum / 20.0f));
     light->RenderFrame();
     mvPopMatrix();
     
