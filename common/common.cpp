@@ -200,6 +200,12 @@ void RenderFrame() {
     GLuint u_LightPosHandle = glGetUniformLocation(square->gProgram, "u_LightPos");
     glUniform3f(u_LightPosHandle, -300.0, -300.0, 10.0);
     
+    GLuint u_FragWidth = glGetUniformLocation(square->gProgram, "u_FragWidth");
+    glUniform1i(u_FragWidth, width);
+    
+    GLuint u_FragHeight = glGetUniformLocation(square->gProgram, "u_FragHeight");
+    glUniform1i(u_FragHeight, height);
+    
     square->RenderFrame();
 }
 
