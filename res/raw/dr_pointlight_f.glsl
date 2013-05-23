@@ -18,7 +18,7 @@ void main() {
     vec3 LightPos = vec3(u_MVMatrix * vec4(0.0, 0.0, 0.0, 1.0));
 
     vec3 mappos = texture2D(u_PosTexture, samplePoint).rgb;
-    vec3 pos = vec3(mappos.x*10.0, mappos.y*10.0, mappos.z*100.0 - 150.0); // Reverse the mapping function.
+    vec3 pos = vec3(mappos.x*4.0, mappos.y*4.0, mappos.z*50.0 - 160.0); // Reverse the mapping function.
 	
 	vec3 delta = LightPos - pos;
 	
