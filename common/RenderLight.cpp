@@ -37,7 +37,7 @@ void RenderLight::RenderFrame() {
     checkGlError("gvPositionHandle");
     
     //Textures
-    /*if(textures.size() > 0) {
+    if(textures.size() > 0) {
     	glEnableVertexAttribArray(gvTexCoords);
     	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
     	checkGlError("gvTexCoords");
@@ -46,7 +46,7 @@ void RenderLight::RenderFrame() {
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
-    }*/
+    }
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
