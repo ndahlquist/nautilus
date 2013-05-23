@@ -17,6 +17,7 @@ uniform int u_FragHeight;
 void main() {    
 
     vec2 samplePoint = vec2(gl_FragCoord.x / float(u_FragWidth), gl_FragCoord.y / float(u_FragHeight));
+    
     vec3 LightPos = vec3(u_MVMatrix * vec4(0.0, 0.0, 0.0, 1.0));
 
     float MVP_Z = texture2D(u_PosTexture, samplePoint).z;
