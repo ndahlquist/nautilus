@@ -44,13 +44,7 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 GLuint gFrameBuffer;
 GLuint gDepthBuffer;
 GLuint gPositionTexture;
-
-GLuint gFrameBuffer2;
-GLuint gDepthBuffer2;
 GLuint gAlbedoTexture;
-
-GLuint gFrameBuffer3;
-GLuint gDepthBuffer3;
 GLuint gNormalTexture;
 
 GLuint positionShader;
@@ -106,18 +100,14 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
     light->positionTex = gPositionTexture;
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     
+    // Allocate depth buffer
     glGenRenderbuffers(1, &gDepthBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
-    // Allocate frame buffer 2
-	glGenFramebuffers(1, &gFrameBuffer2);
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer2);
-    
-     // Allocate albedo texture to render to.
+    // Allocate albedo texture to render to.
     glGenTextures(1, &gAlbedoTexture);
     glBindTexture(GL_TEXTURE_2D, gAlbedoTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -127,20 +117,8 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
     light->albedoTex = gAlbedoTexture;
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
     
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    glGenRenderbuffers(1, &gDepthBuffer2);
-    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer2);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
-    
-    // Allocate frame buffer 3
-	glGenFramebuffers(1, &gFrameBuffer3);
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer3);
-    
-     // Allocate normal texture to render to.
+    // Allocate normal texture to render to.
     glGenTextures(1, &gNormalTexture);
     glBindTexture(GL_TEXTURE_2D, gNormalTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -150,14 +128,8 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
     light->normalTex = gNormalTexture;
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gNormalTexture, 0);
     
     glBindTexture(GL_TEXTURE_2D, 0);
-    
-    glGenRenderbuffers(1, &gDepthBuffer3);
-    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer3);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer3);
     
     //GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
@@ -222,9 +194,9 @@ void RenderFrame() {
     mvPopMatrix();
     
     // Render albedo
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer2);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -250,9 +222,9 @@ void RenderFrame() {
     mvPopMatrix();
     
     // Render normals
-    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer3);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gNormalTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer3);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
