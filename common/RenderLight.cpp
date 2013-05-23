@@ -22,12 +22,16 @@ void RenderLight::RenderFrame() {
     // Matrices setup
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
+    GLfloat* pT_Matrix = (GLfloat*)pInverseMatrix();
     
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
+    GLuint gpT_MatrixHandle = glGetUniformLocation(gProgram, "u_pT_Matrix");
+    glUniformMatrix4fv(gpT_MatrixHandle, 1, GL_FALSE, pT_Matrix);
     checkGlError("glUniformMatrix4fv");
     delete mv_Matrix;
     delete mvp_Matrix;
+    delete pT_Matrix;
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     

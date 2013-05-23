@@ -39,6 +39,8 @@ void lookAt(float eyex, float eyey, float eyez,
 //projection
 float* pMatrix();
 
+float* pInverseMatrix();
+
 //Push
 void pPushMatrix();
 //Pop

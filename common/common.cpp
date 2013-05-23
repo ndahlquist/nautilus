@@ -55,7 +55,7 @@ GLuint brownShader;
 
 RenderObject *cave;
 RenderObject *character;
-RenderLight *square;
+RenderLight *light;
 
 GLuint framebuffer;
 
@@ -75,7 +75,7 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
-    square = new RenderLight("icosphere_large.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    light = new RenderLight("icosphere_large.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
@@ -99,7 +99,7 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
-    square->positionTex = gPositionTexture;
+    light->positionTex = gPositionTexture;
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     
     glGenRenderbuffers(1, &gDepthBuffer);
@@ -120,7 +120,7 @@ void Setup(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     checkGlError("AddTexture");
-    square->albedoTex = gAlbedoTexture;
+    light->albedoTex = gAlbedoTexture;
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
     
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -224,30 +224,30 @@ void RenderFrame() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     
-    glUseProgram(square->gProgram);
+    glUseProgram(light->gProgram);
     
-    GLuint u_FragWidth = glGetUniformLocation(square->gProgram, "u_FragWidth");
+    GLuint u_FragWidth = glGetUniformLocation(light->gProgram, "u_FragWidth");
     glUniform1i(u_FragWidth, width);
     
-    GLuint u_FragHeight = glGetUniformLocation(square->gProgram, "u_FragHeight");
+    GLuint u_FragHeight = glGetUniformLocation(light->gProgram, "u_FragHeight");
     glUniform1i(u_FragHeight, height);
     
     mvPushMatrix();
     rotate(rot[1],rot[0],0);
-    translatef(60.0 * cos(frameNum / 50.0f), 0.0f, 60.0 * sin(frameNum / 100.0f));
-    square->RenderFrame();
+    translatef(150.0 * cos(frameNum / 50.0f), 0.0f, 150.0 * sin(frameNum / 100.0f));
+    light->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
     rotate(rot[1],rot[0],0);
-    translatef(20.0 * sin(frameNum / 20.0f), 0.0f, 30.0 * cos(frameNum / 20.0f));
-    square->RenderFrame();
+    translatef(80.0 * sin(frameNum / 20.0f), 0.0f, 80.0 * cos(frameNum / 20.0f));
+    light->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
     rotate(rot[1],rot[0],0);
     translatef(4.0 * sin(frameNum / 111.0f), 0.0f, 0.0 + 4.0 * cos(frameNum / 111.0f));
-    square->RenderFrame();
+    light->RenderFrame();
     mvPopMatrix();
     
     frameNum++;

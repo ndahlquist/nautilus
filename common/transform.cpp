@@ -8,6 +8,8 @@
 
 #include "transform.h"
 
+#include "Eigen/LU"
+
 std::stack<Matrix4f> model_view;
 std::stack<Matrix4f> projection;
 
@@ -161,6 +163,15 @@ float* pMatrix(){
     for(int i=0; i<4; i++)
         for(int j=0; j<4; j++)
             pMatrix[i*4+j] = projection.top()(j,i);
+    return pMatrix;
+}
+
+float* pInverseMatrix(){
+    Matrix4f inverse = projection.top().inverse();
+    float* pMatrix = new float[16];
+    for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+            pMatrix[i*4+j] = inverse(j,i);
     return pMatrix;
 }
 
