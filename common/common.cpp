@@ -49,9 +49,14 @@ GLuint gFrameBuffer2;
 GLuint gDepthBuffer2;
 GLuint gAlbedoTexture;
 
+GLuint gFrameBuffer3;
+GLuint gDepthBuffer3;
+GLuint gNormalTexture;
+
 GLuint positionShader;
 GLuint albedoShader;
 GLuint brownShader;
+GLuint normalsShader;
 
 RenderObject *cave;
 RenderObject *character;
@@ -80,6 +85,7 @@ void Setup(int w, int h) {
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
     brownShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("solid_color_f.glsl"));
+    normalsShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("normals_f.glsl"));
     
     width = w;
     height = h;
@@ -130,6 +136,29 @@ void Setup(int w, int h) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
     
+    // Allocate frame buffer 3
+	glGenFramebuffers(1, &gFrameBuffer3);
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer3);
+    
+     // Allocate normal texture to render to.
+    glGenTextures(1, &gNormalTexture);
+    glBindTexture(GL_TEXTURE_2D, gNormalTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    checkGlError("AddTexture");
+    light->normalTex = gNormalTexture;
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gNormalTexture, 0);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    glGenRenderbuffers(1, &gDepthBuffer3);
+    glBindRenderbuffer(GL_RENDERBUFFER, gDepthBuffer3);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer3);
+    
     //GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     //if(status != GL_FRAMEBUFFER_COMPLETE) TODO: figure out why this doesn't work.
     //    LOGE("Failed to allocate framebuffer object %x", status);
@@ -149,6 +178,7 @@ void RenderFrame() {
     //////////////////////////////////
     // Render to frame buffer
     
+    // Render position
     glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPositionTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer);
@@ -191,6 +221,7 @@ void RenderFrame() {
     character->RenderFrame();
     mvPopMatrix();
     
+    // Render albedo
     glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer2);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedoTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer2);
@@ -215,6 +246,34 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
     character->SetShader(albedoShader);    
+    character->RenderFrame();
+    mvPopMatrix();
+    
+    // Render normals
+    glBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffer3);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gNormalTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepthBuffer3);
+    
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError("glClear");
+    
+    mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
+    rotate(rot[1],rot[0],0);
+    translatef(0.0f, -40.0f, 0.0f);
+    cave->SetShader(normalsShader);
+    cave->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    scalef(.2, .2, .2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
+    rotate(rot[1],rot[0],0);
+    translatef(68.0f, -40.0f, -20.0f);
+    character->SetShader(normalsShader);    
     character->RenderFrame();
     mvPopMatrix();
 
@@ -243,7 +302,7 @@ void RenderFrame() {
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -4.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
+    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
     light->RenderFrame();
     mvPopMatrix();
     
@@ -251,7 +310,7 @@ void RenderFrame() {
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(16.0 * sin(frameNum / 20.0f) / lightScale, -4.0f / lightScale, 16.0 * cos(frameNum / 20.0f) / lightScale);
+    translatef(16.0 * sin(frameNum / 20.0f) / lightScale, -10.0f / lightScale, 16.0 * cos(frameNum / 20.0f) / lightScale);
     light->RenderFrame();
     mvPopMatrix();
     
@@ -259,6 +318,7 @@ void RenderFrame() {
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
+    translatef(-6.0f / lightScale, 10.0f / lightScale, 0.0f);
     light->RenderFrame();
     mvPopMatrix();
     

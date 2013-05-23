@@ -33,6 +33,7 @@ public:
     
     GLuint positionTex;
     GLuint albedoTex;
+    GLuint normalTex;
 };
 
 

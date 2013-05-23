@@ -1,7 +1,9 @@
 precision mediump float;       	// Set the default precision to medium. We don't need as high of a precision in the fragment shader.
 
 uniform sampler2D u_PosTexture;
-uniform sampler2D u_AlbTexture;       
+uniform sampler2D u_AlbTexture;
+uniform sampler2D u_NormTexture;
+
 uniform mat4 u_MVMatrix;		// A constant representing the combined model/view matrix.
 uniform mat4 u_pT_Matrix;
 
@@ -29,7 +31,12 @@ void main() {
 	
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
-    float val = 60.0 / distsq;
+    vec3 normal = texture2D(u_NormTexture, samplePoint).xyz;
+    
+    float diffuse = dot(normal, normalize(-LightPos));
+	if(diffuse <= 0.0)
+	    diffuse = 0.0;
 
-	gl_FragColor = val * texture2D(u_AlbTexture, samplePoint);
+	gl_FragColor = 120.0 * (diffuse + .1) * texture2D(u_AlbTexture, samplePoint) / distsq;
+	
 }

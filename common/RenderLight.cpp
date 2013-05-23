@@ -57,6 +57,12 @@ void RenderLight::RenderFrame() {
     glUniform1i(albTextureUniform, 1);
     checkGlError("albTextureUniform");
     
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, normalTex);
+    GLuint normTextureUniform = glGetUniformLocation(gProgram, "u_NormTexture");
+    glUniform1i(normTextureUniform, 2);
+    checkGlError("albTextureUniform");
+    
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
     
