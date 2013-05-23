@@ -23,6 +23,7 @@
 
 #include "transform.h"
 #include "RenderObject.h"
+#include "RenderLight.h"
 #include "glsl_helper.h"
 
 #define  LOG_TAG    "libnativegraphics"
@@ -51,7 +52,7 @@ GLuint brownShader;
 
 RenderObject *cave;
 RenderObject *character;
-RenderObject *square;
+RenderLight *square;
 
 GLuint framebuffer;
 
@@ -68,10 +69,10 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
-    cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
-    square = new RenderObject("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    square = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
     positionShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("position_f.glsl"));
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("tex_diffuse_f.glsl"));

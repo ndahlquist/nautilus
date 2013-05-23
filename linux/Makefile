@@ -3,7 +3,11 @@
 TARGET  := NativeGraphics
 
 # list files to compile and link together
-FILES   := mainlinux ../common/common ../common/RenderObject ../common/transform ../common/glsl_helper
+FILES   := mainlinux ../common/common \
+                     ../common/RenderObject \
+                     ../common/transform \
+                     ../common/glsl_helper \
+                     ../common/RenderLight
 
 #################################################################
 
