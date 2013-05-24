@@ -270,7 +270,7 @@ void RenderFrame() {
     float lightScale = 15.0f;
     
     for(int i = 0; i < 3; i++)
-        light->brightness[i] = rand() %  100;
+        light->brightness[i] = 40;
     
     mvPushMatrix();
     scalef(lightScale);

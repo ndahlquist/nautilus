@@ -40,6 +40,6 @@ void main() {
 	if(diffuse <= 0.0)
 	    diffuse = 0.0;
 
-	gl_FragColor = vec4(u_Brightness * diffuse / distsq * texture2D(u_AlbTexture, samplePoint).rgb, 1.0);
+	gl_FragColor = vec4(u_Brightness * diffuse / distsq * texture2D(u_AlbTexture, samplePoint).rgb - .1, 1.0);
 	
 }
