@@ -44,27 +44,16 @@ void RenderLight::RenderFrame() {
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
     
-    //Textures
-    glEnableVertexAttribArray(gvTexCoords);
-    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
-    checkGlError("gvTexCoords");
-
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, positionTex);
-    GLuint posTextureUniform = glGetUniformLocation(gProgram, "u_PosTexture");
-    glUniform1i(posTextureUniform, 0);
-    checkGlError("posTextureUniform");
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, albedoTex);
-    GLuint albTextureUniform = glGetUniformLocation(gProgram, "u_AlbTexture");
-    glUniform1i(albTextureUniform, 1);
+    glBindTexture(GL_TEXTURE_2D, colorTexture);
+    GLuint colorTextureUniform = glGetUniformLocation(gProgram, "u_ColorTexture");
+    glUniform1i(colorTextureUniform, 0);
     checkGlError("albTextureUniform");
     
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, normalTex);
-    GLuint normTextureUniform = glGetUniformLocation(gProgram, "u_NormTexture");
-    glUniform1i(normTextureUniform, 2);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, geometryTexture);
+    GLuint geometryTextureUniform = glGetUniformLocation(gProgram, "u_GeometryTexture");
+    glUniform1i(geometryTextureUniform, 1);
     checkGlError("albTextureUniform");
     
     GLuint brightnessUniform = glGetUniformLocation(gProgram, "u_Brightness");

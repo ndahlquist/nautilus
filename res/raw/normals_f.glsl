@@ -2,8 +2,12 @@ precision mediump float;       	// Set the default precision to medium. We don't
 
 varying vec3 v_Normal;         	// Interpolated normal for this fragment.
 
+varying vec3 v_Position;
+varying vec4 v_MVP_Position;
+
 void main() {
 
-    gl_FragColor = vec4(v_Normal, 1.0);
+    float depth = v_MVP_Position.z / v_MVP_Position.w;
+    gl_FragColor = vec4(v_Normal, depth);
 
 }
