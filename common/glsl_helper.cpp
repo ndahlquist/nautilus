@@ -5,6 +5,7 @@
 #include "glsl_helper.h"
 
 #include <cstdlib>
+#include <cstdio>
 
 #include "log.h"
 

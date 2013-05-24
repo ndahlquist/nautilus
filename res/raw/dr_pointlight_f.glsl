@@ -1,4 +1,4 @@
-precision mediump float;       	// Set the default precision to medium. We don't need as high of a precision in the fragment shader.
+precision highp float;       	// Set the default precision to medium. We don't need as high of a precision in the fragment shader.
 
 uniform sampler2D u_PosTexture;
 uniform sampler2D u_AlbTexture;

@@ -6,6 +6,20 @@
 #define LOG_H
 
 #include <cstdlib>
+#include <cstdio>
+
+#ifdef ANDROID_NDK
+    #include "importgl.h"
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+    #include <jni.h>
+#elif __APPLE__
+    #include <stdlib.h>
+    #include <OpenGLES/ES2/gl.h>
+#else // linux
+    #include <GL/glew.h>
+    #include <stdio.h>
+#endif
 
 #ifdef ANDROID_NDK
     #include <android/log.h>
