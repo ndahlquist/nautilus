@@ -14,6 +14,8 @@ varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
 uniform int u_FragWidth;
 uniform int u_FragHeight;
 
+uniform vec3 u_Brightness;
+
 void main() {    
 
     vec2 samplePoint = vec2(gl_FragCoord.x / float(u_FragWidth), gl_FragCoord.y / float(u_FragHeight));
@@ -34,10 +36,10 @@ void main() {
 
     vec3 normal = texture2D(u_NormTexture, samplePoint).xyz;
     
-    float diffuse = dot(normal, normalize(-LightPos));
+    float diffuse = -dot(normal, normalize(LightPos));
 	if(diffuse <= 0.0)
 	    diffuse = 0.0;
 
-	gl_FragColor = 120.0 * (diffuse + .1) * texture2D(u_AlbTexture, samplePoint) / distsq;
+	gl_FragColor = vec4(u_Brightness * diffuse / distsq * texture2D(u_AlbTexture, samplePoint).rgb, 1.0);
 	
 }

@@ -269,6 +269,9 @@ void RenderFrame() {
     
     float lightScale = 15.0f;
     
+    for(int i = 0; i < 3; i++)
+        light->brightness[i] = rand() %  100;
+    
     mvPushMatrix();
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
@@ -284,6 +287,11 @@ void RenderFrame() {
     translatef(16.0 * sin(frameNum / 20.0f) / lightScale, -10.0f / lightScale, 16.0 * cos(frameNum / 20.0f) / lightScale);
     light->RenderFrame();
     mvPopMatrix();
+    
+    lightScale = 20.0f;
+    
+    for(int i = 0; i < 3; i++)
+        light->brightness[i] = 120;
     
     mvPushMatrix();
     scalef(lightScale);

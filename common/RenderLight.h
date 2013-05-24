@@ -34,6 +34,8 @@ public:
     GLuint positionTex;
     GLuint albedoTex;
     GLuint normalTex;
+    
+    float brightness[3];
 };
 
 

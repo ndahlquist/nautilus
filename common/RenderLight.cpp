@@ -7,7 +7,11 @@
 #include "common.h"
 #include "log.h"
 
-RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {}
+RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
+   brightness[0] = 100.0f;
+   brightness[1] = 100.0f;
+   brightness[2] = 100.0f;
+}
 
 void RenderLight::RenderFrame() {
 
@@ -62,6 +66,9 @@ void RenderLight::RenderFrame() {
     GLuint normTextureUniform = glGetUniformLocation(gProgram, "u_NormTexture");
     glUniform1i(normTextureUniform, 2);
     checkGlError("albTextureUniform");
+    
+    GLuint brightnessUniform = glGetUniformLocation(gProgram, "u_Brightness");
+    glUniform3f(brightnessUniform, brightness[0], brightness[1], brightness[2]);
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");

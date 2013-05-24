@@ -8,8 +8,6 @@
 
 #include "log.h"
 
-
-
 static const char defaultVertexShader[] =
 "attribute vec4 a_Position;\n"
 "void main() {\n"
