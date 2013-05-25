@@ -103,8 +103,8 @@ float * getInterleavedBuffer(char * objString, int & numVertices, bool normalCoo
             
             if(normalCoords) {
 			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
-			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
-			    interleavedBuffer[bufferIndex++] = thisVertex->normal.x;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.y;
+			    interleavedBuffer[bufferIndex++] = thisVertex->normal.z;
 			}
             
             if(textureCoords) {

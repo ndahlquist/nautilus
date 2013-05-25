@@ -8,6 +8,8 @@
 
 #include "transform.h"
 
+#include "Eigen/LU"
+
 std::stack<Matrix4f> model_view;
 std::stack<Matrix4f> projection;
 
@@ -34,6 +36,9 @@ void mvLoadIdentity(){
     model_view.push(Matrix4f::Identity());
 }
 //Scale
+void scalef(float s) {
+    scalef(s, s, s);
+}
 void scalef(float sx, float sy, float sz){
     Matrix4f scale;
     scale<<sx,0,0,0,0,sy,0,0,0,0,sz,0,0,0,0,1;
@@ -161,6 +166,15 @@ float* pMatrix(){
     for(int i=0; i<4; i++)
         for(int j=0; j<4; j++)
             pMatrix[i*4+j] = projection.top()(j,i);
+    return pMatrix;
+}
+
+float* pInverseMatrix(){
+    Matrix4f inverse = projection.top().inverse();
+    float* pMatrix = new float[16];
+    for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+            pMatrix[i*4+j] = inverse(j,i);
     return pMatrix;
 }
 

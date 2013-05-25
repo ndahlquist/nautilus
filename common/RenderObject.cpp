@@ -20,9 +20,25 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     free(interleavedBuffer);
     
     // Compile and link shader program
-    gProgram = createProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
+    gProgram = createShaderProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
     
     // Get uniform and attrib locations
+    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
+    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
+    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
+    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
+    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
+    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
+    checkGlError("glGetAttribLocation");
+}
+
+void RenderObject::SetShader(const GLuint shaderProgram) {
+
+    gProgram = shaderProgram;
+
+    glUseProgram(gProgram);
+    checkGlError("glUseProgram");
+
     gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
     gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
     gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
@@ -82,17 +98,17 @@ void RenderObject::RenderFrame() {
     checkGlError("gvPositionHandle");
     
     // Normals
-    glEnableVertexAttribArray(gvNormals);
-    glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
-    checkGlError("gvNormals");
-    
-    glEnableVertexAttribArray(gvTexCoords);
-    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
-    checkGlError("gvTexCoords");
+    if(gvNormals != -1) {
+        glEnableVertexAttribArray(gvNormals);
+        glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
+        checkGlError("gvNormals");
+    }
     
     //Textures
-    if(textures.size() > 0) {
-    	
+    if(gvTexCoords != -1 && textures.size() > 0) {
+    	glEnableVertexAttribArray(gvTexCoords);
+    	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+    	checkGlError("gvTexCoords");
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);

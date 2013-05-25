@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55793609174F067200E1AB4E /* albedo_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793603174F067200E1AB4E /* albedo_f.glsl */; };
+		5579360A174F067200E1AB4E /* dr_pointlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793604174F067200E1AB4E /* dr_pointlight_f.glsl */; };
+		5579360B174F067200E1AB4E /* dr_standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793605174F067200E1AB4E /* dr_standard_v.glsl */; };
+		5579360C174F067200E1AB4E /* icosphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55793606174F067200E1AB4E /* icosphere.obj */; };
+		5579360D174F067200E1AB4E /* position_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793607174F067200E1AB4E /* position_f.glsl */; };
+		5579360E174F067200E1AB4E /* solid_color_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793608174F067200E1AB4E /* solid_color_f.glsl */; };
+		55793615174F075200E1AB4E /* glsl_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5579360F174F075200E1AB4E /* glsl_helper.cpp */; };
+		55793616174F075200E1AB4E /* RenderLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55793611174F075200E1AB4E /* RenderLight.cpp */; };
 		558ED131174598A7000DD7F3 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12C174598A7000DD7F3 /* cave0.obj */; };
 		558ED132174598A7000DD7F3 /* hex.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12D174598A7000DD7F3 /* hex.obj */; };
 		558ED133174598A7000DD7F3 /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12E174598A7000DD7F3 /* raptor.obj */; };
@@ -16,7 +24,6 @@
 		558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED137174598B1000DD7F3 /* diffuse_f.glsl */; };
 		558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* normals_f.glsl */; };
 		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
-		558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */; };
 		558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14217459905000DD7F3 /* raptor_albedo.jpg */; };
 		558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */; };
 		558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */; };
@@ -44,6 +51,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		55793603174F067200E1AB4E /* albedo_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = albedo_f.glsl; path = ../../res/raw/albedo_f.glsl; sourceTree = "<group>"; };
+		55793604174F067200E1AB4E /* dr_pointlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_pointlight_f.glsl; path = ../../res/raw/dr_pointlight_f.glsl; sourceTree = "<group>"; };
+		55793605174F067200E1AB4E /* dr_standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_standard_v.glsl; path = ../../res/raw/dr_standard_v.glsl; sourceTree = "<group>"; };
+		55793606174F067200E1AB4E /* icosphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = icosphere.obj; path = ../../res/raw/icosphere.obj; sourceTree = "<group>"; };
+		55793607174F067200E1AB4E /* position_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = position_f.glsl; path = ../../res/raw/position_f.glsl; sourceTree = "<group>"; };
+		55793608174F067200E1AB4E /* solid_color_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = solid_color_f.glsl; path = ../../res/raw/solid_color_f.glsl; sourceTree = "<group>"; };
+		5579360F174F075200E1AB4E /* glsl_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = glsl_helper.cpp; path = ../../common/glsl_helper.cpp; sourceTree = "<group>"; };
+		55793610174F075200E1AB4E /* glsl_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glsl_helper.h; path = ../../common/glsl_helper.h; sourceTree = "<group>"; };
+		55793611174F075200E1AB4E /* RenderLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderLight.cpp; path = ../../common/RenderLight.cpp; sourceTree = "<group>"; };
+		55793612174F075200E1AB4E /* RenderLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderLight.h; path = ../../common/RenderLight.h; sourceTree = "<group>"; };
 		558ED12C174598A7000DD7F3 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave0.obj; path = ../../res/raw/cave0.obj; sourceTree = "<group>"; };
 		558ED12D174598A7000DD7F3 /* hex.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = hex.obj; path = ../../res/raw/hex.obj; sourceTree = "<group>"; };
 		558ED12E174598A7000DD7F3 /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = raptor.obj; path = ../../res/raw/raptor.obj; sourceTree = "<group>"; };
@@ -172,9 +189,13 @@
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				55D577C4173CC9C800BE1A50 /* transform.h */,
 				55D577C3173CC9C800BE1A50 /* transform.cpp */,
-				558ED144174ADB86000DD7F3 /* sounds */,
-				5594978917377361006E176F /* shaders */,
+				5579360F174F075200E1AB4E /* glsl_helper.cpp */,
+				55793610174F075200E1AB4E /* glsl_helper.h */,
+				55793611174F075200E1AB4E /* RenderLight.cpp */,
+				55793612174F075200E1AB4E /* RenderLight.h */,
 				558ED141174598F2000DD7F3 /* drawables */,
+				5594978917377361006E176F /* shaders */,
+				558ED144174ADB86000DD7F3 /* sounds */,
 				5594978317376DFF006E176F /* obj */,
 				55906D9C17302DDB00BD92BF /* Supporting Files */,
 			);
@@ -198,6 +219,7 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55793606174F067200E1AB4E /* icosphere.obj */,
 				558ED12C174598A7000DD7F3 /* cave0.obj */,
 				558ED12D174598A7000DD7F3 /* hex.obj */,
 				558ED12E174598A7000DD7F3 /* raptor.obj */,
@@ -210,11 +232,15 @@
 		5594978917377361006E176F /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				55793603174F067200E1AB4E /* albedo_f.glsl */,
+				55793604174F067200E1AB4E /* dr_pointlight_f.glsl */,
+				55793605174F067200E1AB4E /* dr_standard_v.glsl */,
+				55793607174F067200E1AB4E /* position_f.glsl */,
+				55793608174F067200E1AB4E /* solid_color_f.glsl */,
 				558ED136174598B1000DD7F3 /* depth_f.glsl */,
 				558ED137174598B1000DD7F3 /* diffuse_f.glsl */,
 				558ED138174598B1000DD7F3 /* normals_f.glsl */,
 				558ED139174598B1000DD7F3 /* standard_v.glsl */,
-				558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
@@ -285,8 +311,13 @@
 				558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */,
 				558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */,
 				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
-				558ED13F174598B1000DD7F3 /* tex_diffuse_f.glsl in Resources */,
 				558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */,
+				55793609174F067200E1AB4E /* albedo_f.glsl in Resources */,
+				5579360A174F067200E1AB4E /* dr_pointlight_f.glsl in Resources */,
+				5579360B174F067200E1AB4E /* dr_standard_v.glsl in Resources */,
+				5579360C174F067200E1AB4E /* icosphere.obj in Resources */,
+				5579360D174F067200E1AB4E /* position_f.glsl in Resources */,
+				5579360E174F067200E1AB4E /* solid_color_f.glsl in Resources */,
 				558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */,
 				558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */,
 				558ED14B174ADBA4000DD7F3 /* water_droplets_1.wav in Resources */,
@@ -309,6 +340,8 @@
 				5590712D1732FEC500BD92BF /* common.cpp in Sources */,
 				55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */,
 				55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */,
+				55793615174F075200E1AB4E /* glsl_helper.cpp in Sources */,
+				55793616174F075200E1AB4E /* RenderLight.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
