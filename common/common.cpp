@@ -40,7 +40,7 @@ GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
 
 GLuint albedoShader;
 GLuint brownShader;
-GLuint normalsShader;
+GLuint geometryShader;
 
 RenderObject *cave;
 RenderObject *character;
@@ -81,7 +81,7 @@ void Setup(int w, int h) {
     
     albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
     brownShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("solid_color_f.glsl"));
-    normalsShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("normals_f.glsl"));
+    geometryShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("geometry_f.glsl"));
     
     width = w;
     height = h;
@@ -184,7 +184,7 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, -40.0f, 0.0f);
-    cave->SetShader(normalsShader);
+    cave->SetShader(geometryShader);
     cave->RenderFrame();
     mvPopMatrix();
     
@@ -193,7 +193,7 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
-    character->SetShader(normalsShader);    
+    character->SetShader(geometryShader);    
     character->RenderFrame();
     mvPopMatrix();
 

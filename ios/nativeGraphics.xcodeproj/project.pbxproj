@@ -22,7 +22,7 @@
 		558ED135174598A7000DD7F3 /* square.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED130174598A7000DD7F3 /* square.obj */; };
 		558ED13B174598B1000DD7F3 /* depth_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED136174598B1000DD7F3 /* depth_f.glsl */; };
 		558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED137174598B1000DD7F3 /* diffuse_f.glsl */; };
-		558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* normals_f.glsl */; };
+		558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* geometry_f.glsl */; };
 		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
 		558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14217459905000DD7F3 /* raptor_albedo.jpg */; };
 		558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */; };
@@ -68,7 +68,7 @@
 		558ED130174598A7000DD7F3 /* square.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = square.obj; path = ../../res/raw/square.obj; sourceTree = "<group>"; };
 		558ED136174598B1000DD7F3 /* depth_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_f.glsl; path = ../../res/raw/depth_f.glsl; sourceTree = "<group>"; };
 		558ED137174598B1000DD7F3 /* diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = diffuse_f.glsl; path = ../../res/raw/diffuse_f.glsl; sourceTree = "<group>"; };
-		558ED138174598B1000DD7F3 /* normals_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = normals_f.glsl; path = ../../res/raw/normals_f.glsl; sourceTree = "<group>"; };
+		558ED138174598B1000DD7F3 /* geometry_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = geometry_f.glsl; path = ../../res/raw/geometry_f.glsl; sourceTree = "<group>"; };
 		558ED139174598B1000DD7F3 /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = standard_v.glsl; path = ../../res/raw/standard_v.glsl; sourceTree = "<group>"; };
 		558ED13A174598B1000DD7F3 /* tex_diffuse_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_diffuse_f.glsl; path = ../../res/raw/tex_diffuse_f.glsl; sourceTree = "<group>"; };
 		558ED14217459905000DD7F3 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = raptor_albedo.jpg; path = ../../res/drawable/raptor_albedo.jpg; sourceTree = "<group>"; };
@@ -239,7 +239,7 @@
 				55793608174F067200E1AB4E /* solid_color_f.glsl */,
 				558ED136174598B1000DD7F3 /* depth_f.glsl */,
 				558ED137174598B1000DD7F3 /* diffuse_f.glsl */,
-				558ED138174598B1000DD7F3 /* normals_f.glsl */,
+				558ED138174598B1000DD7F3 /* geometry_f.glsl */,
 				558ED139174598B1000DD7F3 /* standard_v.glsl */,
 			);
 			name = shaders;
@@ -309,7 +309,7 @@
 				558ED135174598A7000DD7F3 /* square.obj in Resources */,
 				558ED13B174598B1000DD7F3 /* depth_f.glsl in Resources */,
 				558ED13C174598B1000DD7F3 /* diffuse_f.glsl in Resources */,
-				558ED13D174598B1000DD7F3 /* normals_f.glsl in Resources */,
+				558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */,
 				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
 				558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */,
 				55793609174F067200E1AB4E /* albedo_f.glsl in Resources */,

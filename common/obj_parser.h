@@ -12,6 +12,7 @@
 
 #include "Vector3.h"
 #include "Point3.h"
+#include "log.h"
 
 // Public Interface: -----------------------------------------------------------
 
@@ -24,9 +25,6 @@ static void smoothMesh(std::vector<struct Vertex> & vertices, std::vector<struct
 static void computeNormals(std::vector<struct Vertex> & vertices, std::vector<struct face> & faces);
 
 // Implementation: -------------------------------------------------------------
-
-#define  LOG_TAG    "obj_parser"
-#include "log.h"
 
 struct Vertex {
 	Vertex(float x, float y, float z) {
@@ -316,6 +314,4 @@ static void parseObjString(char * objString, std::vector<struct Vertex> & vertic
 	}
 }
 
-#undef LOG_TAG
-
-#endif /* defined(__nativeGraphics__obj_parser__) */
+#endif // __nativeGraphics__obj_parser__
