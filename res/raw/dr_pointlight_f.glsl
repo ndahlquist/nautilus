@@ -24,7 +24,7 @@ vec3 mvPos() {
 
 void main() {
 
-	vec3 delta = v_mvLightPos - mvPos();
+    vec3 delta = v_mvLightPos - mvPos();
 	
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
@@ -32,10 +32,10 @@ void main() {
     
     float diffuse = -dot(normal, normalize(v_mvLightPos));
 	    
-	float value = u_Brightness.r * diffuse / distsq - .1;
+	float value = u_Brightness.r * diffuse / distsq - .3;
 	if(value <= 0.0)
-	    discard;
+        discard;
 
-	gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
+    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 	
 }

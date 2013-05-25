@@ -4,6 +4,8 @@ uniform mat4 u_MVPMatrix;
 
 attribute vec4 a_Position;
 
+invariant gl_Position;
+
 // TODO: This should actually be a uniform.
 varying vec3 v_mvLightPos;
 

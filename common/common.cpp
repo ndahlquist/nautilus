@@ -74,7 +74,7 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
-    cave = new RenderObject("cave0.obj", "standard_v.glsl", "solid_color_f.glsl");
+    cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
@@ -89,7 +89,7 @@ void Setup(int w, int h) {
     checkGlError("glViewport");
     
     // Allocate frame buffer
-	glGenFramebuffers(1, &frameBuffer);
+    glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     
     // Allocate depth buffer
@@ -147,6 +147,7 @@ void RenderFrame() {
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
+    glDisable(GL_DITHER);
     glClearColor(0., 0., 0., 0.);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
@@ -155,7 +156,7 @@ void RenderFrame() {
     scalef(.2);
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, -40.0f, 0.0f);
+    translatef(0.0f, 5.0f / .2f, 0.0f);
     cave->SetShader(brownShader);
     cave->RenderFrame();
     mvPopMatrix();
@@ -174,16 +175,16 @@ void RenderFrame() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
     
-    glDepthMask(GL_FALSE);
-    glDepthFunc(GL_LEQUAL);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
     
     mvPushMatrix();
     scalef(.2);
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, -40.0f, 0.0f);
+    translatef(0.0f, 5.0f / .2f, 0.0f);
     cave->SetShader(geometryShader);
     cave->RenderFrame();
     mvPopMatrix();
@@ -207,6 +208,7 @@ void RenderFrame() {
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    glEnable(GL_DITHER);
     
     glUseProgram(light->gProgram);
     
