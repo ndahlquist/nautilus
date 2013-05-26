@@ -32,6 +32,8 @@ using namespace std;
 int displayWidth = 0;
 int displayHeight = 0;
 
+GLuint defaultFrameBuffer = 0;
+
 RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
@@ -73,9 +75,7 @@ void Setup(int w, int h) {
 }
 
 void setFrameBuffer(int handle) {
-    if(!pipeline)
-        LOGE("Call setup first please."); // TODO: Maybe reorganize
-    pipeline->defaultFrameBuffer = handle;
+    defaultFrameBuffer = handle;
 }
 
 void RenderFrame() {
@@ -91,27 +91,13 @@ void RenderFrame() {
     //////////////////////////////////
     // Render to frame buffer
     
-    // Render colors (R, G, B, UNUSED / SPECULAR)
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
-    
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
-    glDisable(GL_DITHER);
-    glClearColor(0., 0., 0., 0.);
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
+    pipeline->ClearBuffers();
     
     mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, 5.0f / .4f, 0.0f);
-    cave->SetShader(pipeline->brownShader);
     cave->RenderFrame();
     mvPopMatrix();
     
@@ -119,43 +105,14 @@ void RenderFrame() {
     scalef(.2);
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
-    translatef(68.0f, -40.0f, -20.0f);
-    character->SetShader(pipeline->albedoShader);    
-    character->RenderFrame();
-    mvPopMatrix();
-    
-    // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
-    
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
-    
-    mvPushMatrix();
-    scalef(.4);
-    translatef(0.0f, 0.0f, -120.0f / .4f);
-    rotate(rot[1],rot[0],0);
-    translatef(0.0f, 5.0f / .4f, 0.0f);
-    cave->SetShader(pipeline->geometryShader);
-    cave->RenderFrame();
-    mvPopMatrix();
-    
-    mvPushMatrix();
-    scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
-    rotate(rot[1],rot[0],0);
-    translatef(68.0f, -40.0f, -20.0f);
-    character->SetShader(pipeline->geometryShader);    
+    translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Render from frame buffer
 
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->defaultFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
     
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
@@ -163,14 +120,6 @@ void RenderFrame() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     glEnable(GL_DITHER);
-    
-    glUseProgram(light->gProgram);
-    
-    GLuint u_FragWidth = glGetUniformLocation(light->gProgram, "u_FragWidth");
-    glUniform1i(u_FragWidth, displayWidth);
-    
-    GLuint u_FragHeight = glGetUniformLocation(light->gProgram, "u_FragHeight");
-    glUniform1i(u_FragHeight, displayHeight);
     
     float lightScale = 15.0f;
     
@@ -180,13 +129,13 @@ void RenderFrame() {
     pLoadIdentity();
     mvLoadIdentity();
     
-    mvPushMatrix();
+    //mvPushMatrix();
     /*scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
     translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);*/
     light->RenderFrame();
-    mvPopMatrix();
+    //mvPopMatrix();
     
     /*mvPushMatrix();
     scalef(lightScale);

@@ -27,12 +27,16 @@ using namespace std;
 class RenderObject {
 public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void SetShader(const GLuint shaderProgram);
+
     void AddTexture(const char *textureFilename);
-    void RenderFrame();   
+    void RenderFrame();
     
-//private:
-    GLuint gProgram;
+    GLuint colorShader;
+    
+//private: TODO
+    void SetShader(const GLuint shaderProgram);
+    void RenderPass();
+    
     GLuint gvPositionHandle;
     GLuint gmvMatrixHandle;
     GLuint gmvpMatrixHandle;
@@ -41,7 +45,7 @@ public:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     
-    vector<GLuint> textures;
+    GLuint texture;
     int numVertices;
 };
 

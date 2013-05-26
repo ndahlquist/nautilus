@@ -4,7 +4,5 @@ varying vec3 v_Normal;         	// Interpolated normal for this fragment.
 varying float depth_MVP;
 
 void main() {
-
     gl_FragColor = vec4(v_Normal, depth_MVP); // NX_MV, NY_MV, NZ_MV, Depth_MVP
-
 }

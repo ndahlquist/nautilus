@@ -20,8 +20,14 @@ void RenderLight::RenderFrame() {
         return;
     }
     
-    glUseProgram(gProgram);
+    glUseProgram(colorShader);
     checkGlError("glUseProgram");
+    
+    GLuint u_FragWidth = glGetUniformLocation(colorShader, "u_FragWidth");
+    glUniform1i(u_FragWidth, displayWidth);
+    
+    GLuint u_FragHeight = glGetUniformLocation(colorShader, "u_FragHeight");
+    glUniform1i(u_FragHeight, displayHeight);
     
     // Matrices setup
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
@@ -30,7 +36,7 @@ void RenderLight::RenderFrame() {
     
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
-    GLuint gpT_MatrixHandle = glGetUniformLocation(gProgram, "u_pT_Matrix");
+    GLuint gpT_MatrixHandle = glGetUniformLocation(colorShader, "u_pT_Matrix");
     glUniformMatrix4fv(gpT_MatrixHandle, 1, GL_FALSE, pT_Matrix);
     checkGlError("glUniformMatrix4fv");
     delete mv_Matrix;
@@ -46,17 +52,17 @@ void RenderLight::RenderFrame() {
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, pipeline->colorTexture);
-    GLuint colorTextureUniform = glGetUniformLocation(gProgram, "u_ColorTexture");
+    GLuint colorTextureUniform = glGetUniformLocation(colorShader, "u_ColorTexture");
     glUniform1i(colorTextureUniform, 0);
     checkGlError("albTextureUniform");
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pipeline->geometryTexture);
-    GLuint geometryTextureUniform = glGetUniformLocation(gProgram, "u_GeometryTexture");
+    GLuint geometryTextureUniform = glGetUniformLocation(colorShader, "u_GeometryTexture");
     glUniform1i(geometryTextureUniform, 1);
     checkGlError("albTextureUniform");
     
-    GLuint brightnessUniform = glGetUniformLocation(gProgram, "u_Brightness");
+    GLuint brightnessUniform = glGetUniformLocation(colorShader, "u_Brightness");
     glUniform3f(brightnessUniform, brightness[0], brightness[1], brightness[2]);
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
