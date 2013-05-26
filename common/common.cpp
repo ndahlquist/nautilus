@@ -71,7 +71,7 @@ void Setup(int w, int h) {
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
-    light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
 }
 
 void setFrameBuffer(int handle) {
@@ -81,6 +81,8 @@ void setFrameBuffer(int handle) {
 void RenderFrame() {
 
     glViewport(0, 0, displayWidth, displayHeight);
+    
+    pipeline->ClearBuffers();
 
     pLoadIdentity();
     perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
@@ -89,9 +91,7 @@ void RenderFrame() {
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
 
     //////////////////////////////////
-    // Render to frame buffer
-    
-    pipeline->ClearBuffers();
+    // Render to g buffer.
     
     mvPushMatrix();
     scalef(.4);
@@ -110,34 +110,22 @@ void RenderFrame() {
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
-    // Render from frame buffer
-
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
-    
-    glEnable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-    glEnable(GL_DITHER);
+    // Using g buffer, render lights
     
     float lightScale = 15.0f;
     
     for(int i = 0; i < 3; i++)
         light->brightness[i] = 40;
     
-    pLoadIdentity();
-    mvLoadIdentity();
-    
-    //mvPushMatrix();
-    /*scalef(lightScale);
+    mvPushMatrix();
+    scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);*/
+    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
     light->RenderFrame();
-    //mvPopMatrix();
+    mvPopMatrix();
     
-    /*mvPushMatrix();
+    mvPushMatrix();
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
@@ -156,12 +144,10 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(-6.0f / lightScale, 10.0f / lightScale, 0.0f);
     light->RenderFrame();
-    mvPopMatrix();*/
+    mvPopMatrix();
     
     frameNum++;
 }
-
-// User interface functions:
 
 float lastPointer[2] = {0,0};
 
@@ -171,14 +157,14 @@ void PointerDown(float x, float y, int pointerIndex) {
 }
 
 void PointerMove(float x, float y, int pointerIndex) {
-     float deltaX = x - lastPointer[0];
-	 float deltaY = y - lastPointer[1];
-	 
-	 rot[0] +=  8.0 * deltaX;
-	 rot[1] += -1.0 * deltaY;
-	 
-	 lastPointer[0] = x;
-     lastPointer[1] = y;
+    float deltaX = x - lastPointer[0];
+    float deltaY = y - lastPointer[1];
+
+    rot[0] +=  8.0 * deltaX;
+    rot[1] += -1.0 * deltaY;
+	
+    lastPointer[0] = x;
+    lastPointer[1] = y;
 }
 
 void PointerUp(float x, float y, int pointerIndex) {
