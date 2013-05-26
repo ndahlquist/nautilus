@@ -31,9 +31,9 @@ void RenderLight::RenderFrame() {
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     glEnable(GL_DITHER);
     
+    // Pass fragment size
     GLuint u_FragWidth = glGetUniformLocation(colorShader, "u_FragWidth");
     glUniform1i(u_FragWidth, displayWidth);
-    
     GLuint u_FragHeight = glGetUniformLocation(colorShader, "u_FragHeight");
     glUniform1i(u_FragHeight, displayHeight);   
     
@@ -41,7 +41,7 @@ void RenderLight::RenderFrame() {
     GLuint brightnessUniform = glGetUniformLocation(colorShader, "u_Brightness");
     glUniform3f(brightnessUniform, brightness[0], brightness[1], brightness[2]);
     
-    // Pass Matrices
+    // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
     GLfloat* pT_Matrix = (GLfloat*)pInverseMatrix();

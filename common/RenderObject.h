@@ -33,7 +33,7 @@ public:
     
     GLuint colorShader;
     
-//private: TODO
+protected:
     void SetShader(const GLuint shaderProgram);
     void RenderPass();
     

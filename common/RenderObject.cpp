@@ -71,29 +71,29 @@ void RenderObject::RenderPass() {
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
-    // Vertices
+    // Pass vertices
     glEnableVertexAttribArray(gvPositionHandle);
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
     
-    // Normals
+    // Pass normals
     if(gvNormals != -1) {
         glEnableVertexAttribArray(gvNormals);
         glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
         checkGlError("gvNormals");
     }
     
-    // Textures
+    // Pass texture coords
     if(gvTexCoords != -1) {
     	glEnableVertexAttribArray(gvTexCoords);
     	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
     	checkGlError("gvTexCoords");
     }
     
-    if(texture != -1 && textureUniform != -1) {
+    // Pass texture
+    if(textureUniform != -1 && texture != -1) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-        checkGlError("glBindTexture");
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
     }
