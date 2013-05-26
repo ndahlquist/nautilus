@@ -45,13 +45,13 @@ void RenderLight::RenderFrame() {
     checkGlError("gvPositionHandle");
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, colorTexture);
+    glBindTexture(GL_TEXTURE_2D, pipeline->colorTexture);
     GLuint colorTextureUniform = glGetUniformLocation(gProgram, "u_ColorTexture");
     glUniform1i(colorTextureUniform, 0);
     checkGlError("albTextureUniform");
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, geometryTexture);
+    glBindTexture(GL_TEXTURE_2D, pipeline->geometryTexture);
     GLuint geometryTextureUniform = glGetUniformLocation(gProgram, "u_GeometryTexture");
     glUniform1i(geometryTextureUniform, 1);
     checkGlError("albTextureUniform");

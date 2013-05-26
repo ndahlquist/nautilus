@@ -1,10 +1,5 @@
-//
 //  RenderObject.h
 //  nativeGraphics
-//
-//  Created by Ling-Ling Zhang on 5/9/13.
-//  Copyright (c) 2013 Ling-Ling Zhang. All rights reserved.
-//
 
 #ifndef __nativeGraphics__RenderObject__
 #define __nativeGraphics__RenderObject__
@@ -51,4 +46,4 @@ public:
 };
 
 
-#endif /* defined(__nativeGraphics__RenderObject__) */
+#endif // __nativeGraphics__RenderObject__

@@ -29,22 +29,14 @@
 
 using namespace std;
 
-int width = 0;
-int height = 0;
+int displayWidth = 0;
+int displayHeight = 0;
 
-GLuint frameBuffer;
-GLuint depthBuffer;
+RenderPipeline *pipeline = NULL;
 
-GLuint colorTexture; // R, G, B, UNUSED (specular)
-GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
-
-GLuint albedoShader;
-GLuint brownShader;
-GLuint geometryShader;
-
-RenderObject *cave;
-RenderObject *character;
-RenderLight *light;
+RenderObject *cave = NULL;
+RenderObject *character = NULL;
+RenderLight *light = NULL;
 
 float cameraPos[4] = {0,0,0.9,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
@@ -59,12 +51,6 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-GLuint defaultFrameBuffer = 0;
-
-void setFrameBuffer(int handle) {
-    defaultFrameBuffer = handle;
-}
-
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
 void Setup(int w, int h) {
@@ -74,62 +60,30 @@ void Setup(int w, int h) {
         exit(-1);
     }
     
+    displayWidth = w;
+    displayHeight = h;
+    
+    pipeline = new RenderPipeline();
+    
     cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
-    light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     
-    albedoShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("albedo_f.glsl"));
-    brownShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("solid_color_f.glsl"));
-    geometryShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("geometry_f.glsl"));
-    
-    width = w;
-    height = h;
-    glViewport(0, 0, w, h);
-    checkGlError("glViewport");
-    
-    // Allocate frame buffer
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    
-    // Allocate depth buffer
-    glGenRenderbuffers(1, &depthBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-    
-    // Allocate albedo texture to render to.
-    glGenTextures(1, &colorTexture);
-    glBindTexture(GL_TEXTURE_2D, colorTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    checkGlError("colorTexture");
-    light->colorTexture = colorTexture;
-    
-    // Allocate normal texture to render to.
-    glGenTextures(1, &geometryTexture);
-    glBindTexture(GL_TEXTURE_2D, geometryTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    checkGlError("geometryTexture");
-    light->geometryTexture = geometryTexture;
-    
-    glBindTexture(GL_TEXTURE_2D, 0);       
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+}
+
+void setFrameBuffer(int handle) {
+    if(!pipeline)
+        LOGE("Call setup first please."); // TODO: Maybe reorganize
+    pipeline->defaultFrameBuffer = handle;
 }
 
 void RenderFrame() {
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, displayWidth, displayHeight);
 
     pLoadIdentity();
-    perspective(20, (float) width / (float) height, 80, 180);
+    perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
@@ -138,9 +92,9 @@ void RenderFrame() {
     // Render to frame buffer
     
     // Render colors (R, G, B, UNUSED / SPECULAR)
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
     
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -153,11 +107,11 @@ void RenderFrame() {
     checkGlError("glClear");
     
     mvPushMatrix();
-    scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
+    scalef(.4);
+    translatef(0.0f, 0.0f, -120.0f / .4f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, 5.0f / .2f, 0.0f);
-    cave->SetShader(brownShader);
+    translatef(0.0f, 5.0f / .4f, 0.0f);
+    cave->SetShader(pipeline->brownShader);
     cave->RenderFrame();
     mvPopMatrix();
     
@@ -166,14 +120,14 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
-    character->SetShader(albedoShader);    
+    character->SetShader(pipeline->albedoShader);    
     character->RenderFrame();
     mvPopMatrix();
     
     // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
     
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
@@ -181,11 +135,11 @@ void RenderFrame() {
     checkGlError("glClear");
     
     mvPushMatrix();
-    scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
+    scalef(.4);
+    translatef(0.0f, 0.0f, -120.0f / .4f);
     rotate(rot[1],rot[0],0);
-    translatef(0.0f, 5.0f / .2f, 0.0f);
-    cave->SetShader(geometryShader);
+    translatef(0.0f, 5.0f / .4f, 0.0f);
+    cave->SetShader(pipeline->geometryShader);
     cave->RenderFrame();
     mvPopMatrix();
     
@@ -194,14 +148,14 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f);
-    character->SetShader(geometryShader);    
+    character->SetShader(pipeline->geometryShader);    
     character->RenderFrame();
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Render from frame buffer
 
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->defaultFrameBuffer);
     
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
@@ -213,25 +167,28 @@ void RenderFrame() {
     glUseProgram(light->gProgram);
     
     GLuint u_FragWidth = glGetUniformLocation(light->gProgram, "u_FragWidth");
-    glUniform1i(u_FragWidth, width);
+    glUniform1i(u_FragWidth, displayWidth);
     
     GLuint u_FragHeight = glGetUniformLocation(light->gProgram, "u_FragHeight");
-    glUniform1i(u_FragHeight, height);
+    glUniform1i(u_FragHeight, displayHeight);
     
     float lightScale = 15.0f;
     
     for(int i = 0; i < 3; i++)
         light->brightness[i] = 40;
     
+    pLoadIdentity();
+    mvLoadIdentity();
+    
     mvPushMatrix();
-    scalef(lightScale);
+    /*scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
-    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
+    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);*/
     light->RenderFrame();
     mvPopMatrix();
     
-    mvPushMatrix();
+    /*mvPushMatrix();
     scalef(lightScale);
     translatef(0.0f, 0.0f, -120.0f / lightScale);
     rotate(rot[1],rot[0],0);
@@ -250,7 +207,7 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(-6.0f / lightScale, 10.0f / lightScale, 0.0f);
     light->RenderFrame();
-    mvPopMatrix();
+    mvPopMatrix();*/
     
     frameNum++;
 }

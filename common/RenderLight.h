@@ -30,14 +30,8 @@ class RenderLight : public RenderObject {
 public:
     RenderLight(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void RenderFrame();
-    void PreRender();
     
-    GLuint colorTexture; // R, G, B, UNUSED (specular)
-    GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
-    
-    float brightness[3];
-    
-    GLfloat* pT_Matrix;
+    float brightness[3]; // R, G, B
 };
 
 

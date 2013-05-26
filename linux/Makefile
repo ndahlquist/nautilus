@@ -7,7 +7,8 @@ FILES   := mainlinux ../common/common \
                      ../common/RenderObject \
                      ../common/transform \
                      ../common/glsl_helper \
-                     ../common/RenderLight
+                     ../common/RenderLight \
+                     ../common/RenderPipeline
 
 #################################################################
 
