@@ -78,7 +78,7 @@ void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
 
-float lightPos[3] = { 0, 0, 100 };
+float lightPos[3] = { 0, 200, 100 };
 
 void RenderFrame() {
 
@@ -87,10 +87,10 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(30, (float) displayWidth / (float) displayHeight, 50, 400); // TODO
+    perspective(30, (float) displayWidth / (float) displayHeight, 120, 600); // TODO
     
     mvLoadIdentity();
-    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
+    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 100, 0, 0, 1, 0);
 
 ///////////////////////////////////////////
 
@@ -103,16 +103,16 @@ void RenderFrame() {
     mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
-    rotate(rot[1],rot[0],0);
-    translatef(0.0f, 5.0f / .4f, 0.0f);
+    //rotate(rot[1],rot[0],0);
+    //translatef(0.0f, 5.0f / .4f, 0.0f);
     cave->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
     scalef(.2);
     translatef(0.0f, 0.0f, -120.0f / .2f);
-    rotate(rot[1],rot[0],0);
-    translatef(68.0f, -40.0f, -20.0f); 
+    //rotate(rot[1],rot[0],0);
+    //translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
     mvPopMatrix();
 

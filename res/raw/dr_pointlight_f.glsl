@@ -38,6 +38,6 @@ void main() {
 
     gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);*/
     
-    gl_FragColor = vec4(texture2D(u_GeometryTexture, samplePoint).w, 0.0, 0.0, 1.0);
+    gl_FragColor = vec4(0.0, texture2D(u_GeometryTexture, samplePoint).w, 0.0,  1.0);
 	
 }
