@@ -71,12 +71,14 @@ void Setup(int w, int h) {
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
-    light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
 }
 
 void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
+
+float lightPos[3] = { 0, 0, 100 };
 
 void RenderFrame() {
 
@@ -85,14 +87,19 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
+    perspective(30, (float) displayWidth / (float) displayHeight, 50, 400); // TODO
+    
+    mvLoadIdentity();
+    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
+
+///////////////////////////////////////////
+
+    /*pLoadIdentity();
     perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
     
     mvLoadIdentity();
-    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);*/
 
-    //////////////////////////////////
-    // Render to g buffer.
-    
     mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
@@ -109,10 +116,34 @@ void RenderFrame() {
     character->RenderFrame();
     mvPopMatrix();
 
+    //////////////////////////////////
+    // Render to g buffer.
+    
+    /*mvPushMatrix();
+    scalef(.4);
+    translatef(0.0f, 0.0f, -120.0f / .4f);
+    rotate(rot[1],rot[0],0);
+    translatef(0.0f, 5.0f / .4f, 0.0f);
+    cave->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    scalef(.2);
+    translatef(0.0f, 0.0f, -120.0f / .2f);
+    rotate(rot[1],rot[0],0);
+    translatef(68.0f, -40.0f, -20.0f); 
+    character->RenderFrame();
+    mvPopMatrix();*/
+
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
-    float lightScale = 15.0f;
+    
+    pLoadIdentity();
+    mvLoadIdentity();
+    light->RenderFrame();
+    
+    /*float lightScale = 15.0f;
     
     for(int i = 0; i < 3; i++)
         light->brightness[i] = 40;
@@ -146,7 +177,7 @@ void RenderFrame() {
     light->RenderFrame();
     mvPopMatrix();
     
-    frameNum++;
+    frameNum++;*/
 }
 
 float lastPointer[2] = {0,0};

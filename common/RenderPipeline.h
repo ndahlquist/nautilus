@@ -30,6 +30,10 @@ public:
 
     GLuint geometryShader;
     
+    GLuint shadowFrameBuffer;
+    GLuint shadowDepthBuffer;
+    GLuint shadowTexture;
+    
 };
 
 #endif // __nativeGraphics__RenderPipeline__

@@ -45,6 +45,26 @@ RenderPipeline::RenderPipeline() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     checkGlError("geometryTexture");
     
+        // Allocate frame buffer
+    glGenFramebuffers(1, &shadowFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBuffer);
+    
+    // Allocate depth buffer
+    glGenRenderbuffers(1, &shadowDepthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, shadowDepthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayWidth, displayHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadowDepthBuffer);
+    
+    // Allocate albedo texture to render to.
+    glGenTextures(1, &shadowTexture);
+    glBindTexture(GL_TEXTURE_2D, shadowTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, displayWidth, displayHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    checkGlError("colorTexture");
+    
     glBindTexture(GL_TEXTURE_2D, 0);       
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
