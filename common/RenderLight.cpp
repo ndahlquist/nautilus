@@ -47,12 +47,18 @@ void RenderLight::RenderFrame() {
     GLfloat* pT_Matrix = (GLfloat*)pInverseMatrix();
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
-    GLuint gpT_MatrixHandle = glGetUniformLocation(colorShader, "u_pT_Matrix");
-    glUniformMatrix4fv(gpT_MatrixHandle, 1, GL_FALSE, pT_Matrix);
+    GLuint u_p_inverseHandle = glGetUniformLocation(colorShader, "u_p_inverse");
+    glUniformMatrix4fv(u_p_inverseHandle, 1, GL_FALSE, pT_Matrix);
     checkGlError("glUniformMatrix4fv");
     delete mv_Matrix;
     delete mvp_Matrix;
     delete pT_Matrix;
+    
+    // Pass shadow matrices
+    GLuint u_mv_lightHandle = glGetUniformLocation(colorShader, "u_mv_light");
+    glUniformMatrix4fv(u_mv_lightHandle, 1, GL_FALSE, pipeline->mv_shadow);
+    GLuint u_mvp_lightHandle = glGetUniformLocation(colorShader, "u_mvp_light");
+    glUniformMatrix4fv(u_mvp_lightHandle, 1, GL_FALSE, pipeline->mvp_shadow);
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     

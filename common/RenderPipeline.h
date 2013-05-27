@@ -21,6 +21,10 @@ class RenderPipeline {
 public:
     RenderPipeline();
     void ClearBuffers();
+    void saveShadowMatrices();
+    
+    GLfloat* mv_shadow;
+    GLfloat* mvp_shadow;
     
     GLuint frameBuffer;
     GLuint depthBuffer;

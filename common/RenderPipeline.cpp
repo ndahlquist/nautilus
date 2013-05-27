@@ -1,8 +1,10 @@
 //  RenderPipeline.cpp
 //  nativeGraphics
 
-#include "common.h"
 #include "RenderPipeline.h"
+
+#include "common.h"
+#include "transform.h"
 #include "glsl_helper.h"
 #include "log.h"
 
@@ -67,6 +69,11 @@ RenderPipeline::RenderPipeline() {
     
     glBindTexture(GL_TEXTURE_2D, 0);       
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderPipeline::saveShadowMatrices() {
+    mv_shadow = (GLfloat*)mvMatrix(); // TODO: delete
+    mvp_shadow = (GLfloat*)mvpMatrix();
 }
 
 void RenderPipeline::ClearBuffers() {

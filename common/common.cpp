@@ -91,6 +91,8 @@ void RenderFrame() {
     
     mvLoadIdentity();
     lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 100, 0, 0, 1, 0);
+    
+    pipeline->saveShadowMatrices();
 
     mvPushMatrix();
     scalef(.4);
