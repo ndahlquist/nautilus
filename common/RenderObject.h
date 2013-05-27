@@ -30,6 +30,7 @@ public:
 
     void AddTexture(const char *textureFilename);
     void RenderFrame();
+    void RenderShadow();
     
     GLuint colorShader;
     

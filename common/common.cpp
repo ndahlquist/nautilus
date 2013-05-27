@@ -87,25 +87,17 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(30, (float) displayWidth / (float) displayHeight, 120, 600); // TODO
+    perspective(30, (float) displayWidth / (float) displayHeight, 120, 600);
     
     mvLoadIdentity();
     lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 100, 0, 0, 1, 0);
-
-///////////////////////////////////////////
-
-    /*pLoadIdentity();
-    perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
-    
-    mvLoadIdentity();
-    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);*/
 
     mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
     //rotate(rot[1],rot[0],0);
     //translatef(0.0f, 5.0f / .4f, 0.0f);
-    cave->RenderFrame();
+    cave->RenderShadow();
     mvPopMatrix();
     
     mvPushMatrix();
@@ -113,13 +105,19 @@ void RenderFrame() {
     translatef(0.0f, 0.0f, -120.0f / .2f);
     //rotate(rot[1],rot[0],0);
     //translatef(68.0f, -40.0f, -20.0f); 
-    character->RenderFrame();
+    character->RenderShadow();
     mvPopMatrix();
 
     //////////////////////////////////
     // Render to g buffer.
     
-    /*mvPushMatrix();
+	pLoadIdentity();
+    perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
+    
+    mvLoadIdentity();
+    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+
+    mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
     rotate(rot[1],rot[0],0);
@@ -133,11 +131,10 @@ void RenderFrame() {
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
-    mvPopMatrix();*/
+    mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
-    
     
     pLoadIdentity();
     mvLoadIdentity();

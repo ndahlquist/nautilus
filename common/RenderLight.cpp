@@ -75,6 +75,13 @@ void RenderLight::RenderFrame() {
     glUniform1i(geometryTextureUniform, 1);
     checkGlError("albTextureUniform");
     
+    // Pass shadow texture
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, pipeline->shadowTexture);
+    GLuint shadowTextureUniform = glGetUniformLocation(colorShader, "u_ShadowTexture");
+    glUniform1i(shadowTextureUniform, 2);
+    checkGlError("shadowTextureUniform");
+    
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
     

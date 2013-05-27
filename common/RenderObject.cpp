@@ -103,6 +103,36 @@ void RenderObject::RenderPass() {
 
 }
 
+void RenderObject::RenderShadow() {
+    if(!pipeline) {
+        LOGE("RenderPipeline inaccessible.");
+        exit(0);
+    }
+    
+    //////////////////////////////////
+    // Render to frame buffer
+    
+    // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
+    SetShader(pipeline->geometryShader);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->shadowFrameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->shadowTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->shadowDepthBuffer);
+    
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+    glDisable(GL_DITHER);
+    
+    RenderPass();
+    
+    glDepthMask(GL_TRUE); // TODO
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
+}
+
 void RenderObject::RenderFrame() {
 
     if(!pipeline) {

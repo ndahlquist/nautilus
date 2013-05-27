@@ -2,6 +2,7 @@ precision mediump float;       	// Set the default precision to medium. We don't
 
 uniform sampler2D u_ColorTexture; // R, G, B, UNUSED (specular)
 uniform sampler2D u_GeometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
+uniform sampler2D u_ShadowTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
 
 uniform mat4 u_pT_Matrix;
 
@@ -38,6 +39,6 @@ void main() {
 
     gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);*/
     
-    gl_FragColor = vec4(0.0, texture2D(u_GeometryTexture, samplePoint).w, 0.0,  1.0);
+    gl_FragColor = vec4(texture2D(u_ShadowTexture, samplePoint).w, texture2D(u_GeometryTexture, samplePoint).w, 0.0,  1.0);
 	
 }
