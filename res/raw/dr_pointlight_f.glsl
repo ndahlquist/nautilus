@@ -29,38 +29,23 @@ vec3 mvPos() {
 
 void main() {
 
-    /*vec3 delta = v_mvLightPos - mvPos();
-	
-	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-
-    vec3 normal = texture2D(u_GeometryTexture, samplePoint).xyz;
-    
-    float diffuse = -dot(normal, normalize(v_mvLightPos));
-	    
-	float value = u_Brightness.r * diffuse / distsq - .3;
-	if(value <= 0.0)
-        discard;
-
-    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);*/
     // Calculate if the point is in shadow
-    vec4 cameraCoord = mvPos();
+    vec4 cameraCoord = vec4(mvPos(), 1.0);
     vec4 shadowCoord = u_mvp_light * u_mv_inverse * cameraCoord;
     shadowCoord.xyz = shadowCoord.xyz * 0.5;
     shadowCoord.w = shadowCoord.x * 0.5 + shadowCoord.y * 0.5 + shadowCoord.z * 0.5 + shadowCoord.w;
-  vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w;
+    vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
   
-  // Used to lower moiré pattern and self-shadowing
-  shadowCoordinateWdivide.z += 0.0005;
+    // Used to lower moiré pattern and self-shadowing
+    shadowCoordinateWdivide.z += 0.0005;
 
-  float distanceFromLight = texture2D(u_ShadowTexture, shadowCoordinateWdivide.xy).z;  
+    float distanceFromLight = texture2D(u_ShadowTexture, shadowCoordinateWdivide.xy).z;  
   
-  float shadow = 1.0;
-  if (ShadowCoord.w > 0.0)
-    shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
+    float shadow = 1.0;
+    if(shadowCoord.w > 0.0)
+        shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
   
   
-  gl_FragColor = shadow * vec4(1, 1, 1, 1);
-
-  //    gl_FragColor = vec4(texture2D(u_ShadowTexture, samplePoint).w, texture2D(u_GeometryTexture, samplePoint).w, 0.0,  1.0);
+    gl_FragColor = shadow * vec4(1, 0, 1, 1);
 	
 }
