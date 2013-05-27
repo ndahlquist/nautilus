@@ -57,6 +57,7 @@ void perspective(float fovy, float aspect,
 void viewport(int x, int y, int width, int height);
 //return combined mvp matrix
 float* mvpMatrix();
+float* mvInverseMatrix();
 
 #endif /* defined(__nativeGraphics__transform__) */
 

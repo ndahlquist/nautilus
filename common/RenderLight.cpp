@@ -43,16 +43,23 @@ void RenderLight::RenderFrame() {
     
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
-    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
-    GLfloat* pT_Matrix = (GLfloat*)pInverseMatrix();
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
-    GLuint u_p_inverseHandle = glGetUniformLocation(colorShader, "u_p_inverse");
-    glUniformMatrix4fv(u_p_inverseHandle, 1, GL_FALSE, pT_Matrix);
-    checkGlError("glUniformMatrix4fv");
     delete mv_Matrix;
+    
+    GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
+    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
     delete mvp_Matrix;
-    delete pT_Matrix;
+    
+    GLfloat* p_inverse_Matrix = (GLfloat*)pInverseMatrix();
+    GLuint u_p_inverseHandle = glGetUniformLocation(colorShader, "u_p_inverse");
+    glUniformMatrix4fv(u_p_inverseHandle, 1, GL_FALSE, p_inverse_Matrix);
+    delete p_inverse_Matrix;
+    
+    GLfloat* mv_inverse_Matrix = (GLfloat*)mvInverseMatrix();
+    GLuint u_mv_inverseHandle = glGetUniformLocation(colorShader, "u_mv_inverse");
+    glUniformMatrix4fv(u_mv_inverseHandle, 1, GL_FALSE, mv_inverse_Matrix );
+    delete mv_inverse_Matrix;
+    checkGlError("glUniformMatrix4fv");
     
     // Pass shadow matrices
     GLuint u_mv_lightHandle = glGetUniformLocation(colorShader, "u_mv_light");

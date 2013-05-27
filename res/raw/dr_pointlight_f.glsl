@@ -5,6 +5,7 @@ uniform sampler2D u_GeometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
 uniform sampler2D u_ShadowTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
 
 uniform mat4 u_p_inverse;
+uniform mat4 u_mv_inverse;
 
 uniform mat4 u_mv_light;
 uniform mat4 u_mvp_light;
