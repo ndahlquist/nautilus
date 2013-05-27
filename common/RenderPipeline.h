@@ -24,6 +24,7 @@ public:
     void saveShadowMatrices();
     
     GLfloat* mv_shadow;
+    GLfloat* mv_inverse_shadow;
     GLfloat* mvp_shadow;
     
     GLuint frameBuffer;

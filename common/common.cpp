@@ -40,7 +40,7 @@ RenderObject *cave = NULL;
 RenderObject *character = NULL;
 RenderLight *light = NULL;
 
-float cameraPos[4] = {0,0,0.9,1};
+float cameraPos[4] = {40,0,4,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
@@ -68,7 +68,7 @@ void Setup(int w, int h) {
     pipeline = new RenderPipeline();
     
     cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
+    character = new RenderObject("cube_plane.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
     light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
@@ -78,7 +78,7 @@ void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
 
-float lightPos[3] = { 0, 200, 100 };
+float lightPos[3] = { 20, 40, 10 };
 
 void RenderFrame() {
 
@@ -87,24 +87,24 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(30, (float) displayWidth / (float) displayHeight, 120, 600);
+    perspective(30, (float) displayWidth / (float) displayHeight, 1, 100);
     
     mvLoadIdentity();
-    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 100, 0, 0, 1, 0);
+    lookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
     
     pipeline->saveShadowMatrices();
 
-    mvPushMatrix();
+    /*mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
     //rotate(rot[1],rot[0],0);
     //translatef(0.0f, 5.0f / .4f, 0.0f);
     cave->RenderShadow();
-    mvPopMatrix();
+    mvPopMatrix();*/
     
     mvPushMatrix();
-    scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
+    scalef(5.);
+    //translatef(0.0f, 0.0f, -120.0f / 5.f);
     //rotate(rot[1],rot[0],0);
     //translatef(68.0f, -40.0f, -20.0f); 
     character->RenderShadow();
@@ -114,24 +114,24 @@ void RenderFrame() {
     // Render to g buffer.
     
 	pLoadIdentity();
-    perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
+    perspective(20, (float) displayWidth / (float) displayHeight, 1, 180);
     
     mvLoadIdentity();
-    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    lookAt(cameraPos[0], cameraPos[1], cameraPos[2], 0, 0, 0, up[0], up[1], up[2]);
 
-    mvPushMatrix();
+    /*mvPushMatrix();
     scalef(.4);
     translatef(0.0f, 0.0f, -120.0f / .4f);
     rotate(rot[1],rot[0],0);
     translatef(0.0f, 5.0f / .4f, 0.0f);
     cave->RenderFrame();
-    mvPopMatrix();
+    mvPopMatrix();*/
     
     mvPushMatrix();
-    scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
+    scalef(5.);
+    //translatef(0.0f, 0.0f, -120.0f / 5.f);
     rotate(rot[1],rot[0],0);
-    translatef(68.0f, -40.0f, -20.0f); 
+    //translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
     mvPopMatrix();
 

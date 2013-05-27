@@ -64,8 +64,12 @@ void RenderLight::RenderFrame() {
     // Pass shadow matrices
     GLuint u_mv_lightHandle = glGetUniformLocation(colorShader, "u_mv_light");
     glUniformMatrix4fv(u_mv_lightHandle, 1, GL_FALSE, pipeline->mv_shadow);
+    
     GLuint u_mvp_lightHandle = glGetUniformLocation(colorShader, "u_mvp_light");
     glUniformMatrix4fv(u_mvp_lightHandle, 1, GL_FALSE, pipeline->mvp_shadow);
+    
+    GLuint u_mv_inverse_lightHandle = glGetUniformLocation(colorShader, "u_mv_inverse_light");
+    glUniformMatrix4fv(u_mv_inverse_lightHandle, 1, GL_FALSE, pipeline->mv_inverse_shadow);
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     

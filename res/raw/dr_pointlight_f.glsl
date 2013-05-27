@@ -8,6 +8,7 @@ uniform mat4 u_p_inverse;
 uniform mat4 u_mv_inverse;
 
 uniform mat4 u_mv_light;
+uniform mat4 u_mv_inverse_light;
 uniform mat4 u_mvp_light;
 
 uniform int u_FragWidth;
@@ -27,11 +28,45 @@ vec3 mvPos() {
     return mvPos_hom.xyz / mvPos_hom.w;
 }
 
+float readShadowMap(vec3 eyeDir) {
+    vec4 projectedEyeDir = u_mvp_light * u_mv_inverse * vec4(eyeDir, 1.0);
+    projectedEyeDir = projectedEyeDir / projectedEyeDir.w;
+    vec2 shadowTexCoord = projectedEyeDir.xy * vec2(.5, .5) + vec2(.5, .5);
+    
+    //const float bias = .0001;
+    float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
+    
+    //return projectedEyeDir.z;
+    
+    //if(projectedEyeDir.z * 0.5 + .5 < depthVal)
+    //    return 1.0;
+    //return 0.0;
+    return projectedEyeDir.y;
+    //return projectedEyeDir.z * 0.5 + 0.5 < depthVal;
+}
+
 void main() {
 
+    vec3 position = mvPos();
+
+    vec3 light = u_mv_inverse_light[3].xyz;
+    vec3 lightDir = normalize(light - position);
+
+    float shadow = readShadowMap(normalize(-position)); 
+
+    vec3 normals = texture2D(u_GeometryTexture, samplePoint).xyw;
+
+    gl_FragColor = vec4(normals, 1.0);
+
+
+///////////////////////////
+
+
+
     // Calculate if the point is in shadow
-    vec4 cameraCoord = vec4(mvPos(), 1.0);
+    /*vec4 cameraCoord = vec4(mvPos(), 1.0);
     vec4 shadowCoord = u_mvp_light * u_mv_inverse * cameraCoord;
+    
     shadowCoord.xyz = shadowCoord.xyz * 0.5;
     shadowCoord.w = shadowCoord.x * 0.5 + shadowCoord.y * 0.5 + shadowCoord.z * 0.5 + shadowCoord.w;
     vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
@@ -46,6 +81,6 @@ void main() {
         shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
   
   
-    gl_FragColor = shadow * vec4(1, 0, 1, 1);
+    gl_FragColor = shadow * vec4(1, 0, 1, 1);*/
 	
 }
