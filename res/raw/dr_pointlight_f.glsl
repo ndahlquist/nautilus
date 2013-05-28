@@ -47,7 +47,7 @@ void main() {
     vec4 shadowCoord = u_mvp_light * u_mv_inverse * cameraCoord;
     shadowCoord.xyz = shadowCoord.xyz * 0.5;
     shadowCoord.w = shadowCoord.x * 0.5 + shadowCoord.y * 0.5 + shadowCoord.z * 0.5 + shadowCoord.w;
-  vec4 shadowCoordinateWdivide = ShadowCoord / ShadowCoord.w;
+  vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
   
   // Used to lower moiré pattern and self-shadowing
   shadowCoordinateWdivide.z += 0.0005;
@@ -55,7 +55,7 @@ void main() {
   float distanceFromLight = texture2D(u_ShadowTexture, shadowCoordinateWdivide.xy).z;  
   
   float shadow = 1.0;
-  if (ShadowCoord.w > 0.0)
+  if (shadowCoord.w > 0.0)
     shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
   
   
