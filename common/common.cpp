@@ -83,7 +83,7 @@ float touchTarget[3] = {0,0,0};
 float characterPos[3] = {0,0,0};
 
 #define PAN_LERP_FACTOR .02
-#define CHARACTER_LERP_FACTOR .13
+#define CHARACTER_LERP_FACTOR .05
 #define TOUCH_DISP_FACTOR 100.0f
 
 bool touchDown = false;
@@ -101,6 +101,8 @@ void RenderFrame() {
         characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
         cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
     }
+    
+    rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
 
     // Setup pipeline and perspective matrices
     glViewport(0, 0, displayWidth, displayHeight);
@@ -120,6 +122,7 @@ void RenderFrame() {
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1], characterPos[2]);
+    rotate(0.0,rot[1],0);
     scalef(.2);
     character->RenderFrame();
     mvPopMatrix();
