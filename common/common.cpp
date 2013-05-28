@@ -75,12 +75,34 @@ void setFrameBuffer(int handle) {
 }
 
 float cameraPos[3] = {0,180,100};
-float pan[3] = {0,0,0};
+float cameraPan[3] = {0,0,0};
 float up[3] = {0,1,0};
 float rot[2] = {0,0};
 
+float touchTarget[3] = {0,0,0};
+float characterPos[3] = {0,0,0};
+
+#define PAN_LERP_FACTOR .02
+#define CHARACTER_LERP_FACTOR .13
+#define TOUCH_DISP_FACTOR 100.0f
+
+bool touchDown = false;
+float lastTouch[2] = {0,0};
+
 void RenderFrame() {
 
+    // Process user input
+    if(touchDown) {
+        touchTarget[0] = cameraPan[0] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[0] - 1.0);
+        touchTarget[2] = cameraPan[2] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[1] - 1.0);
+    }
+    
+    for(int i = 0; i < 3; i++) {
+        characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
+        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
+    }
+
+    // Setup pipeline and perspective matrices
     glViewport(0, 0, displayWidth, displayHeight);
     
     pipeline->ClearBuffers();
@@ -89,25 +111,18 @@ void RenderFrame() {
     perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
     
     mvLoadIdentity();
-    lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
+    lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
 
     //////////////////////////////////
     // Render to g buffer.
     
-    mvPushMatrix();
-    //scalef(.4);
-    //translatef(0.0f, 0.0f, -120.0f / .4f);
-    //rotate(rot[1],rot[0],0);
     cave->RenderFrame();
-    mvPopMatrix();
     
-    /*mvPushMatrix();
+    mvPushMatrix();
+    translatef(characterPos[0], characterPos[1], characterPos[2]);
     scalef(.2);
-    translatef(0.0f, 0.0f, -120.0f / .2f);
-    rotate(rot[1],rot[0],0);
-    translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
-    mvPopMatrix();*/
+    mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
@@ -154,28 +169,19 @@ void RenderFrame() {
     frameNum++;*/
 }
 
-float lastPointer[2] = {0,0};
-
 void PointerDown(float x, float y, int pointerIndex) {
-    lastPointer[0] = x;
-    lastPointer[1] = y;
+    lastTouch[0] = x;
+    lastTouch[1] = y;
+    touchDown = true;
 }
 
 void PointerMove(float x, float y, int pointerIndex) {
-    float deltaX = x - lastPointer[0];
-    float deltaY = y - lastPointer[1];
-
-    pan[0] += -100.0 * deltaX;
-    pan[2] += -100.0 * deltaY;
-    //rot[0] +=  8.0 * deltaX;
-    //rot[1] += -1.0 * deltaY;
-	
-    lastPointer[0] = x;
-    lastPointer[1] = y;
+    lastTouch[0] = x;
+    lastTouch[1] = y;
+    touchDown = true;
 }
 
 void PointerUp(float x, float y, int pointerIndex) {
-    lastPointer[0] = x;
-    lastPointer[1] = y;
+    touchDown = false;
 }
 
