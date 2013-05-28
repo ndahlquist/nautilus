@@ -20,47 +20,34 @@ varying vec3 v_mvLightPos;
 vec2 samplePoint = vec2(gl_FragCoord.x / float(u_FragWidth), gl_FragCoord.y / float(u_FragHeight));
 
 // Reconstruct MV position from MVP position and inverse P matrix.
-vec3 mvPos() {
+vec4 mvPos() {
     float MVP_Z = texture2D(u_GeometryTexture, samplePoint).w;
     vec4 mvpPos = vec4(samplePoint * 2.0 - 1.0, MVP_Z, 1.0);
-    vec4 mvPos_hom = u_p_inverse * mvpPos;
-    return mvPos_hom.xyz / mvPos_hom.w;
+    vec4 mvPos = u_p_inverse * mvpPos;
+    return mvPos;
 }
 
 void main() {
 
-    /*vec3 delta = v_mvLightPos - mvPos();
-	
-	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-
-    vec3 normal = texture2D(u_GeometryTexture, samplePoint).xyz;
+    vec4 mvPos = mvPos(); // Subject position in MV space.
+    vec4 Pos = u_mv_inverse * mvPos; // Subject position in world space.
     
-    float diffuse = -dot(normal, normalize(v_mvLightPos));
-	    
-	float value = u_Brightness.r * diffuse / distsq - .3;
-	if(value <= 0.0)
-        discard;
-
-    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);*/
-    // Calculate if the point is in shadow
-    vec4 cameraCoord = mvPos();
-    vec4 shadowCoord = u_mvp_light * u_mv_inverse * cameraCoord;
-    shadowCoord.xyz = shadowCoord.xyz * 0.5;
-    shadowCoord.w = shadowCoord.x * 0.5 + shadowCoord.y * 0.5 + shadowCoord.z * 0.5 + shadowCoord.w;
-  vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
-  
-  // Used to lower moiré pattern and self-shadowing
-  shadowCoordinateWdivide.z += 0.0005;
-
-  float distanceFromLight = texture2D(u_ShadowTexture, shadowCoordinateWdivide.xy).z;  
-  
-  float shadow = 1.0;
-  if (shadowCoord.w > 0.0)
-    shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
-  
-  
-  gl_FragColor = shadow * vec4(1, 1, 1, 1);
-
-  //    gl_FragColor = vec4(texture2D(u_ShadowTexture, samplePoint).w, texture2D(u_GeometryTexture, samplePoint).w, 0.0,  1.0);
+    vec3 lightRay = Pos.xyz / Pos.w; // Light vector in world space.
+    vec4 mvplightRay = u_mvp_light * vec4(lightRay, 0.0); // Light vector in light's MVP space.
+    mvplightRay.xyz = normalize(mvplightRay.xyz);
+    
+    vec2 shadowTexCoord = mvplightRay.xy * .5 + .5;
+    
+    float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
+    
+    float shadow;
+    if(mvplightRay.z * 0.5 + .5 < depthVal)
+        shadow = 1.0;
+    else
+        shadow = 0.1;
+    
+    vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
+    
+    gl_FragColor = vec4(shadow * albedo, 1.0);
 	
 }

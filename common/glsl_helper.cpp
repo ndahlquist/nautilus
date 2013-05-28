@@ -24,15 +24,15 @@ static const char defaultFragmentShader[] =
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
-    if (shader) {
+    if(shader) {
         glShaderSource(shader, 1, &pSource, NULL);
         glCompileShader(shader);
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) {
+        if(!compiled) {
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-            if (infoLen) {
+            if(infoLen) {
                 char* buf = (char*) malloc(infoLen);
                 if(buf) {
                     glGetShaderInfoLog(shader, infoLen, NULL, buf);
@@ -62,7 +62,7 @@ GLuint createShaderProgram(const char* pVertexSource, const char* pFragmentSourc
         pixelShader = loadShader(GL_FRAGMENT_SHADER, defaultFragmentShader);
     
     GLuint program = glCreateProgram();
-    if (program) {
+    if(program) {
         glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
         glAttachShader(program, pixelShader);
