@@ -31,19 +31,32 @@ void main() {
 
     vec4 mvPos = mvPos();
     vec4 Pos = u_mv_inverse * mvPos; // Pretty sure these values are good
-    vec4 mvp_light_pos = u_mvp_light * Pos;
+    
+    vec3 lightRay = Pos.xyz / Pos.w;
+    vec4 mvplightRay = u_mvp_light * vec4(normalize(lightRay), 0.0);
+    //mvplightRay = mvplightRay / mvplightRay.w;
+    mvplightRay.xyz = normalize(mvplightRay.xyz);
+    
+    vec2 shadowTexCoord = mvplightRay.xy * .5 + .5;
+    
+    //gl_FragColor = vec4(shadowTexCoord, 0.0, 1.0);
+    
+    
+    float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
+    
+    gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
+    
+    /*vec4 mvp_light_pos = u_mvp_light * Pos;
     mvp_light_pos = mvp_light_pos / mvp_light_pos.w;
     
     vec2 shadowTexCoord = mvp_light_pos.xy * .5 + .5;
-    
-    //gl_FragColor = vec4(mvp_light_pos.xy, 0.0, 1.0);
     
     //const float bias = .0001;
     float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
     
     gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
     
-    /*float shadow;
+    float shadow;
     if(projectedEyeDir.z * 0.5 + .5 < depthVal)
         shadow = 1.0;
     else
