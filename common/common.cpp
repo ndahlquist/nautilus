@@ -40,10 +40,6 @@ RenderObject *cave = NULL;
 RenderObject *character = NULL;
 RenderLight *light = NULL;
 
-float cameraPos[4] = {0,0,0.9,1};
-float pan[3] = {0,0,0}, up[3] = {0,1,0};
-float rot[2] = {0,0};
-
 unsigned int frameNum = 0;
 
 // Callback function to load resources.
@@ -71,12 +67,17 @@ void Setup(int w, int h) {
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
-    light = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
 
 void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
+
+float cameraPos[3] = {0,180,100};
+float pan[3] = {0,0,0};
+float up[3] = {0,1,0};
+float rot[2] = {0,0};
 
 void RenderFrame() {
 
@@ -85,7 +86,7 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(20, (float) displayWidth / (float) displayHeight, 80, 180);
+    perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
@@ -94,25 +95,29 @@ void RenderFrame() {
     // Render to g buffer.
     
     mvPushMatrix();
-    scalef(.4);
-    translatef(0.0f, 0.0f, -120.0f / .4f);
-    rotate(rot[1],rot[0],0);
-    translatef(0.0f, 5.0f / .4f, 0.0f);
+    //scalef(.4);
+    //translatef(0.0f, 0.0f, -120.0f / .4f);
+    //rotate(rot[1],rot[0],0);
     cave->RenderFrame();
     mvPopMatrix();
     
-    mvPushMatrix();
+    /*mvPushMatrix();
     scalef(.2);
     translatef(0.0f, 0.0f, -120.0f / .2f);
     rotate(rot[1],rot[0],0);
     translatef(68.0f, -40.0f, -20.0f); 
     character->RenderFrame();
-    mvPopMatrix();
+    mvPopMatrix();*/
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
-    float lightScale = 15.0f;
+    pLoadIdentity();
+    mvLoadIdentity();
+    
+    light->RenderFrame();
+    
+    /*float lightScale = 15.0f;
     
     for(int i = 0; i < 3; i++)
         light->brightness[i] = 40;
@@ -146,7 +151,7 @@ void RenderFrame() {
     light->RenderFrame();
     mvPopMatrix();
     
-    frameNum++;
+    frameNum++;*/
 }
 
 float lastPointer[2] = {0,0};
@@ -160,8 +165,10 @@ void PointerMove(float x, float y, int pointerIndex) {
     float deltaX = x - lastPointer[0];
     float deltaY = y - lastPointer[1];
 
-    rot[0] +=  8.0 * deltaX;
-    rot[1] += -1.0 * deltaY;
+    pan[0] += -100.0 * deltaX;
+    pan[2] += -100.0 * deltaY;
+    //rot[0] +=  8.0 * deltaX;
+    //rot[1] += -1.0 * deltaY;
 	
     lastPointer[0] = x;
     lastPointer[1] = y;
