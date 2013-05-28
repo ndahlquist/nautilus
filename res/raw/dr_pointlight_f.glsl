@@ -20,32 +20,39 @@ varying vec3 v_mvLightPos;
 vec2 samplePoint = vec2(gl_FragCoord.x / float(u_FragWidth), gl_FragCoord.y / float(u_FragHeight));
 
 // Reconstruct MV position from MVP position and inverse P matrix.
-vec3 mvPos() {
+vec4 mvPos() {
     float MVP_Z = texture2D(u_GeometryTexture, samplePoint).w;
     vec4 mvpPos = vec4(samplePoint * 2.0 - 1.0, MVP_Z, 1.0);
-    vec4 mvPos_hom = u_p_inverse * mvpPos;
-    return mvPos_hom.xyz / mvPos_hom.w;
+    vec4 mvPos = u_p_inverse * mvpPos;
+    return mvPos;
 }
 
 void main() {
 
-    // Calculate if the point is in shadow
-    vec4 cameraCoord = vec4(mvPos(), 1.0);
-    vec4 shadowCoord = u_mvp_light * u_mv_inverse * cameraCoord;
-    shadowCoord.xyz = shadowCoord.xyz * 0.5;
-    shadowCoord.w = shadowCoord.x * 0.5 + shadowCoord.y * 0.5 + shadowCoord.z * 0.5 + shadowCoord.w;
-    vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
-  
-    // Used to lower moiré pattern and self-shadowing
-    shadowCoordinateWdivide.z += 0.0005;
+    vec4 mvPos = mvPos();
+    vec4 Pos = u_mv_inverse * mvPos; // Pretty sure these values are good
+    vec4 mvp_light_pos = u_mvp_light * Pos;
+    mvp_light_pos = mvp_light_pos / mvp_light_pos.w;
+    
+    vec2 shadowTexCoord = mvp_light_pos.xy * .5 + .5;
+    
+    //gl_FragColor = vec4(mvp_light_pos.xy, 0.0, 1.0);
+    
+    //const float bias = .0001;
+    float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
+    
+    gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
+    
+    /*float shadow;
+    if(projectedEyeDir.z * 0.5 + .5 < depthVal)
+        shadow = 1.0;
+    else
+        shadow = 0.5;
 
-    float distanceFromLight = texture2D(u_ShadowTexture, shadowCoordinateWdivide.xy).z;  
-  
-    float shadow = 1.0;
-    if(shadowCoord.w > 0.0)
-        shadow = distanceFromLight < shadowCoordinateWdivide.z ? 0.5 : 1.0 ;
-  
-  
-    gl_FragColor = shadow * vec4(1, 0, 1, 1);
+    /////////////////
+    
+    vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
+    
+    gl_FragColor = vec4(shadow * albedo, 1.0);*/
 	
 }
