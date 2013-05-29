@@ -2,6 +2,7 @@
 //  nativeGraphics
 
 #include "RenderLight.h"
+
 #include "glsl_helper.h"
 #include "transform.h"
 #include "common.h"
@@ -43,11 +44,13 @@ void RenderLight::RenderFrame() {
     
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
-    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
+    GLuint u_mvMatrixHandle = glGetUniformLocation(colorShader, "u_MVMatrix");
+    glUniformMatrix4fv(u_mvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     delete mv_Matrix;
     
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
+    GLuint u_mvpMatrixHandle = glGetUniformLocation(colorShader, "u_MVPMatrix");
+    glUniformMatrix4fv(u_mvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
     delete mvp_Matrix;
     
     GLfloat* p_inverse_Matrix = (GLfloat*)pInverseMatrix();
