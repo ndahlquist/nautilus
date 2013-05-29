@@ -30,11 +30,14 @@ void main() {
 
     vec3 normal = texture2D(u_GeometryTexture, samplePoint).xyz;
     
-    float diffuse = -dot(normal, normalize(v_mvLightPos));
+    float diffuse = 1.0; //-dot(normal, normalize(v_mvLightPos));
 	    
 	float value = u_Brightness.r * diffuse / distsq - .3;
 	if(value <= 0.0)
         discard;
+        
+    if(value > 3.0)
+        value = 3.0;
 
     gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 	

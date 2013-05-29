@@ -38,7 +38,8 @@ RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
 RenderObject *character = NULL;
-RenderLight *light = NULL;
+RenderLight *pointLight = NULL;
+RenderLight *globalLight = NULL;
 
 unsigned int frameNum = 0;
 
@@ -67,7 +68,8 @@ void Setup(int w, int h) {
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
-    light = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
+    pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
 
 void setFrameBuffer(int handle) {
@@ -94,6 +96,7 @@ void RenderFrame() {
     // Process user input
     if(touchDown) {
         touchTarget[0] = cameraPan[0] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[0] - 1.0);
+        touchTarget[1] = -80.0;
         touchTarget[2] = cameraPan[2] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[1] - 1.0);
     }
     
@@ -123,53 +126,26 @@ void RenderFrame() {
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1], characterPos[2]);
     rotate(0.0,rot[1],0);
-    scalef(.2);
+    scalef(.3);
     character->RenderFrame();
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
+    mvPushMatrix();
+    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
+    scalef(60.0f);
+        pointLight->brightness[0] = 600.0;
+    pointLight->RenderFrame();
+    mvPopMatrix();
+    
     pLoadIdentity();
     mvLoadIdentity();
+    globalLight->brightness[0] = .4;
+    globalLight->RenderFrame();
     
-    light->RenderFrame();
-    
-    /*float lightScale = 15.0f;
-    
-    for(int i = 0; i < 3; i++)
-        light->brightness[i] = 40;
-    
-    mvPushMatrix();
-    scalef(lightScale);
-    translatef(0.0f, 0.0f, -120.0f / lightScale);
-    rotate(rot[1],rot[0],0);
-    translatef(3.0 * cos(frameNum / 50.0f) / lightScale, -10.0f / lightScale, 30.0 * sin(frameNum / 100.0f) / lightScale);
-    light->RenderFrame();
-    mvPopMatrix();
-    
-    mvPushMatrix();
-    scalef(lightScale);
-    translatef(0.0f, 0.0f, -120.0f / lightScale);
-    rotate(rot[1],rot[0],0);
-    translatef(16.0 * sin(frameNum / 20.0f) / lightScale, -10.0f / lightScale, 16.0 * cos(frameNum / 20.0f) / lightScale);
-    light->RenderFrame();
-    mvPopMatrix();
-    
-    lightScale = 20.0f;
-    
-    for(int i = 0; i < 3; i++)
-        light->brightness[i] = 120;
-    
-    mvPushMatrix();
-    scalef(lightScale);
-    translatef(0.0f, 0.0f, -120.0f / lightScale);
-    rotate(rot[1],rot[0],0);
-    translatef(-6.0f / lightScale, 10.0f / lightScale, 0.0f);
-    light->RenderFrame();
-    mvPopMatrix();
-    
-    frameNum++;*/
+    frameNum++;
 }
 
 void PointerDown(float x, float y, int pointerIndex) {
