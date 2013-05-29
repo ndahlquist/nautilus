@@ -39,6 +39,7 @@ RenderPipeline *pipeline = NULL;
 RenderObject *cave = NULL;
 RenderObject *character = NULL;
 RenderLight *pointLight = NULL;
+RenderLight *spotLight = NULL;
 RenderLight *globalLight = NULL;
 
 unsigned int frameNum = 0;
@@ -69,6 +70,7 @@ void Setup(int w, int h) {
     character->AddTexture("raptor_albedo.jpg");
     
     pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
     globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
 
@@ -105,7 +107,8 @@ void RenderFrame() {
         cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
     }
     
-    rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
+    if(abs(characterPos[2] - touchTarget[2]) > .01)
+        rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
 
     // Setup pipeline and perspective matrices
     glViewport(0, 0, displayWidth, displayHeight);
@@ -136,13 +139,21 @@ void RenderFrame() {
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
     scalef(60.0f);
-        pointLight->brightness[0] = 600.0;
+    pointLight->brightness[0] = 600.0;
     pointLight->RenderFrame();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
+    scalef(60.0f);
+    rotate(0.0,rot[1],0);
+    rotate(0.0,0,-90);
+    spotLight->brightness[0] = 2000.0;
+    spotLight->RenderFrame();
     mvPopMatrix();
     
     pLoadIdentity();
     mvLoadIdentity();
-    globalLight->brightness[0] = .4;
     globalLight->RenderFrame();
     
     frameNum++;

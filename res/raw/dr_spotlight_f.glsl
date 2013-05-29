@@ -11,6 +11,7 @@ uniform int u_FragHeight;
 uniform vec3 u_Brightness;
 
 varying vec3 v_mvLightPos;
+varying vec3 v_mvDirVector;
 
 vec2 samplePoint = vec2(gl_FragCoord.x / float(u_FragWidth), gl_FragCoord.y / float(u_FragHeight));
 
@@ -23,22 +24,9 @@ vec3 mvPos() {
 }
 
 void main() {
-
-    vec3 delta = v_mvLightPos - mvPos();
-	
-	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-
-    //vec3 normal = texture2D(u_GeometryTexture, samplePoint).xyz;
-    
-    float diffuse = 1.0; //-dot(normal, normalize(v_mvLightPos));
-	    
-	float value = u_Brightness.r * diffuse / distsq - .3;
-	if(value <= 0.0)
-        discard;
-        
-    if(value > 2.0)
-        value = 2.0;
-
-    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
-	
+    vec3 delta =  normalize(v_mvLightPos - mvPos());
+	float angle = abs(dot(v_mvDirVector, delta));
+	float spotEffect = min(2.0 * pow(angle, 10.0), 2.0);
+	vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
+	gl_FragColor = vec4(spotEffect * albedo, 1.0);
 }
