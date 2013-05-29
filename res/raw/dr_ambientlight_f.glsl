@@ -23,22 +23,7 @@ vec3 mvPos() {
 }
 
 void main() {
-
-    vec3 delta = v_mvLightPos - mvPos();
-	
-	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-
-    //vec3 normal = texture2D(u_GeometryTexture, samplePoint).xyz;
-    
-    float diffuse = 1.0; //-dot(normal, normalize(v_mvLightPos));
-	    
-	float value = u_Brightness.r * diffuse / distsq - .3;
-	if(value <= 0.0)
-        discard;
-        
-    if(value > 2.0)
-        value = 2.0;
-
-    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
-	
+    vec3 normals = texture2D(u_GeometryTexture, samplePoint).xyz;
+    float val = normals.x + normals.y + normals.z;
+    gl_FragColor = vec4(val, val, val, 1.0); // Normals
 }
