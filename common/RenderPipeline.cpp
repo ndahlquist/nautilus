@@ -73,6 +73,7 @@ RenderPipeline::RenderPipeline() {
 
 void RenderPipeline::saveShadowMatrices() {
     mv_shadow = (GLfloat*)mvMatrix(); // TODO: delete
+    mv_inverse_shadow = (GLfloat*)mvInverseMatrix();
     mvp_shadow = (GLfloat*)mvpMatrix();
 }
 

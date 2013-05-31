@@ -8,6 +8,7 @@ uniform mat4 u_p_inverse;
 uniform mat4 u_mv_inverse;
 
 uniform mat4 u_mv_light;
+uniform mat4 u_mv_inverse_light;
 uniform mat4 u_mvp_light;
 
 uniform int u_FragWidth;

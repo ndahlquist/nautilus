@@ -70,7 +70,7 @@ void Setup(int w, int h) {
     character->AddTexture("raptor_albedo.jpg");
     
     pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
-    spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_shadow_f.glsl");
+    spotLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_shadow_f.glsl");
     globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
 
@@ -115,6 +115,20 @@ void RenderFrame() {
     
     pipeline->ClearBuffers();
 
+    // Render shadow
+    pLoadIdentity();
+    perspective(70, (float) displayWidth / (float) displayHeight, 30, 420);
+    
+    mvLoadIdentity();
+    lookAt(characterPos[0], characterPos[1] + 30.0, characterPos[2], characterPos[0] + 5.0, characterPos[1] + 30.0, characterPos[2], 0, 1, 0);
+    rotate(0.0,rot[1],0);
+    //rotate(0.0,rot[1],0);
+
+    pipeline->saveShadowMatrices();
+    
+    cave->RenderShadow();
+
+    // Render other stuff
     pLoadIdentity();
     perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
     
@@ -123,13 +137,15 @@ void RenderFrame() {
 
     // Save spot light matrix for shadow mapping
     // (Transforms must matchspotlight's, below)
-    mvPushMatrix();
+    /*mvPushMatrix();
     translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
     scalef(60.0f);
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
     pipeline->saveShadowMatrices();
-    mvPopMatrix();
+    
+    cave->RenderShadow(); // TODO
+    mvPopMatrix();*/
 
     //////////////////////////////////
     // Render to g buffer.
@@ -141,6 +157,7 @@ void RenderFrame() {
     rotate(0.0,rot[1],0);
     scalef(.3);
     character->RenderFrame();
+    //character->RenderShadow(); // TODO
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
@@ -150,7 +167,7 @@ void RenderFrame() {
     translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
     scalef(60.0f);
     pointLight->brightness[0] = 600.0;
-    pointLight->RenderFrame();
+    //pointLight->RenderFrame();
     mvPopMatrix();
     
     // (Transforms must shadow map's, above)

@@ -8,6 +8,7 @@ uniform mat4 u_p_inverse;
 uniform mat4 u_mv_inverse;
 
 uniform mat4 u_mv_light;
+uniform mat4 u_mv_inverse_light;
 uniform mat4 u_mvp_light;
 
 uniform int u_FragWidth;
@@ -29,10 +30,15 @@ vec4 mvPos() {
 
 void main() {
 
-    vec4 mvPos = mvPos(); // Subject position in MV space.
-    vec4 Pos = u_mv_inverse * mvPos; // Subject position in world space.
+    float depthVal = texture2D(u_ShadowTexture, samplePoint).w;
+    gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
     
-    vec3 lightRay = Pos.xyz / Pos.w; // Light vector in world space.
+
+    /*vec4 mvPos = mvPos(); // Subject position in MV space.
+    vec4 Pos = u_mv_inverse * mvPos; // Subject position in world space.
+    vec4 LightPos = u_mv_inverse_light * vec4(0.0, 0.0, 0.0, 1.0); // Light position in world space.
+    
+    vec3 lightRay = Pos.xyz / Pos.w - LightPos.xyz / LightPos.w; // Light vector in world space.
     vec4 mvplightRay = u_mvp_light * vec4(lightRay, 0.0); // Light vector in light's MVP space.
     mvplightRay.xyz = normalize(mvplightRay.xyz);
     
@@ -48,6 +54,6 @@ void main() {
     
     vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
     
-    gl_FragColor = vec4(shadow * albedo, 1.0);
+    gl_FragColor = vec4(shadow * albedo, 1.0);*/
 	
 }
