@@ -23,7 +23,7 @@ vec3 mvPos() {
 }
 
 void main() {
-    float depth = texture2D(u_GeometryTexture, samplePoint).w;
-    gl_FragColor = vec4(depth, depth, depth, 1.0); // Normals
-    //gl_FragColor = vec4(texture2D(u_GeometryTexture, samplePoint).xyz, 1.0); // Normals
+    //float depth = texture2D(u_GeometryTexture, samplePoint).w;
+    //gl_FragColor = vec4(depth, depth, depth, 1.0); // Normals
+    gl_FragColor = vec4(texture2D(u_GeometryTexture, samplePoint).xyz, 1.0); // Normals
 }

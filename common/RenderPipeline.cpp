@@ -50,7 +50,7 @@ RenderPipeline::RenderPipeline() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-float * RenderPipeline::RayTracePixel(int x, int y, bool geometry) {
+uint8_t * RenderPipeline::RayTracePixel(int x, int y, bool geometry) {
     
     if(geometry) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -62,8 +62,11 @@ float * RenderPipeline::RayTracePixel(int x, int y, bool geometry) {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
     }
 
-    float * data = new float[4];
-    glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, data);
+    uint8_t * data = new uint8_t[4];
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkGlError("glPixelStorei");
+    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    checkGlError("glReadPixels");
     
     return data;
 

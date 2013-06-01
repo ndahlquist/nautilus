@@ -28,6 +28,8 @@
 #include "log.h"
 
 using namespace std;
+using Eigen::Matrix4f;
+using Eigen::Vector4f;
 
 int displayWidth = 0;
 int displayHeight = 0;
@@ -87,7 +89,7 @@ float touchTarget[3] = {0,0,0};
 float characterPos[3] = {0,0,0};
 
 #define PAN_LERP_FACTOR .02
-#define CHARACTER_LERP_FACTOR .05
+#define CHARACTER_LERP_FACTOR .04
 #define TOUCH_DISP_FACTOR 100.0f
 
 bool touchDown = false;
@@ -95,32 +97,13 @@ float lastTouch[2] = {0,0};
 
 void RenderFrame() {
 
-    // Process user input
-    if(touchDown) {
-        float * geometry = pipeline->RayTracePixel((1.0-lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
-        float depth = geometry[3] * 2.0f - 1.0f;
-        delete geometry;
-    
-        touchTarget[0] = cameraPan[0] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[0] - 1.0);
-        touchTarget[1] = -80.0;
-        touchTarget[2] = cameraPan[2] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[1] - 1.0);
-    }
-    
-    for(int i = 0; i < 3; i++) {
-        characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
-        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
-    }
-    
-    if(abs(characterPos[2] - touchTarget[2]) > .01)
-        rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
-
     // Setup pipeline and perspective matrices
     glViewport(0, 0, displayWidth, displayHeight);
     
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(90, (float) displayWidth / (float) displayHeight, 30, 300);
+    perspective(90, (float) displayWidth / (float) displayHeight, 60, 420);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
@@ -130,8 +113,30 @@ void RenderFrame() {
     
     cave->RenderFrame();
     
+    // Process user input
+    if(touchDown) {
+        uint8_t * geometry = pipeline->RayTracePixel((lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
+        float depth = geometry[3] / 128.0f - 1.0f;
+        delete geometry;
+        
+        Matrix4f mvp = projection.top()*model_view.top();
+        Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
+    
+        touchTarget[0] = pos(0) / pos(3);
+        touchTarget[2] = pos(2) / pos(3);
+        touchTarget[1] = pos(1) / pos(3);
+    }
+    
+    for(int i = 0; i < 3; i++) {
+        characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
+        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
+    }
+    
+    if(abs(characterPos[2] - touchTarget[2]) > .01)
+        rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
+    
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1], characterPos[2]);
+    translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
     rotate(0.0,rot[1],0);
     scalef(.3);
     character->RenderFrame();
@@ -141,18 +146,18 @@ void RenderFrame() {
     // Using g buffer, render lights
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
-    scalef(60.0f);
-    pointLight->brightness[0] = 600.0;
+    translatef(characterPos[0], characterPos[1], characterPos[2]);
+    scalef(100.0f);
+    pointLight->brightness[0] = 2000.0;
     pointLight->RenderFrame();
     mvPopMatrix();
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
-    scalef(60.0f);
+    translatef(characterPos[0], characterPos[1] + 40.0, characterPos[2]);
+    scalef(100.0f);
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
-    spotLight->brightness[0] = 2000.0;
+    spotLight->brightness[0] = 1000.0;
     spotLight->RenderFrame();
     mvPopMatrix();
     

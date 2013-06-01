@@ -1,10 +1,4 @@
-//
 //  transform.cpp
-//  
-//
-//  Created by Ling-Ling Zhang on 5/9/13.
-//
-//
 
 #include "transform.h"
 
@@ -204,8 +198,7 @@ void frustum(double left, double right, double bottom, double top,
 }
 //Perspective
 void perspective(float fovy, float aspect,
-                 float zNear, float zFar)
-{
+                 float zNear, float zFar) {
     float xmin, xmax, ymin, ymax;
     
     ymax = zNear * (float)tanf(fovy * PI / 360);

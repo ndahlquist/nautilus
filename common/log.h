@@ -38,7 +38,7 @@ static void printGLString(const char *name, GLenum s) {
 
 static void checkGlError(const char* op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
-        LOGI("%s() glError (0x%x)\n", op, error);
+        LOGI("%s() glError (0x%x = %s)\n", op, error, glGetString(error));
 #ifndef BUILD_RELEASE
         exit(-1); // Die fast and early
 #endif
