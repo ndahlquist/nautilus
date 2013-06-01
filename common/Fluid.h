@@ -60,7 +60,7 @@ public:
 };
 
 Fluid::Fluid(){
-    renderer = new RenderObject("standard_v.glsl", "depth_f.glsl");
+    renderer = new RenderObject("standard_v.glsl", "normals_f.glsl");
 }
 
 //is in the simulation bound
@@ -1199,7 +1199,7 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
         ntri += n;
 	}
     
-    float* vertices = new float[3*8*ntri];
+    float* vertices = new float[(3+3)*8*ntri];
     int bufferIndex = 0;
     Vector3f center(0,0,0);
     for (int i=0;i<ntri;i++) {
@@ -1207,6 +1207,9 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
             vertices[bufferIndex++] =tri[i].p[k].x;
             vertices[bufferIndex++] =tri[i].p[k].y;
             vertices[bufferIndex++] =tri[i].p[k].z;
+            vertices[bufferIndex++] =tri[i].n[k].x;
+            vertices[bufferIndex++] =tri[i].n[k].y;
+            vertices[bufferIndex++] =tri[i].n[k].z;
         }
 	}
    

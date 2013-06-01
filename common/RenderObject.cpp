@@ -87,8 +87,15 @@ void RenderObject::RenderFrame(float *buffer, int num) {
     
     // Vertices
     glEnableVertexAttribArray(gvPositionHandle);
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*) buffer);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid*) buffer);
     checkGlError("gvPositionHandle");
+    
+    // Normals
+    if(gvNormals != -1) {
+        glEnableVertexAttribArray(gvNormals);
+        glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (const GLvoid*) (buffer + 3));
+        checkGlError("gvNormals");
+    }
     
     glDrawArrays(GL_TRIANGLES, 0, num);
     checkGlError("glDrawArrays");
