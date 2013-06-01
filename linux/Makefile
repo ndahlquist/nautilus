@@ -7,7 +7,7 @@ FILES   := mainlinux \
            ../common/common \
            ../common/RenderObject \
            ../common/transform \
-           ../common/ParticleSystem
+           ../common/PCG
 
 #################################################################
 
