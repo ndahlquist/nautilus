@@ -1,8 +1,9 @@
 //  RenderPipeline.cpp
 //  nativeGraphics
 
-#include "common.h"
 #include "RenderPipeline.h"
+
+#include "common.h"
 #include "glsl_helper.h"
 #include "log.h"
 
@@ -49,13 +50,32 @@ RenderPipeline::RenderPipeline() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+float * RenderPipeline::RayTracePixel(int x, int y, bool geometry) {
+    
+    if(geometry) {
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    } else {
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    }
+
+    float * data = new float[4];
+    glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, data);
+    
+    return data;
+
+}
+
 void RenderPipeline::ClearBuffers() {
     
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
     
-    glClearColor(0., 0., 0., 0.);
+    glClearColor(0., 0., 0., 1.);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
     

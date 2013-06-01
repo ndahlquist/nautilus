@@ -19,8 +19,10 @@
 
 class RenderPipeline {
 public:
+
     RenderPipeline();
     void ClearBuffers();
+    float * RayTracePixel(int x, int y, bool geometry);
     
     GLuint frameBuffer;
     GLuint depthBuffer;

@@ -97,6 +97,10 @@ void RenderFrame() {
 
     // Process user input
     if(touchDown) {
+        float * geometry = pipeline->RayTracePixel((1.0-lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
+        float depth = geometry[3] * 2.0f - 1.0f;
+        delete geometry;
+    
         touchTarget[0] = cameraPan[0] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[0] - 1.0);
         touchTarget[1] = -80.0;
         touchTarget[2] = cameraPan[2] + TOUCH_DISP_FACTOR * (2.0 * lastTouch[1] - 1.0);
@@ -116,7 +120,7 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
+    perspective(90, (float) displayWidth / (float) displayHeight, 30, 300);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
