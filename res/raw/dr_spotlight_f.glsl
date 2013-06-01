@@ -24,9 +24,10 @@ vec3 mvPos() {
 }
 
 void main() {
-    vec3 delta = normalize(v_mvLightPos - mvPos());
+  gl_FragColor = vec4(1, 1, 1, 1);
+  /*  vec3 delta = normalize(v_mvLightPos - mvPos());
 	float angle = abs(dot(v_mvDirVector, delta));
 	float spotEffect = min(2.0 * pow(angle, 10.0), 2.0);
 	vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
-	gl_FragColor = vec4(spotEffect * albedo, 1.0);
+	gl_FragColor = vec4(spotEffect * albedo, 1.0);*/
 }

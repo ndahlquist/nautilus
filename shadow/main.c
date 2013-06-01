@@ -70,7 +70,7 @@ void getOpenGLFunctionPointers(void)
 // Expressed as float so gluPerspective division returns a float and not 0 (640/480 != 640.0/480.0).
 #define RENDER_WIDTH 640.0
 #define RENDER_HEIGHT 480.0
-#define SHADOW_MAP_RATIO 1
+#define SHADOW_MAP_RATIO 2
 
 
 //Camera position
@@ -246,7 +246,7 @@ void setupMatrices(float position_x,float position_y,float position_z,float look
 {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(20,RENDER_WIDTH/RENDER_HEIGHT,10,40000);
+  gluPerspective(50,RENDER_WIDTH/RENDER_HEIGHT,10,40000);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(position_x,position_y,position_z,lookAt_x,lookAt_y,lookAt_z,0,1,0);

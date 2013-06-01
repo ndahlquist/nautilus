@@ -65,10 +65,10 @@ void Setup(int w, int h) {
     
     pipeline = new RenderPipeline();
     
-    cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
-    character->AddTexture("raptor_albedo.jpg");
-    
+    // cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
+    // character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
+    // character->AddTexture("raptor_albedo.jpg");
+    cave = new RenderObject("box.obj", "standard_v.glsl", "solid_color_f.glsl");
     pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     spotLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_shadow_f.glsl");
     globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
@@ -78,7 +78,8 @@ void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
 
-float cameraPos[3] = {0,180,100};
+// float cameraPos[3] = {0,180,100};
+float cameraPos[3] = {0, 10, 20};
 float cameraPan[3] = {0,0,0};
 float up[3] = {0,1,0};
 float rot[2] = {0,0};
@@ -88,7 +89,7 @@ float characterPos[3] = {0,0,0};
 
 #define PAN_LERP_FACTOR .02
 #define CHARACTER_LERP_FACTOR .05
-#define TOUCH_DISP_FACTOR 100.0f
+#define TOUCH_DISP_FACTOR 1.0f
 
 bool touchDown = false;
 float lastTouch[2] = {0,0};
@@ -103,8 +104,8 @@ void RenderFrame() {
     }
     
     for(int i = 0; i < 3; i++) {
-        characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
-        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
+      // characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
+        //cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
     }
     
     if(abs(characterPos[2] - touchTarget[2]) > .01)
@@ -117,11 +118,12 @@ void RenderFrame() {
 
     // Render shadow
     pLoadIdentity();
-    perspective(70, (float) displayWidth / (float) displayHeight, 30, 420);
+    perspective(70, (float) displayWidth / (float) displayHeight, 0.1, 40);
     
     mvLoadIdentity();
-    lookAt(characterPos[0], characterPos[1] + 30.0, characterPos[2], characterPos[0] + 5.0, characterPos[1] + 30.0, characterPos[2], 0, 1, 0);
-    rotate(0.0,rot[1],0);
+    //lookAt(characterPos[0], characterPos[1] + 30.0, characterPos[2], characterPos[0] + 5.0, characterPos[1] + 30.0, characterPos[2], 0, 1, 0);
+    lookAt(characterPos[0] - 8, characterPos[1] + 8, characterPos[2], 0, 0, 0, 0, 1, 0);
+    //rotate(0.0,rot[1],0);
     //rotate(0.0,rot[1],0);
 
     pipeline->saveShadowMatrices();
@@ -130,11 +132,12 @@ void RenderFrame() {
 
     // Render other stuff
     pLoadIdentity();
-    perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
+    // perspective(40, (float) displayWidth / (float) displayHeight, 30, 420);
+    perspective(70, (float) displayWidth / (float) displayHeight, 0.1, 40);
     
     mvLoadIdentity();
-    lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
-
+    //lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
+    lookAt(-5, 10, 20, 0, 0, 0, 0, 1, 0);
     // Save spot light matrix for shadow mapping
     // (Transforms must matchspotlight's, below)
     /*mvPushMatrix();
@@ -149,34 +152,39 @@ void RenderFrame() {
 
     //////////////////////////////////
     // Render to g buffer.
-    
-    cave->RenderFrame();
-    
     mvPushMatrix();
+    // rotate(0, characterPos[1] / 10.0f, 0);
+    cave->RenderFrame();
+    mvPopMatrix();
+    /*mvPushMatrix();
     translatef(characterPos[0], characterPos[1], characterPos[2]);
     rotate(0.0,rot[1],0);
     scalef(.3);
-    character->RenderFrame();
+    character->RenderFrame();*/
     //character->RenderShadow(); // TODO
-    mvPopMatrix();
+    // mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
-    
-    mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
-    scalef(60.0f);
-    pointLight->brightness[0] = 600.0;
+    //mvPushMatrix();
+    /*translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
+      scalef(60.0f);*/
+    //translatef(characterPos[0], characterPos[1] + 8.0, characterPos[2]);
+    //scalef(60.0f);
+    //pointLight->brightness[0] = 600.0;
     //pointLight->RenderFrame();
-    mvPopMatrix();
+    //mvPopMatrix();
     
     // (Transforms must shadow map's, above)
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
-    scalef(60.0f);
-    rotate(0.0,rot[1],0);
-    rotate(0.0,0,-90);
-    //spotLight->brightness[0] = 2000.0;
+    // translatef(characterPos[0], characterPos[1] + 30.0, characterPos[2]);
+    // scalef(60.0f);
+    // rotate(0, characterPos[1] / 10.0f, 0);
+    translatef(characterPos[0] - 8.0, characterPos[1] + 8.0, characterPos[2]);
+    scalef(18.0f);
+    //    rotate(0.0,rot[1],0);
+    // rotate(0.0,0,-90);
+    spotLight->brightness[0] = 200.0;
     spotLight->RenderFrame();
     mvPopMatrix();
     

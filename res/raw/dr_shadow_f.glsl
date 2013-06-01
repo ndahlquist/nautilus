@@ -30,18 +30,20 @@ vec4 mvPos() {
 
 void main() {
 
-    float depthVal = texture2D(u_ShadowTexture, samplePoint).w;
-    gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
+    // float depthVal = texture2D(u_ShadowTexture, samplePoint).w;
+    // gl_FragColor = vec4(depthVal, depthVal, depthVal, 1.0);
     
 
-    /*vec4 mvPos = mvPos(); // Subject position in MV space.
+    vec4 mvPos = mvPos(); // Subject position in MV space.
     vec4 Pos = u_mv_inverse * mvPos; // Subject position in world space.
-    vec4 LightPos = u_mv_inverse_light * vec4(0.0, 0.0, 0.0, 1.0); // Light position in world space.
+    // vec4 LightPos = u_mv_inverse_light * vec4(0.0, 0.0, 0.0, 1.0); // Light position in world space.
     
-    vec3 lightRay = Pos.xyz / Pos.w - LightPos.xyz / LightPos.w; // Light vector in world space.
-    vec4 mvplightRay = u_mvp_light * vec4(lightRay, 0.0); // Light vector in light's MVP space.
-    mvplightRay.xyz = normalize(mvplightRay.xyz);
-    
+    // vec3 lightRay = Pos.xyz / Pos.w - LightPos.xyz / LightPos.w; // Light vector in world space.
+    // vec4 mvplightRay = u_mvp_light * vec4(lightRay, 0.0); // Light vector in light's MVP space.
+    // mvplightRay.xyz = normalize(mvplightRay.xyz);
+    vec4 mvplightRay = u_mvp_light * Pos;
+    mvplightRay.xyz = mvplightRay.xyz / mvplightRay.w;
+    // mvplightRay.xyz = normalize(mvplightRay.xyz);
     vec2 shadowTexCoord = mvplightRay.xy * .5 + .5;
     
     float depthVal = texture2D(u_ShadowTexture, shadowTexCoord).w;
@@ -54,6 +56,6 @@ void main() {
     
     vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
     
-    gl_FragColor = vec4(shadow * albedo, 1.0);*/
+    gl_FragColor = vec4(shadow * albedo, 1.0);
 	
 }
