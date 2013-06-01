@@ -970,8 +970,9 @@ void Fluid::RenderFrame(){
     Update();
     TRIANGLE *tri = NULL;
 	int ntri = 0;
-    Surface(tri,ntri);
-    renderer->RenderFrame(Surface(tri,ntri),listParticles.size()*6);
+    float * mesh = Surface(tri,ntri);
+    renderer->RenderFrame(mesh, ntri);
+    delete[] mesh;
 }
 
 
@@ -1199,9 +1200,8 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
         ntri += n;
 	}
     
-    float* vertices = new float[(3+3)*8*ntri];
-    int bufferIndex = 0;
-    Vector3f center(0,0,0);
+    float* vertices = new float[3*(3+3)*ntri];
+    unsigned int bufferIndex = 0;
     for (int i=0;i<ntri;i++) {
         for (int k=0;k<3;k++)  {
             vertices[bufferIndex++] =tri[i].p[k].x;
