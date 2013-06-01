@@ -24,6 +24,7 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     SetShader(colorShader);
     
     texture = -1;
+    normalTexture = -1;
 }
 
 void RenderObject::SetShader(const GLuint shaderProgram) {
@@ -36,15 +37,17 @@ void RenderObject::SetShader(const GLuint shaderProgram) {
     gvNormals = glGetAttribLocation(shaderProgram, "a_Normal");
     gvTexCoords = glGetAttribLocation(shaderProgram, "a_TexCoordinate");
     textureUniform = glGetUniformLocation(shaderProgram, "u_Texture");
+    normalMapUniform = glGetUniformLocation(shaderProgram, "u_NormalMap");
     checkGlError("glGetAttribLocation");
 }
 
-void RenderObject::AddTexture(const char *textureFilename) {
+void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
     // Load textures
     GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename);
     
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    GLuint newTex = -1;
+    glGenTextures(1, &newTex);
+    glBindTexture(GL_TEXTURE_2D, newTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -57,6 +60,11 @@ void RenderObject::AddTexture(const char *textureFilename) {
     //free(imageData); // TODO: Not allowed on Samsung Galaxy (not malloc'd).
     
     checkGlError("AddTexture");
+    
+    if(normalmap)
+        normalTexture = newTex;
+    else
+        texture = newTex;
 }
 
 void RenderObject::RenderPass() {
@@ -96,6 +104,14 @@ void RenderObject::RenderPass() {
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
+    }
+    
+    // Pass normal map
+    if(normalMapUniform != -1 && normalTexture != -1) {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normalTexture);
+        glUniform1i(textureUniform, 1);
+        checkGlError("normalTexture");
     }
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);

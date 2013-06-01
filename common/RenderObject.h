@@ -28,7 +28,7 @@ class RenderObject {
 public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
 
-    void AddTexture(const char *textureFilename);
+    void AddTexture(const char *textureFilename, bool normalmap = false);
     
     // Render color and geometry to g buffer.
     void Render();
@@ -50,8 +50,10 @@ protected:
     GLuint gvTexCoords;
     GLuint gvNormals;
     GLuint gVertexBuffer;
+    GLuint normalMapUniform;
     
     GLuint texture;
+    GLuint normalTexture;
     int numVertices;
 };
 

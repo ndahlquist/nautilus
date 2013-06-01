@@ -68,7 +68,8 @@ void Setup(int w, int h) {
     pipeline = new RenderPipeline();
     
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
-    cave->AddTexture("cave_albedo.jpg");
+    cave->AddTexture("cave_albedo.jpg", false);
+    cave->AddTexture("cave_albedo.jpg", true); // Normal map
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
