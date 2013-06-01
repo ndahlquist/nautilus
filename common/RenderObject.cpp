@@ -103,7 +103,7 @@ void RenderObject::RenderPass() {
 
 }
 
-void RenderObject::RenderFrame() {
+void RenderObject::Render() {
 
     if(!pipeline) {
         LOGE("RenderPipeline inaccessible.");
@@ -122,7 +122,7 @@ void RenderObject::RenderFrame() {
     
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL); // TODO: Measure effect on performance vs clear buffer.
     glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDisable(GL_DITHER);
@@ -145,4 +145,36 @@ void RenderObject::RenderFrame() {
     glDepthMask(GL_TRUE); // TODO
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
+}
+
+void RenderObject::HalfRender() {
+    if(!pipeline) {
+        LOGE("RenderPipeline inaccessible.");
+        exit(0);
+    }
+    
+    //////////////////////////////////
+    // Render to frame buffer
+    
+    // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
+    SetShader(pipeline->halfGeometryShader);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
+    
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+    glDisable(GL_DITHER);
+    checkGlError("glClear");
+    
+    RenderPass();
+    
+    glDepthMask(GL_TRUE); // TODO
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
+
 }

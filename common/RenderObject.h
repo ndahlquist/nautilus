@@ -29,8 +29,14 @@ public:
     RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
 
     void AddTexture(const char *textureFilename);
-    void RenderFrame();
     
+    // Render color and geometry to g buffer.
+    void Render();
+    
+    // Render only a portion of the geometry.
+    // (Used for screen-space intersections)
+    void HalfRender();
+     
     GLuint colorShader;
     
 protected:

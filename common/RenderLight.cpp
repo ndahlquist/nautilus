@@ -13,7 +13,7 @@ RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilena
    brightness[2] = 100.0f;
 }
 
-void RenderLight::RenderFrame() {
+void RenderLight::Render() {
 
     if(!pipeline) {
         LOGE("RenderPipeline inaccessible.");

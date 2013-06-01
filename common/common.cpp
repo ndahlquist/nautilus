@@ -111,20 +111,22 @@ void RenderFrame() {
     //////////////////////////////////
     // Render to g buffer.
     
-    cave->RenderFrame();
+    cave->HalfRender();
     
     // Process user input
     if(touchDown) {
         uint8_t * geometry = pipeline->RayTracePixel((lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
-        float depth = geometry[3] / 128.0f - 1.0f;
-        delete geometry;
+        if(geometry[3] != 255) {
+            float depth = geometry[3] / 128.0f - 1.0f;
+            delete geometry;
+            
+            Matrix4f mvp = projection.top()*model_view.top();
+            Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
         
-        Matrix4f mvp = projection.top()*model_view.top();
-        Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
-    
-        touchTarget[0] = pos(0) / pos(3);
-        touchTarget[2] = pos(2) / pos(3);
-        touchTarget[1] = pos(1) / pos(3);
+            touchTarget[0] = pos(0) / pos(3);
+            touchTarget[2] = pos(2) / pos(3);
+            touchTarget[1] = pos(1) / pos(3);
+        }
     }
     
     for(int i = 0; i < 3; i++) {
@@ -134,12 +136,14 @@ void RenderFrame() {
     
     if(abs(characterPos[2] - touchTarget[2]) > .01)
         rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
+
+    cave->Render();
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
     rotate(0.0,rot[1],0);
     scalef(.3);
-    character->RenderFrame();
+    character->Render();
     mvPopMatrix();
 
     ////////////////////////////////////////////////////
@@ -149,7 +153,7 @@ void RenderFrame() {
     translatef(characterPos[0], characterPos[1], characterPos[2]);
     scalef(100.0f);
     pointLight->brightness[0] = 2000.0;
-    pointLight->RenderFrame();
+    pointLight->Render();
     mvPopMatrix();
     
     mvPushMatrix();
@@ -158,12 +162,12 @@ void RenderFrame() {
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
     spotLight->brightness[0] = 1000.0;
-    spotLight->RenderFrame();
+    spotLight->Render();
     mvPopMatrix();
     
     pLoadIdentity();
     mvLoadIdentity();
-    globalLight->RenderFrame();
+    globalLight->Render();
     
     frameNum++;
 }

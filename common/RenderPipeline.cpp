@@ -12,6 +12,7 @@ RenderPipeline::RenderPipeline() {
     defaultFrameBuffer = 0;
     
     geometryShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("geometry_f.glsl"));
+    halfGeometryShader = createShaderProgram((char *)resourceCallback("standard_v.glsl"), (char *)resourceCallback("geometry_far_f.glsl"));
     
     glViewport(0, 0, displayWidth, displayHeight);
     checkGlError("glViewport");

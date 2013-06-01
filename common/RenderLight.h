@@ -29,7 +29,7 @@ using namespace std;
 class RenderLight : public RenderObject {
 public:
     RenderLight(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void RenderFrame();
+    void Render();
     
     float brightness[3]; // R, G, B
 };

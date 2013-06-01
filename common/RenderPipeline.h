@@ -31,6 +31,7 @@ public:
     GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
 
     GLuint geometryShader;
+    GLuint halfGeometryShader;
     
 };
 
