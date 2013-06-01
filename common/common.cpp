@@ -67,7 +67,8 @@ void Setup(int w, int h) {
     
     pipeline = new RenderPipeline();
     
-    cave = new RenderObject("cave1.obj", "standard_v.glsl", "solid_color_f.glsl");
+    cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
+    cave->AddTexture("cave_albedo.jpg");
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
@@ -103,7 +104,7 @@ void RenderFrame() {
     pipeline->ClearBuffers();
 
     pLoadIdentity();
-    perspective(90, (float) displayWidth / (float) displayHeight, 60, 420);
+    perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
@@ -111,7 +112,11 @@ void RenderFrame() {
     //////////////////////////////////
     // Render to g buffer.
     
-    cave->HalfRender();
+    mvPushMatrix();
+    scalef(40);
+    //cave->HalfRender();
+    cave->Render();
+    mvPopMatrix();
     
     // Process user input
     if(touchDown) {
@@ -137,7 +142,10 @@ void RenderFrame() {
     if(abs(characterPos[2] - touchTarget[2]) > .01)
         rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
 
-    cave->Render();
+    mvPushMatrix();
+    scalef(40);
+    //cave->Render();
+    mvPopMatrix();
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
