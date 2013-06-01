@@ -159,9 +159,9 @@ void RenderFrame() {
     // Using g buffer, render lights
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1], characterPos[2]);
+    translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
     scalef(100.0f);
-    pointLight->brightness[0] = 2000.0;
+    pointLight->brightness[0] = 3000.0;
     pointLight->Render();
     mvPopMatrix();
     
