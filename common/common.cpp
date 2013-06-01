@@ -23,7 +23,7 @@
 
 #include "transform.h"
 #include "RenderObject.h"
-#include "ParticleSystem.h"
+#include "Fluid.h"
 
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
@@ -42,7 +42,7 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-//RenderObject *cave;
+RenderObject *cave;
 //RenderObject *character;
 Fluid* Water;
 
@@ -59,7 +59,7 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
-    //cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     //character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     //character->AddTexture("raptor_albedo.jpg");
 
@@ -69,9 +69,42 @@ void Setup(int w, int h) {
     checkGlError("glViewport");
     
     Water = new Fluid();
+    unsigned int s = sizeof(Water->grid);
+	memset(Water->grid, 0, s);
+	Water->maxVelocity = 10.0f;
+	for (int i = 1; i < 2 * BUFFER + 8; i++)
+		for (int j = 1; j < 2 * BUFFER + 5; j++)
+			for (int k = 1; k < 2 * BUFFER + 5; k++)
+			{
+				Water->grid[i][j][k].velocity[0] = 0.0f;
+				Water->grid[i][j][k].velocity[1] = 0.0f;
+				Water->grid[i][j][k].velocity[2] = 0.0f;
+			}
+	for (int i = 2; i < 8; i++)
+		for (int j = 2; j < 5; j++)
+			for (int k = 2; k < 5; k++)
+			{
+				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.2f) * CELL_WIDTH,(static_cast<float>(j) + 0.2f) * CELL_WIDTH, (static_cast<float>(k) + 0.2f) * CELL_WIDTH));
+                
+				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.2f) * CELL_WIDTH,(static_cast<float>(j) + 0.4f) * CELL_WIDTH, (static_cast<float>(k) + 0.6f) * CELL_WIDTH));
+                
+				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.8f) * CELL_WIDTH,(static_cast<float>(j) + 0.6f) * CELL_WIDTH,(static_cast<float>(k) + 0.4f) * CELL_WIDTH));
+				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.8f) * CELL_WIDTH,(static_cast<float>(j) + 0.8f) * CELL_WIDTH,
+                                                          (static_cast<float>(k) + 0.8f) * CELL_WIDTH));
+			}
+    
+	Water->UpdateDeltaTime();		//1
+	Water->UpdateSolid();
+	Water->UpdateCells();			//2
+	Water->ApplyConvection();		//3a
+	Water->ApplyGravity();			//3b
+	Water->ApplyPressure();			//3de
+	Water->UpdateBufferVelocity();	//3f
+	Water->SetSolidCells();			//3g
+	Water->remainderTime = Water->deltaTime;
 }
 
-float cameraPos[4] = {0,0,0.9,1};
+float cameraPos[4] = {0,0,2,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
@@ -85,16 +118,23 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(.05, (float) width / (float) height, 10, 1000);
+    perspective(80, (float) width / (float) height, 1, 1000);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
     
-    scalef(.2, .2, .2);
+    /*scalef(.02, .02, .02);
     translatef(0.0f, 0.0f, -600.0f);
     rotate(rot[1],rot[0],0);
-    translatef(-.6f, -0.2f, 0.0f);
-
+    translatef(-.6f, -0.2f, 0.0f);*/
+    /*translatef(-1, -2, -15);
+    scalef(0.1, 0.1, 0.1);*/
+    
+    //translatef(0.0f, 0.0f, -600.0f);
+    //rotate(rot[1],rot[0],0);
+    translatef(-5.0f, -3.0f, -20.0f);
+    //scalef(.2, .2, .2);
+    
     //cave->RenderFrame();
 
     Water->RenderFrame();

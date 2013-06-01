@@ -126,7 +126,7 @@ void Fluid::updateCells(){
 Vector2f Fluid::getVelocity(double x, double y)
 {
 	Vector2f w;
-	w(0) = getInterpolatedValue(x/CELL_WIDTH, y/CELL_WIDTH-0.5 , DIRECTION_X);
+	w(0) = getInterpolatedValue(x/CELL_WIDTH, y/CELL_WIDTH-0.5, DIRECTION_X);
 	w(1) = getInterpolatedValue(x/CELL_WIDTH-0.5, y/CELL_WIDTH , DIRECTION_Y);
 	return w;
 	
