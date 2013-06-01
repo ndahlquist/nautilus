@@ -170,6 +170,8 @@ void RenderFrame() {
     globalLight->Render();
     
     frameNum++;
+    
+    fpsMeter();
 }
 
 void PointerDown(float x, float y, int pointerIndex) {
