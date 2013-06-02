@@ -111,16 +111,20 @@ void Fluid::CreateBuffer(Cell *N, int i)
 	}
 }
 
+inline int clamp(int x, int a, int b) {
+    return x < a ? a : (x > b ? b : x);
+}
+
 //get the cell at a certain position
 Cell *Fluid::getCell(Vector3f &pos)
 {
-	/*int i = static_cast<int>(max((int)floor(pos[0] / CELL_WIDTH), 0));
-	int j = static_cast<int>(max((int)floor(pos[1] / CELL_WIDTH), 0));
-	int k = static_cast<int>(max((int)floor(pos[2] / CELL_WIDTH), 0));*/
+	int i = static_cast<int>(clamp((int)floor(pos[0] / CELL_WIDTH), 0, Cell_NUM_X));
+	int j = static_cast<int>(clamp((int)floor(pos[1] / CELL_WIDTH), 0, Cell_NUM_Y));
+	int k = static_cast<int>(clamp((int)floor(pos[2] / CELL_WIDTH), 0, Cell_NUM_Z));
     
-    int i = static_cast<int>(floor(pos[0] / CELL_WIDTH));
+    /*int i = static_cast<int>(floor(pos[0] / CELL_WIDTH));
 	int j = static_cast<int>(floor(pos[1] / CELL_WIDTH));
-	int k = static_cast<int>(floor(pos[2] / CELL_WIDTH));
+	int k = static_cast<int>(floor(pos[2] / CELL_WIDTH));*/
     
 	grid[BUFFER + i][BUFFER + j][BUFFER + k].x = i;
 	grid[BUFFER + i][BUFFER + j][BUFFER + k].y = j;
@@ -149,13 +153,13 @@ Vector3f Fluid::getVelocity(float x, float y, float z)
 //get an interpolated value from the grid
 float Fluid::getInterpolatedValue(float x, float y, float z, int direction)
 {
-	/*int i = static_cast<int>(max((int)floor(x), 0));
-	int j = static_cast<int>(max((int)floor(y), 0));
-	int k = static_cast<int>(max((int)floor(z), 0));*/
+	int i = static_cast<int>(clamp((int)floor(x), 0, Cell_NUM_X));
+	int j = static_cast<int>(clamp((int)floor(y), 0, Cell_NUM_Y));
+	int k = static_cast<int>(clamp((int)floor(z), 0, Cell_NUM_Z));
     
-    int i = static_cast<int>(floor(x));
+    /*int i = static_cast<int>(floor(x));
 	int j = static_cast<int>(floor(y));
-	int k = static_cast<int>(floor(z));
+	int k = static_cast<int>(floor(z));*/
     
 	float weight = 0.0f;
 	float sum = 0.0f;
@@ -1004,13 +1008,13 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     //iterate through particles, locally update
     for(list<Vector3f*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
         float px = (**iter)[0], py = (**iter)[1], pz = (**iter)[2];
-	    /*int i = static_cast<int>(max((int)floor(px / CELL_WIDTH), 0));
-	    int j = static_cast<int>(max((int)floor(py / CELL_WIDTH), 0));
-	    int k = static_cast<int>(max((int)floor(pz / CELL_WIDTH), 0));*/
+	    int i = static_cast<int>(clamp((int)floor(px / CELL_WIDTH), 0, Cell_NUM_X));
+	    int j = static_cast<int>(clamp((int)floor(py / CELL_WIDTH), 0, Cell_NUM_Y));
+	    int k = static_cast<int>(clamp((int)floor(pz / CELL_WIDTH), 0, Cell_NUM_Z));
         
-        int i = static_cast<int>(floor(px / CELL_WIDTH));
+        /*int i = static_cast<int>(floor(px / CELL_WIDTH));
 	    int j = static_cast<int>(floor(py / CELL_WIDTH));
-	    int k = static_cast<int>(floor(pz / CELL_WIDTH));
+	    int k = static_cast<int>(floor(pz / CELL_WIDTH));*/
         
         float x = i*CELL_WIDTH;
         float y = j*CELL_WIDTH;

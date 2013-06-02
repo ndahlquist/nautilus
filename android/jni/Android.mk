@@ -18,7 +18,7 @@ LOCAL_SRC_FILES := ndk_interface.cpp \
                    $(PROJECT_ROOT_PATH)/common/common.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderObject.cpp \
                    $(PROJECT_ROOT_PATH)/common/transform.cpp \
-                    $(PROJECT_ROOT_PATH)/common/ParticleSystem.cpp
+                   $(PROJECT_ROOT_PATH)/common/PCG.cpp
                    
 LOCAL_LDLIBS    := -llog \
                    -lGLESv2 \

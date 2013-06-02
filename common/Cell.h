@@ -514,9 +514,9 @@ int PolygoniseCube(GRIDCELL g,double iso,TRIANGLE *tri)
         crossz /= length;
         
         for(int j = 0; j < 3; j++) {
-        tri[ntri].n[j].x = crossx;
-        tri[ntri].n[j].y = crossy;
-        tri[ntri].n[j].z = crossz;
+            tri[ntri].n[j].x = crossx;
+            tri[ntri].n[j].y = crossy;
+            tri[ntri].n[j].z = crossz;
         }
         //tri[ntri].n[1] = .8f;
         //tri[ntri].n[2] = .1f;
