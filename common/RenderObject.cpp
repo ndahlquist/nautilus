@@ -155,6 +155,7 @@ void RenderObject::Render() {
     
     glDepthMask(GL_FALSE); // We share the same depth buffer here, so don't overwrite it.
     glDepthFunc(GL_EQUAL);
+    glEnable(GL_DITHER);
     
     RenderPass();
     

@@ -166,17 +166,17 @@ void RenderFrame() {
     mvPopMatrix();
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] + 40.0, characterPos[2]);
-    scalef(100.0f);
+    translatef(characterPos[0], characterPos[1], characterPos[2]);
+    scalef(200.0f);
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
-    spotLight->brightness[0] = 1000.0;
+    spotLight->brightness[0] = 8000.0;
     spotLight->Render();
     mvPopMatrix();
     
     pLoadIdentity();
     mvLoadIdentity();
-    globalLight->Render();
+    //globalLight->Render();
     
     frameNum++;
     
