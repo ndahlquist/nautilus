@@ -1,5 +1,5 @@
 
-uniform mat4 u_MVPMatrix;		// A constant representing the combined model/view/projection matrix.      		       
+uniform mat4 u_MVPMatrix;		// A constant representing the combined model/view/projection matrix.
 uniform mat4 u_MVMatrix;		// A constant representing the combined model/view matrix.
 
 attribute vec2 a_TexCoordinate; // Per-vertex texture coordinate information we will pass in.
