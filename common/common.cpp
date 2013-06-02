@@ -118,21 +118,17 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(40, (float) width / (float) height, 12, 30);
+    perspective(40, (float) width / (float) height, 12, 60);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
 
+    translatef(0, 0, -10);
     rotate(rot[1],rot[0],0);
+    translatef(-8, 0, -5);
     Water->RenderFrame();
     
-    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-    // TODO: Per-object transforms.
-    //translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
-    //character->RenderFrame();
 
 }
 

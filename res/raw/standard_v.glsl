@@ -15,7 +15,7 @@ varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
 void main() {
 	// Pass through the texture and normal coordinates.
 	v_TexCoordinate = a_TexCoordinate;
-	v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 1.0));
+	v_Normal = normalize(vec3(u_MVMatrix * vec4(a_Normal, 0.0)));
 
 	// gl_Position is a special variable used to store the final position.
 	// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
