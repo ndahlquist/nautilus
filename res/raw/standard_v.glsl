@@ -8,16 +8,14 @@ attribute vec2 a_TexCoordinate; // Per-vertex texture coordinate information we 
 		  
 varying vec3 v_Position;		// This will be passed into the fragment shader.  		          		
 varying vec4 v_mvp_Position;
-varying vec3 v_Normal;			// This will be passed into the fragment shader.          		
-varying vec3 v_Normal_eye;	    // This will be passed into the fragment shader.
+varying vec3 v_Normal;			// This will be passed into the fragment shader.
 varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
 		  
 // The entry point for our vertex shader.  
 void main() {
 	// Pass through the texture and normal coordinates.
 	v_TexCoordinate = a_TexCoordinate;
-	v_Normal = a_Normal;
-	v_Normal_eye = vec3(u_MVMatrix * vec4(a_Normal, 1.0));
+	v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 1.0));
 
 	// gl_Position is a special variable used to store the final position.
 	// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
