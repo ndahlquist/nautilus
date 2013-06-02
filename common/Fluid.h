@@ -60,7 +60,7 @@ public:
 };
 
 Fluid::Fluid(){
-    renderer = new RenderObject("standard_v.glsl", "normals_f.glsl");
+    renderer = new RenderObject("standard_v.glsl", "depth_f.glsl");
 }
 
 //is in the simulation bound
@@ -971,6 +971,7 @@ void Fluid::RenderFrame(){
     TRIANGLE *tri = NULL;
 	int ntri = 0;
     float * mesh = Surface(tri,ntri);
+    free(tri);
     renderer->RenderFrame(mesh, ntri);
     delete[] mesh;
 }

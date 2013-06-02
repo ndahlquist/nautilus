@@ -104,39 +104,26 @@ void Setup(int w, int h) {
 	Water->remainderTime = Water->deltaTime;
 }
 
-float cameraPos[4] = {0,0,2,1};
+float cameraPos[4] = {5,3,22,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 void RenderFrame() {
     
     glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0., 0., 0., 0.);
     checkGlError("glClearColor");
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(80, (float) width / (float) height, 1, 1000);
+    perspective(40, (float) width / (float) height, 12, 30);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
-    
-    /*scalef(.02, .02, .02);
-    translatef(0.0f, 0.0f, -600.0f);
-    rotate(rot[1],rot[0],0);
-    translatef(-.6f, -0.2f, 0.0f);*/
-    /*translatef(-1, -2, -15);
-    scalef(0.1, 0.1, 0.1);*/
-    
-    //translatef(0.0f, 0.0f, -600.0f);
-    //rotate(rot[1],rot[0],0);
-    translatef(-5.0f, -3.0f, -20.0f);
-    //scalef(.2, .2, .2);
-    
-    //cave->RenderFrame();
 
+    rotate(rot[1],rot[0],0);
     Water->RenderFrame();
     
     
