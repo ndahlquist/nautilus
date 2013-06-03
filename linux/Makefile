@@ -8,7 +8,8 @@ FILES   := mainlinux ../common/common \
                      ../common/RenderObject \
                      ../common/RenderLight \
                      ../common/transform \
-                     ../common/glsl_helper
+                     ../common/glsl_helper \
+                     ../common/PhysicsObject
 
 #################################################################
 

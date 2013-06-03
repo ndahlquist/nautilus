@@ -23,6 +23,7 @@
 
 #include "transform.h"
 #include "RenderObject.h"
+#include "PhysicsObject.h"
 #include "RenderLight.h"
 #include "glsl_helper.h"
 #include "log.h"
@@ -40,6 +41,7 @@ RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
 RenderObject *character = NULL;
+PhysicsObject *bomb = NULL;
 RenderLight *pointLight = NULL;
 RenderLight *spotLight = NULL;
 RenderLight *globalLight = NULL;
@@ -72,6 +74,7 @@ void Setup(int w, int h) {
     cave->AddTexture("cave_albedo.jpg", true); // Normal map
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
+    bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
     pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
@@ -95,6 +98,7 @@ float characterPos[3] = {0,0,0};
 #define TOUCH_DISP_FACTOR 100.0f
 
 bool touchDown = false;
+bool shootBomb = false;
 float lastTouch[2] = {0,0};
 
 void RenderFrame() {
@@ -142,6 +146,14 @@ void RenderFrame() {
     
     if(abs(characterPos[2] - touchTarget[2]) > .01)
         rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
+        
+    if(shootBomb) {
+        bomb->position = Eigen::Vector3f(characterPos[0], characterPos[1], characterPos[2]);
+        bomb->velocity = Eigen::Vector3f(.1 * -cos(rot[1]), 0.0, .1 * sin(rot[1]));
+        shootBomb = false;
+    }
+    
+    bomb->Update(1 / 30.0);
 
     mvPushMatrix();
     scalef(40);
@@ -154,6 +166,12 @@ void RenderFrame() {
     scalef(.3);
     character->Render();
     mvPopMatrix();
+    
+    mvPushMatrix();
+    translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+    scalef(10);
+    bomb->Render();
+    mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
@@ -162,6 +180,13 @@ void RenderFrame() {
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
     scalef(100.0f);
     pointLight->brightness[0] = 3000.0;
+    pointLight->Render();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+    scalef(100);
+    pointLight->brightness[0] = 2000.0;
     pointLight->Render();
     mvPopMatrix();
     
@@ -187,6 +212,7 @@ void PointerDown(float x, float y, int pointerIndex) {
     lastTouch[0] = x;
     lastTouch[1] = y;
     touchDown = true;
+    shootBomb = true;
 }
 
 void PointerMove(float x, float y, int pointerIndex) {
