@@ -556,6 +556,8 @@ void Fluid::ApplyPressure()
             }
     //std::cout<<b<<endl;
     //std::cout<<mat;
+    Eigen::SparseMatrix<double> mat(count, count);
+    mat.setFromTriplets(tripletList.begin(), tripletList.end());
     // Solving:
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > solver(mat);
     Eigen::VectorXd x = solver.solve(b); // use the factorization to solve for the given right hand side
