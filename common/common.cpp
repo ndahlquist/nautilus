@@ -127,8 +127,7 @@ void RenderFrame() {
     if(touchDown) {
         uint8_t * geometry = pipeline->RayTracePixel((lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
         if(geometry[3] != 255) {
-            float depth = geometry[3] / 128.0f - 1.0f;
-            delete geometry;
+            float depth = geometry[3] / 128.0f - 1.0f;            
             
             Matrix4f mvp = projection.top()*model_view.top();
             Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
@@ -137,6 +136,7 @@ void RenderFrame() {
             touchTarget[2] = pos(2) / pos(3);
             touchTarget[1] = pos(1) / pos(3);
         }
+        delete[] geometry;
     }
     
     for(int i = 0; i < 3; i++) {
@@ -149,16 +149,11 @@ void RenderFrame() {
         
     if(shootBomb) {
         bomb->position = Eigen::Vector3f(characterPos[0], characterPos[1], characterPos[2]);
-        bomb->velocity = Eigen::Vector3f(.1 * -cos(rot[1]), 0.0, .1 * sin(rot[1]));
+        bomb->velocity = Eigen::Vector3f(.1 * -cos(rot[1]), 0.1, .1 * sin(rot[1]));
         shootBomb = false;
     }
     
     bomb->Update(1 / 30.0);
-
-    mvPushMatrix();
-    scalef(40);
-    //cave->Render();
-    mvPopMatrix();
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);

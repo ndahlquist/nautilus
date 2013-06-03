@@ -33,6 +33,8 @@ public:
     Vector3f position;
     Vector3f velocity;
     Vector3f acceleration;
+    
+    bool ScreenSpaceCollisions;
 };
 
 
