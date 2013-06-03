@@ -9,7 +9,7 @@ using std::list;
 using std::vector;
 using Eigen::Vector3f;
 
-
+typedef Eigen::Triplet<double> T;
 #define Cell_NUM_X 10
 #define Cell_NUM_Y 5
 #define Cell_NUM_Z 5
@@ -456,8 +456,12 @@ void Fluid::ApplyPressure()
             }
 	Eigen::VectorXd b(count);
 	
-    Eigen::SparseMatrix<double> mat(count,count); // default is column major
-    mat.reserve(Eigen::VectorXi::Constant(count,7));
+    std::vector<T> tripletList;
+    tripletList.reserve(7*count);
+    
+    
+    //Eigen::SparseMatrix<double> mat(count,count); // default is column major
+    //mat.reserve(Eigen::VectorXi::Constant(count,7));
     
 	count = 0;
 	
@@ -482,8 +486,8 @@ void Fluid::ApplyPressure()
                 {
                     neighbor++;
                     printf("layer: %d\n", layer[i-1][j][k]);
-                    mat.insert(count,layer[i-1][j][k]) = -1.f;
-                    
+                    //mat.insert(count,layer[i-1][j][k]) = -1.f;
+                    tripletList.push_back(T(count,layer[i-1][j][k],-1.0));
                 }
                 else if (status[posX - 1][posY][posZ] == AIR)
                 {
@@ -493,7 +497,8 @@ void Fluid::ApplyPressure()
                 if (status[posX + 1][posY][posZ] == FLUID)
                 {
                     neighbor++;
-                    mat.insert(count,layer[i+1][j][k]) = -1.f;
+                    //mat.insert(count,layer[i+1][j][k]) = -1.f;
+                    tripletList.push_back(T(count,layer[i+1][j][k],-1.0));
                 }
                 else if (status[posX + 1][posY][posZ] == AIR)
                 {
@@ -503,7 +508,8 @@ void Fluid::ApplyPressure()
                 if (status[posX][posY - 1][posZ] == FLUID)
                 {
                     neighbor++;
-                    mat.insert(count,layer[i][j-1][k]) = -1.f;
+                    //mat.insert(count,layer[i][j-1][k]) = -1.f;
+                    tripletList.push_back(T(count,layer[i][j-1][k],-1.0));
                 }
                 else if (status[posX][posY - 1][posZ] == AIR)
                 {
@@ -513,7 +519,8 @@ void Fluid::ApplyPressure()
                 if (status[posX][posY + 1][posZ] == FLUID)
                 {
                     neighbor++;
-                    mat.insert(count,layer[i][j+1][k]) = -1.f;
+                    //mat.insert(count,layer[i][j+1][k]) = -1.f;
+                    tripletList.push_back(T(count,layer[i][j+1][k],-1.0));
                 }
                 else if (status[posX][posY + 1][posZ] == AIR)
                 {
@@ -523,7 +530,8 @@ void Fluid::ApplyPressure()
                 if (status[posX][posY][posZ - 1] == FLUID)
                 {
                     neighbor++;
-                    mat.insert(count,layer[i][j][k-1]) = -1.f;
+                    //mat.insert(count,layer[i][j][k-1]) = -1.f;
+                    tripletList.push_back(T(count,layer[i][j][k-1],-1.0));
                 }
                 else if (status[posX][posY][posZ - 1] == AIR)
                 {
@@ -533,20 +541,25 @@ void Fluid::ApplyPressure()
                 if (status[posX][posY][posZ + 1] == FLUID)
                 {
                     neighbor++;
-                    mat.insert(count,layer[i][j][k+1]) = -1.f;
+                    //mat.insert(count,layer[i][j][k+1]) = -1.f;
+                    tripletList.push_back(T(count,layer[i][j][k+1],-1.0));
                 }
                 else if (status[posX][posY][posZ + 1] == AIR)
                 {
                     neighbor++;
                 }
                 
-                mat.insert(count,count) = (float)(neighbor);
+                //mat.insert(count,count) = (float)(neighbor);
+                tripletList.push_back(T(count,count,(double)(neighbor)));
                 count++;
                 
             }
     //std::cout<<b<<endl;
     //std::cout<<mat;
     // Solving:
+    Eigen::SparseMatrix<double> mat(count, count);
+    mat.setFromTriplets(tripletList.begin(), tripletList.end());
+    
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double>> solver(mat);
     Eigen::VectorXd x = solver.solve(b); // use the factorization to solve for the given right hand side
     
