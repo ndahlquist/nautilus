@@ -6,8 +6,7 @@ TARGET  := NativeGraphics
 FILES   := mainlinux \
            ../common/common \
            ../common/RenderObject \
-           ../common/transform \
-           ../common/PCG
+           ../common/transform
 
 #################################################################
 
@@ -18,7 +17,9 @@ LD		 := g++
 OBJSUFFIX	 := .o
 LIBPREFIX	 := lib
 STATIC_LIBSUFFIX := .a
-CFLAGS 		 := -g
+CFLAGS 		 := -g \
+                -O3 \
+                -ffast-math
 CFLAGS_PLATFORM  :=
 LDFLAGS		 :=
 FRAMEWORKS	 :=
