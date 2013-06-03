@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Vector.h"
 #include "Eigen/Core"
 
 #define CELL_WIDTH 0.1f
