@@ -482,6 +482,8 @@ int PolygoniseCube(GRIDCELL g,double iso,TRIANGLE *tri)
         tri[ntri].p[0] = vertlist[triTable[cubeindex][i  ]];
         tri[ntri].p[1] = vertlist[triTable[cubeindex][i+1]];
         tri[ntri].p[2] = vertlist[triTable[cubeindex][i+2]];
+<<<<<<< HEAD
+=======
         
         // Calculate normal vector
         float dx1 = tri[ntri].p[1].x - tri[ntri].p[0].x;
@@ -508,6 +510,7 @@ int PolygoniseCube(GRIDCELL g,double iso,TRIANGLE *tri)
         }
         //tri[ntri].n[1] = .8f;
         //tri[ntri].n[2] = .1f;
+>>>>>>> 444f401af8588b2a410a09e3516359f63cb16828
         ntri++;
     }
     

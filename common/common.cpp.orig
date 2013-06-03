@@ -23,6 +23,7 @@
 
 #include "transform.h"
 #include "RenderObject.h"
+#include "Fluid.h"
 
 #define  LOG_TAG    "libnativegraphics"
 #include "log.h"
@@ -41,8 +42,9 @@ void SetResourceCallback(void*(*cb)(const char *)) {
     resourceCallback = cb;
 }
 
-//RenderObject *cave;
+RenderObject *cave;
 //RenderObject *character;
+Fluid* Water;
 
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -57,60 +59,25 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
-    //cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
+    cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
     //character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
     //character->AddTexture("raptor_albedo.jpg");
-   Water = new Fluid();
-   int particlecounter=0;
-   for(int i = 0; i < 10000; ++i) {
-        float x = randhashf(i*2, 0,1);
-        float y = randhashf(i*2+1, 0,1);
-        if(x<=i_high*CELL_WIDTH&&x>=0.50&&y>=j_low*CELL_WIDTH&&y<=(j_high-10)*CELL_WIDTH){
-              Vector2f newParticle;
-              newParticle.set(x,y); 
-              Water->listParticles.push_back(newParticle);  
-              //particlecounter++;
-        } 
-   }                                
-   //printf("%d\n",particlecounter);i
-    for(int j=j_low;j<j_high;j++){    
-      Water->status[i_low-1][j]=SOLID_WALL;                                 
-      Water->status[i_high][j]=SOLID_WALL;
-    }
-    for(int i=i_low-1;i<i_high;i++){  
-      Water->status[i][j_low-1]=SOLID_WALL;                                   
-    }
-    glGenBuffers(1, &gVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    checkGlError("VertexBuffer Generation");
-    
-    // Compile and link shader program
-    gProgram = createProgram((char *)resourceCallback(standard_v.glsl), (char *)resourceCallback(diffuse_f.glsl));
-    
-    // Get uniform and attrib locations
-    gmvMatrixHandle = glGetUniformLocation(gProgram, "u_MVMatrix");
-    gmvpMatrixHandle = glGetUniformLocation(gProgram, "u_MVPMatrix");
-    gvPositionHandle = glGetAttribLocation(gProgram, "a_Position");
-    gvNormals = glGetAttribLocation(gProgram, "a_Normal");
-    gvTexCoords = glGetAttribLocation(gProgram, "a_TexCoordinate");
-    textureUniform = glGetUniformLocation(gProgram, "u_Texture");
-    checkGlError("glGetAttribLocation");
 
     width = w;
     height = h;
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
+    
+    Water = new Fluid();
 }
 
-float cameraPos[4] = {0,0,0.9,1};
+float cameraPos[4] = {5,3,22,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 void RenderFrame() {
     
-    glEnable(GL_CULL_FACE); // TODO: Not working: why?
+    glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0., 0., 0., 0.);
     checkGlError("glClearColor");
@@ -118,21 +85,23 @@ void RenderFrame() {
     checkGlError("glClear");
 
     pLoadIdentity();
-    perspective(20, (float) width / (float) height, 10, 1000);
+    perspective(40, (float) width / (float) height, 12, 60);
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
-    
-    scalef(.2, .2, .2);
-    translatef(0.0f, 0.0f, -600.0f);
-    rotate(rot[1],rot[0],0);
-    translatef(0.0f, -40.0f, 0.0f);
 
-    cave->RenderFrame();
+<<<<<<< HEAD
     
-    // TODO: Per-object transforms.
-    translatef(68.0f, -5.0f, -20.0f); // Translate raptor onto rock.
-    character->RenderFrame();
+    //rotate(rot[1],rot[0],0);
+    scalef(4, 4, 4);
+=======
+    translatef(0, 0, -10);
+    rotate(rot[1],rot[0],0);
+    translatef(-8, 0, -5);
+>>>>>>> 444f401af8588b2a410a09e3516359f63cb16828
+    Water->RenderFrame();
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
 
