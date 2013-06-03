@@ -1,26 +1,14 @@
 #pragma once
 
+#include "Vector.h"
 #include "Eigen/Core"
 
-#define CELL_WIDTH 1.f
-#define NOTHING 0
+#define CELL_WIDTH 0.1f
+#define SOURCE 0
 #define FLUID 1
 #define AIR 2
 #define SOLID 3
 
-class Cell
-{
-public:
-    Eigen::Vector3f velocity;
-    Eigen::Vector3f newvelocity;
-	int x;
-	int y;
-	int z;
-	int status;
-	int layer;
-	float pressure;
-    
-};
 
 class mcCell
 {
@@ -494,32 +482,6 @@ int PolygoniseCube(GRIDCELL g,double iso,TRIANGLE *tri)
         tri[ntri].p[0] = vertlist[triTable[cubeindex][i  ]];
         tri[ntri].p[1] = vertlist[triTable[cubeindex][i+1]];
         tri[ntri].p[2] = vertlist[triTable[cubeindex][i+2]];
-        
-        // Calculate normal vector
-        float dx1 = tri[ntri].p[1].x - tri[ntri].p[0].x;
-        float dy1 = tri[ntri].p[1].y - tri[ntri].p[0].y;
-        float dz1 = tri[ntri].p[1].z - tri[ntri].p[0].z;
-        float dx2 = tri[ntri].p[2].x - tri[ntri].p[0].x;
-        float dy2 = tri[ntri].p[2].y - tri[ntri].p[0].y;
-        float dz2 = tri[ntri].p[2].z - tri[ntri].p[0].z;
-        
-        float crossx = dy1 * dz2 - dz1 * dy2;
-        float crossy = dz1 * dx2 - dx1 * dz2;
-        float crossz = dx1 * dy2 - dy1 * dx2;
-        
-        // Normalize
-        float length = sqrt(crossx * crossx + crossy * crossy + crossz * crossz);
-        crossx /= length;
-        crossy /= length;
-        crossz /= length;
-        
-        for(int j = 0; j < 3; j++) {
-        tri[ntri].n[j].x = crossx;
-        tri[ntri].n[j].y = crossy;
-        tri[ntri].n[j].z = crossz;
-        }
-        //tri[ntri].n[1] = .8f;
-        //tri[ntri].n[2] = .1f;
         ntri++;
     }
     

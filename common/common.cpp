@@ -69,39 +69,6 @@ void Setup(int w, int h) {
     checkGlError("glViewport");
     
     Water = new Fluid();
-    unsigned int s = sizeof(Water->grid);
-	memset(Water->grid, 0, s);
-	Water->maxVelocity = 10.0f;
-	for (int i = 1; i < 2 * BUFFER + 8; i++)
-		for (int j = 1; j < 2 * BUFFER + 5; j++)
-			for (int k = 1; k < 2 * BUFFER + 5; k++)
-			{
-				Water->grid[i][j][k].velocity[0] = 0.0f;
-				Water->grid[i][j][k].velocity[1] = 0.0f;
-				Water->grid[i][j][k].velocity[2] = 0.0f;
-			}
-	for (int i = 2; i < 8; i++)
-		for (int j = 2; j < 5; j++)
-			for (int k = 2; k < 5; k++)
-			{
-				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.2f) * CELL_WIDTH,(static_cast<float>(j) + 0.2f) * CELL_WIDTH, (static_cast<float>(k) + 0.2f) * CELL_WIDTH));
-                
-				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.2f) * CELL_WIDTH,(static_cast<float>(j) + 0.4f) * CELL_WIDTH, (static_cast<float>(k) + 0.6f) * CELL_WIDTH));
-                
-				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.8f) * CELL_WIDTH,(static_cast<float>(j) + 0.6f) * CELL_WIDTH,(static_cast<float>(k) + 0.4f) * CELL_WIDTH));
-				Water->listParticles.push_back(new Vector3f((static_cast<float>(i) + 0.8f) * CELL_WIDTH,(static_cast<float>(j) + 0.8f) * CELL_WIDTH,
-                                                          (static_cast<float>(k) + 0.8f) * CELL_WIDTH));
-			}
-    
-	Water->UpdateDeltaTime();		//1
-	Water->UpdateSolid();
-	Water->UpdateCells();			//2
-	Water->ApplyConvection();		//3a
-	Water->ApplyGravity();			//3b
-	Water->ApplyPressure();			//3de
-	Water->UpdateBufferVelocity();	//3f
-	Water->SetSolidCells();			//3g
-	Water->remainderTime = Water->deltaTime;
 }
 
 float cameraPos[4] = {5,3,22,1};
@@ -123,7 +90,9 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
 
-    rotate(rot[1],rot[0],0);
+    
+    //rotate(rot[1],rot[0],0);
+    scalef(4, 4, 4);
     Water->RenderFrame();
     
     

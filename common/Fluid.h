@@ -1,9 +1,10 @@
 #pragma once
 #include "Cell.h"
-#include "PCG.h"
 #include <cmath>
 #include <vector>
 #include <list>
+#include "Eigen/Sparse"
+
 using std::list;
 using std::vector;
 using Eigen::Vector3f;
@@ -17,388 +18,270 @@ using Eigen::Vector3f;
 #define DIRECTION_X 0
 #define DIRECTION_Y 1
 #define DIRECTION_Z 2
-#define GRAVITY 100.0f
+#define GRAVITY 10.0f
 #define FRAME_TIME 0.04f
 
 class Fluid
 {
-public:
-	Cell grid[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
-	list<Cell *> listCells;
-	list<Vector3f*> listParticles;
+private:
+    
+    float u[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    float v[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    float w[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    float nu[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    float nv[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    float nw[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    int status[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
+    int layer[Cell_NUM_X][Cell_NUM_Y][Cell_NUM_Z];
+    float p[Cell_NUM_X][Cell_NUM_Y][Cell_NUM_Z];
+    
+	int frameCount;
 	float maxVelocity;
 	float deltaTime;
 	float remainderTime;
-
-	void CreateBuffer(Cell *N, int i);
-	bool isInBound(Cell *pCell);
-	Cell *getCell(Vector3f &pos);
-	float divVelocity(Cell *g);
-	Vector3f gradPressure(Cell *C);
+    
+	float divVelocity(int,int,int);
 	Vector3f traceParticle(float x, float y, float z, float t);
 	Vector3f getVelocity(float x, float y, float z);
 	float getInterpolatedValue(float x, float y, float z, int direction);
-
-    Fluid();
-	void Update();
+    
+    
 	void UpdateDeltaTime();
-	void UpdateSolid();
+	void UpdateBoundary();
 	void UpdateCells();
-	void ApplyConvection();
+	void ApplyAdvection();
 	void ApplyGravity();
 	void ApplyPressure();
-	void UpdateBufferVelocity();
-	void SetSolidCells();
 	void MoveParticles(float time);
+    void AddSource();
     
     //mobile
     RenderObject* renderer;
     void RenderSetup();
-    void RenderFrame();
     float* GenVertexArray();
     float* Surface(TRIANGLE*&, int&);
+    
+public:
+    Fluid();
+	list<Vector3f*> listParticles;
+    void Update();
+    void RenderFrame();
+
+    
+   
 };
 
 Fluid::Fluid(){
+    frameCount = 0;
     remainderTime = 0.f;
-    renderer = new RenderObject("standard_v.glsl", "normals_f.glsl");
-}
-
-//is in the simulation bound
-bool Fluid::isInBound(Cell *pCell)
-{
-	if (pCell->x >= 0 && pCell->x < Cell_NUM_X
-		&& pCell->y >= 0 && pCell->y < Cell_NUM_Y
-		&& pCell->z >= 0 && pCell->z < Cell_NUM_Z)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-//set the cell to be buffer cell
-void Fluid::CreateBuffer(Cell *N, int i)
-{
-	if (N->status != NOTHING)
-	{
-		if (N->layer == -1 && N->status != SOLID)
-		{
-			N->status = AIR;
-			N->layer = i;
-		}
-		//In the paper this part is missing
-		else if (N->layer == -1 && N->status == SOLID)
-		{
-			N->layer = i;
-		}
-		//////////////////////////////////////////////
-	}
-	else
-	{
-		N->layer = i;
-		listCells.push_back(N);
-		if (isInBound(N))
-		{
-			N->status = AIR;
-		}
-		else
-		{
-			N->status = SOLID;
-		}
-	}
-}
-
-//get the cell at a certain position
-Cell *Fluid::getCell(Vector3f &pos)
-{
-	/*int i = static_cast<int>(max((int)floor(pos[0] / CELL_WIDTH), 0));
-	int j = static_cast<int>(max((int)floor(pos[1] / CELL_WIDTH), 0));
-	int k = static_cast<int>(max((int)floor(pos[2] / CELL_WIDTH), 0));*/
+    maxVelocity = 100.f;
+    for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
+        for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++)
+            for (int k=0; k<Cell_NUM_Z+BUFFER*2; k++) {
+                u[i][j][k] = 0.f;
+                v[i][j][k] = 0.f;
+                w[i][j][k] = 0.f;
+                status[i][j][k] = AIR;
+            }
+    //Initialize solid cells
+    for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
+        for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++){
+            status[i][j][0] = SOLID;
+            status[i][j][Cell_NUM_Z+BUFFER*2-1] = SOLID;
+        }
     
-    int i = static_cast<int>(floor(pos[0] / CELL_WIDTH));
-	int j = static_cast<int>(floor(pos[1] / CELL_WIDTH));
-	int k = static_cast<int>(floor(pos[2] / CELL_WIDTH));
+    for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
+        for (int k=0; k<Cell_NUM_Z+BUFFER*2; k++){
+            status[i][0][k] = SOLID;
+            status[i][Cell_NUM_Y+BUFFER*2-1][k] = SOLID;
+        }
     
-	grid[BUFFER + i][BUFFER + j][BUFFER + k].x = i;
-	grid[BUFFER + i][BUFFER + j][BUFFER + k].y = j;
-	grid[BUFFER + i][BUFFER + j][BUFFER + k].z = k;
-	return &grid[BUFFER + i][BUFFER + j][BUFFER + k];
+    for (int j=0;j<Cell_NUM_Y+BUFFER*2;j++)
+        for (int k=0; k<Cell_NUM_Z+BUFFER*2; k++){
+            status[0][j][k] = SOURCE;
+            status[Cell_NUM_X+BUFFER*2-1][j][k] = SOLID;
+        }
+    //renderer = new RenderObject("standard_v.glsl", "normals_f.glsl");
+    renderer = new RenderObject("standard_v.glsl", "depth_f.glsl");
 }
+
 
 //trace a particle at a point(x,y,z) for t time
 Vector3f Fluid::traceParticle(float x, float y, float z, float t)
 {
-	Vector3f v = getVelocity(x, y, z);
-	v = getVelocity(x + 0.5f * t * v[0], y + 0.5f * t * v[1], z + 0.5f * t * v[2]);
-	return Vector3f(x, y, z) + v * t;
+	Vector3f vec = getVelocity(x, y, z);
+	vec = getVelocity(x - 0.5f * t * vec[0], y - 0.5f * t * vec[1], z - 0.5f * t * vec[2]);
+	return Vector3f(x, y, z) - vec * t;
 }
 
 //get the velocity at position(x,y,z)
 Vector3f Fluid::getVelocity(float x, float y, float z)
 {
-	Vector3f v;
-	v[0] = getInterpolatedValue(x / CELL_WIDTH, y / CELL_WIDTH - 0.5f, z / CELL_WIDTH - 0.5f, DIRECTION_X);
-	v[1] = getInterpolatedValue(x / CELL_WIDTH - 0.5f, y / CELL_WIDTH, z / CELL_WIDTH - 0.5f, DIRECTION_Y);
-	v[2] = getInterpolatedValue(x / CELL_WIDTH - 0.5f, y / CELL_WIDTH - 0.5f, z / CELL_WIDTH, DIRECTION_Z);
-	return v;
+	Vector3f vec;
+	vec[0] = getInterpolatedValue(x / CELL_WIDTH, y / CELL_WIDTH - 0.5f, z / CELL_WIDTH - 0.5f, DIRECTION_X);
+	vec[1] = getInterpolatedValue(x / CELL_WIDTH - 0.5f, y / CELL_WIDTH, z / CELL_WIDTH - 0.5f, DIRECTION_Y);
+	vec[2] = getInterpolatedValue(x / CELL_WIDTH - 0.5f, y / CELL_WIDTH - 0.5f, z / CELL_WIDTH, DIRECTION_Z);
+	return vec;
 }
 
 //get an interpolated value from the grid
 float Fluid::getInterpolatedValue(float x, float y, float z, int direction)
 {
-	/*int i = static_cast<int>(max((int)floor(x), 0));
-	int j = static_cast<int>(max((int)floor(y), 0));
-	int k = static_cast<int>(max((int)floor(z), 0));*/
+	int i = (int)(floor(x));
+	int j = (int)(floor(y));
+	int k = (int)(floor(z));
     
-    int i = static_cast<int>(floor(x));
-	int j = static_cast<int>(floor(y));
-	int k = static_cast<int>(floor(z));
     
 	float weight = 0.0f;
 	float sum = 0.0f;
 	switch(direction)
 	{
-	case DIRECTION_X:
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j][BUFFER + k].velocity[0];
-			weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].velocity[0];
-			weight += (x - i) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].velocity[0];
-			weight += (i + 1 - x) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].velocity[0];
-			weight += (x - i) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (z - k) * grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].velocity[0];
-			weight += (i + 1 - x) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (z - k) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].velocity[0];
-			weight += (x - i) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (z - k) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].velocity[0];
-			weight += (i + 1 - x) * (y - j) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (z - k) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].velocity[0];
-			weight += (x - i) * (y - j) * (z - k);
-		}
-		return sum / weight;
-		break;
-	case DIRECTION_Y:
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j][BUFFER + k].velocity[1];
-			weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].velocity[1];
-			weight += (x - i) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].velocity[1];
-			weight += (i + 1 - x) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].velocity[1];
-			weight += (x - i) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (z - k) * grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].velocity[1];
-			weight += (i + 1 - x) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (z - k) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].velocity[1];
-			weight += (x - i) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (z - k) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].velocity[1];
-			weight += (i + 1 - x) * (y - j) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (z - k) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].velocity[1];
-			weight += (x - i) * (y - j) * (z - k);
-		}
-		return sum / weight;
-		break;
-	case DIRECTION_Z:
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j][BUFFER + k].velocity[2];
-			weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k].velocity[2];
-			weight += (x - i) * (j + 1 - y) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (k + 1 - z) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k].velocity[2];
-			weight += (i + 1 - x) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (k + 1 - z) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k].velocity[2];
-			weight += (x - i) * (y - j) * (k + 1 - z);
-		}
-		if (grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (j + 1 - y) * (z - k) * grid[BUFFER + i][BUFFER + j][BUFFER + k + 1].velocity[2];
-			weight += (i + 1 - x) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (j + 1 - y) * (z - k) * grid[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1].velocity[2];
-			weight += (x - i) * (j + 1 - y) * (z - k);
-		}
-		if (grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (i + 1 - x) * (y - j) * (z - k) * grid[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1].velocity[2];
-			weight += (i + 1 - x) * (y - j) * (z - k);
-		}
-		if (grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].status != NOTHING)
-		{
-			sum += (x - i) * (y - j) * (z - k) * grid[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1].velocity[2];
-			weight += (x - i) * (y - j) * (z - k);
-		}
-		return sum / weight;
-		break;
-	default:
-		return 0;
+        case DIRECTION_X:
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * u[BUFFER + i][BUFFER + j][BUFFER + k];
+            weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (x - i) * (j + 1 - y) * (k + 1 - z) * u[BUFFER + i + 1][BUFFER + j][BUFFER + k];
+            weight += (x - i) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (y - j) * (k + 1 - z) * u[BUFFER + i][BUFFER + j + 1][BUFFER + k];
+            weight += (i + 1 - x) * (y - j) * (k + 1 - z);
+            
+            sum += (x - i) * (y - j) * (k + 1 - z) * u[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k];
+            weight += (x - i) * (y - j) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (z - k) * u[BUFFER + i][BUFFER + j][BUFFER + k + 1];
+            weight += (i + 1 - x) * (j + 1 - y) * (z - k);
+            
+            sum += (x - i) * (j + 1 - y) * (z - k) * u[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1];
+            weight += (x - i) * (j + 1 - y) * (z - k);
+            
+            sum += (i + 1 - x) * (y - j) * (z - k) * u[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (i + 1 - x) * (y - j) * (z - k);
+            
+            sum += (x - i) * (y - j) * (z - k) * u[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (x - i) * (y - j) * (z - k);
+            
+            if(weight)
+                return sum / weight;
+            break;
+        case DIRECTION_Y:
+            
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * v[BUFFER + i][BUFFER + j][BUFFER + k];
+            weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (x - i) * (j + 1 - y) * (k + 1 - z) * v[BUFFER + i + 1][BUFFER + j][BUFFER + k];
+            weight += (x - i) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (y - j) * (k + 1 - z) * v[BUFFER + i][BUFFER + j + 1][BUFFER + k];
+            weight += (i + 1 - x) * (y - j) * (k + 1 - z);
+            
+            sum += (x - i) * (y - j) * (k + 1 - z) * v[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k];
+            weight += (x - i) * (y - j) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (z - k) * v[BUFFER + i][BUFFER + j][BUFFER + k + 1];
+            weight += (i + 1 - x) * (j + 1 - y) * (z - k);
+            
+            sum += (x - i) * (j + 1 - y) * (z - k) * v[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1];
+            weight += (x - i) * (j + 1 - y) * (z - k);
+            
+            sum += (i + 1 - x) * (y - j) * (z - k) * v[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (i + 1 - x) * (y - j) * (z - k);
+            
+            sum += (x - i) * (y - j) * (z - k) * v[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (x - i) * (y - j) * (z - k);
+            
+            if(weight)
+                return sum / weight;
+            break;
+        case DIRECTION_Z:
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (k + 1 - z) * w[BUFFER + i][BUFFER + j][BUFFER + k];
+            weight += (i + 1 - x) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (x - i) * (j + 1 - y) * (k + 1 - z) * w[BUFFER + i + 1][BUFFER + j][BUFFER + k];
+            weight += (x - i) * (j + 1 - y) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (y - j) * (k + 1 - z) * w[BUFFER + i][BUFFER + j + 1][BUFFER + k];
+            weight += (i + 1 - x) * (y - j) * (k + 1 - z);
+            
+            sum += (x - i) * (y - j) * (k + 1 - z) * w[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k];
+            weight += (x - i) * (y - j) * (k + 1 - z);
+            
+            sum += (i + 1 - x) * (j + 1 - y) * (z - k) * w[BUFFER + i][BUFFER + j][BUFFER + k + 1];
+            weight += (i + 1 - x) * (j + 1 - y) * (z - k);
+            
+            sum += (x - i) * (j + 1 - y) * (z - k) * w[BUFFER + i + 1][BUFFER + j][BUFFER + k + 1];
+            weight += (x - i) * (j + 1 - y) * (z - k);
+            
+            sum += (i + 1 - x) * (y - j) * (z - k) * w[BUFFER + i][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (i + 1 - x) * (y - j) * (z - k);
+            
+            sum += (x - i) * (y - j) * (z - k) * w[BUFFER + i + 1][BUFFER + j + 1][BUFFER + k + 1];
+            weight += (x - i) * (y - j) * (z - k);
+            
+            if(weight)
+                return sum / weight;
+            break;
+        default:
+            return 0;
 	}
+    return 0;
 }
 
-//calculate the divergence of velocity at the centre of a cell
-float Fluid::divVelocity(Cell *g) 
-{
-	int posX = BUFFER + g->x;
-	int posY = BUFFER + g->y;
-	int posZ = BUFFER + g->z;
-	float ret = 0.0f;
-	if (grid[posX - 1][posY][posZ].status != SOLID)
-	{
-		ret += - g->velocity[0];
-	}
 
-	if (grid[posX][posY - 1][posZ].status != SOLID)
-	{
-		ret += - g->velocity[1];
-	}
 
-	if (grid[posX][posY][posZ - 1].status != SOLID)
-	{
-		ret += - g->velocity[2];
-	}
-
-	if (grid[posX+1][posY][posZ].status != SOLID)
-	{
-		ret += grid[posX+1][posY][posZ].velocity[0];
-	}
-	
-
-	if (grid[posX][posY+1][posZ].status != SOLID)
-	{
-		ret += grid[posX][posY+1][posZ].velocity[1];
-	}
-	
-
-	if (grid[posX][posY][posZ+1].status != SOLID)
-	{
-		ret += grid[posX][posY][posZ+1].velocity[2];
-	}
-	
-	
-	return ret;
-}
-
-//calculate the gradient of pressure at the center of the cell
-Vector3f Fluid::gradPressure(Cell *C)
-{
-	Vector3f v(0.0f, 0.0f, 0.0f);
-	int posX = BUFFER + C->x;
-	int posY = BUFFER + C->y;
-	int posZ = BUFFER + C->z;
-	if (grid[posX - 1][posY][posZ].status == AIR)
-	{
-		v[0] = C->pressure;
-	}
-	else if (grid[posX - 1][posY][posZ].status == FLUID)
-	{
-		v[0] = C->pressure - grid[posX - 1][posY][posZ].pressure;
-	}
-	if (grid[posX][posY - 1][posZ].status == AIR)
-	{
-		v[1] = C->pressure;
-	}
-	else if (grid[posX][posY - 1][posZ].status == FLUID)
-	{
-		v[1] = C->pressure - grid[posX][posY - 1][posZ].pressure;
-	}
-	if (grid[posX][posY][posZ - 1].status == AIR)
-	{
-		v[2] = C->pressure;
-	}
-	else if (grid[posX][posY][posZ - 1].status == FLUID)
-	{
-		v[2] = C->pressure - grid[posX][posY][posZ - 1].pressure;
-	}
-
-	return v;
-}
 
 //update the status of fluid
 void Fluid::Update()
 {
-	if (remainderTime >= FRAME_TIME)
-	{
-		remainderTime -= FRAME_TIME;
-		MoveParticles(FRAME_TIME);
-	}
-	else
-	{
-		while (remainderTime < FRAME_TIME)
-		{
-			UpdateDeltaTime();		//1
-			MoveParticles(deltaTime);
-			//UpdateSolid();
-			UpdateCells();			//2
-			ApplyConvection();		//3a
-			ApplyGravity();			//3b
-			ApplyPressure();		//3de
-			UpdateBufferVelocity();	//3f
-			SetSolidCells();		//3g
-			remainderTime += deltaTime;
-		}
-		remainderTime -= FRAME_TIME;
-		MoveParticles(- remainderTime + deltaTime);
-	}
+    UpdateDeltaTime();		//1
+    printf("update time\n");
+    if(frameCount<60)
+        AddSource();
+    //UpdateSolid();
+    UpdateCells();			//2
+    printf("update cell\n");
+    ApplyAdvection();		//3a
+    printf("update advection\n");
+    ApplyGravity();			//3b
+    printf("update gravity\n");
+    ApplyPressure();		//3de
+    //printf("pressure\n");
+    UpdateBoundary();	//3f
+    printf("update boundary\n");
+    //SetSolidCells();		//3g
+    MoveParticles(deltaTime);
+    printf("Update particles\n");
+    printf("%f\n", deltaTime);
+    frameCount++;
+    //printf("Test\n");
+    /*
+     if (remainderTime >= FRAME_TIME)
+     {
+     remainderTime -= FRAME_TIME;
+     MoveParticles(FRAME_TIME);
+     }
+     else
+     {
+     while (remainderTime < FRAME_TIME)
+     {
+     UpdateDeltaTime();		//1
+     
+     //UpdateSolid();
+     UpdateCells();			//2
+     ApplyConvection();		//3a
+     ApplyGravity();			//3b
+     ApplyPressure();		//3de
+     UpdateBufferVelocity();	//3f
+     SetSolidCells();		//3g
+     MoveParticles(deltaTime);
+     remainderTime += deltaTime;
+     }
+     remainderTime -= FRAME_TIME;
+     MoveParticles(- remainderTime + deltaTime);
+     }*/
 }
 
 //calculate the simulation time step
@@ -411,496 +294,363 @@ void Fluid::UpdateDeltaTime()
 	}
 }
 
-//calculate the new status of solid
-void Fluid::UpdateSolid()
-{
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		if (C->status == SOLID)
-		{
-			if (isInBound(C) == true)
-			{
-				C->status = AIR;
-			}
-		}
-	}
-}
-
 //update the grid based on the marker particles
 void Fluid::UpdateCells()
 {
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{		
-		(*iter)->layer = -1;
-	}
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                layer[i][j][k]=-1;
+            }
+    
 	for (list<Vector3f*>::iterator iter = listParticles.begin(); iter != listParticles.end();)
 	{
-        Cell *pCell = getCell(**iter);
-		if (pCell->status == NOTHING)
-		{
-			if (isInBound(pCell))
-			{
-				pCell->status = FLUID;
-				pCell->layer = 0;
-				listCells.push_back(pCell);
-			}
-		}
-		else if (pCell->status != SOLID)	
-		{
-			pCell->status = FLUID;
-			pCell->layer = 0;
-		}
+        int i=(int)floor((**iter)[0]/CELL_WIDTH);
+        int j=(int)floor((**iter)[1]/CELL_WIDTH);
+        int k=(int)floor((**iter)[2]/CELL_WIDTH);
+        
+        int posX = BUFFER+i;
+        int posY = BUFFER+j;
+        int posZ = BUFFER+k;
+        
+        if (status[posX][posY][posZ]!=SOLID && status[posX][posY][posZ]!= SOURCE)
+        {
+            status[posX][posY][posZ] = FLUID;
+            layer[i][j][k] = 0;
+            iter++;
+        }
 		else
 		{
 			delete(*iter);
 			iter = listParticles.erase(iter);
-			continue;
-		}
-		iter++;
-	}
-	for (int i = 1; i <= 2 || i <= BUFFER; i++)
-	{
-		for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-		{
-			if ((*iter)->status != SOLID && (*iter)->status != NOTHING && (*iter)->layer == i - 1)
-			{
-				Cell *C = *iter;
-				Cell *N;
-				int posx = BUFFER + C->x;
-				int posy = BUFFER + C->y;
-				int posz = BUFFER + C->z;
-
-				N = &grid[posx - 1][posy][posz];
-				N->x = C->x - 1;
-				N->y = C->y;
-				N->z = C->z;
-				CreateBuffer(N, i);
-
-				N = &grid[posx + 1][posy][posz];
-				N->x = C->x + 1;
-				N->y = C->y;
-				N->z = C->z;
-				CreateBuffer(N, i);
-
-				N = &grid[posx][posy - 1][posz];
-				N->x = C->x;
-				N->y = C->y - 1;
-				N->z = C->z;
-				CreateBuffer(N, i);
-
-				N = &grid[posx][posy + 1][posz];
-				N->x = C->x;
-				N->y = C->y + 1;
-				N->z = C->z;
-				CreateBuffer(N, i);
-
-				N = &grid[posx][posy][posz - 1];
-				N->x = C->x;
-				N->y = C->y;
-				N->z = C->z - 1;
-				CreateBuffer(N, i);
-
-				N = &grid[posx][posy][posz + 1];
-				N->x = C->x;
-				N->y = C->y;
-				N->z = C->z + 1;
-				CreateBuffer(N, i);
-			}
+			
 		}
 	}
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end();)
-	{
-		if ((*iter)->layer == -1)
-		{
-			Cell *c = *iter;
-			memset(c, 0, sizeof(Cell));
-			iter = listCells.erase(iter);
-		}
-		else
-		{
-			iter++;
-		}
-	}
+    
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                
+                int posX = BUFFER+i;
+                int posY = BUFFER+j;
+                int posZ = BUFFER+k;
+                
+                if(layer[i][j][k]==-1){
+                    status[posX][posY][posZ] = AIR;
+                    
+                }
+                
+            }
 }
 
 //apply convection using a backwards particle trace
-void Fluid::ApplyConvection()
+void Fluid::ApplyAdvection()
 {
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *g = *iter;
-		int posX = BUFFER + g->x;
-		int posY = BUFFER + g->y;
-		int posZ = BUFFER + g->z;
-		if (g->status == FLUID)
-		{
-			Vector3f v;
-			v = this->traceParticle(g->x * CELL_WIDTH, g->y * CELL_WIDTH + 0.5f, g->z * CELL_WIDTH + 0.5f, deltaTime);
-			g->newvelocity[0] = this->getVelocity(v[0], v[1], v[2])[0];
-			v = this->traceParticle(g->x * CELL_WIDTH + 0.5f, g->y * CELL_WIDTH, g->z * CELL_WIDTH + 0.5f, deltaTime);
-			g->newvelocity[1] = this->getVelocity(v[0], v[1], v[2])[1];
-			v = this->traceParticle(g->x * CELL_WIDTH + 0.5f, g->y * CELL_WIDTH + 0.5f, g->z * CELL_WIDTH, deltaTime);
-			g->newvelocity[2] = this->getVelocity(v[0], v[1], v[2])[2];
-		}
-		else if (grid[posX-1][posY][posZ].status == FLUID)
-		{
-			Vector3f v;
-			g->newvelocity = g->velocity;
-			v = this->traceParticle(g->x * CELL_WIDTH, g->y * CELL_WIDTH + 0.5f, g->z * CELL_WIDTH + 0.5f, deltaTime);
-			g->newvelocity[0] = this->getVelocity(v[0], v[1], v[2])[0];
-		}
-		else if (grid[posX][posY-1][posZ].status == FLUID)
-		{
-			Vector3f v;
-			g->newvelocity = g->velocity;
-			v = this->traceParticle(g->x * CELL_WIDTH + 0.5f, g->y * CELL_WIDTH, g->z * CELL_WIDTH + 0.5f, deltaTime);
-			g->newvelocity[1] = this->getVelocity(v[0], v[1], v[2])[1];
-		}
-		else if (grid[posX][posY][posZ-1].status == FLUID)
-		{
-			Vector3f v;
-			g->newvelocity = g->velocity;
-			v = this->traceParticle(g->x * CELL_WIDTH + 0.5f, g->y * CELL_WIDTH + 0.5f, g->z * CELL_WIDTH, deltaTime);
-			g->newvelocity[2] = this->getVelocity(v[0], v[1], v[2])[2];
-		}
-		else
-		{
-			g->newvelocity = g->velocity;
-		}
-	}
-	maxVelocity = 0.0f;
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		float l = C->newvelocity.norm();
-		if (maxVelocity < l)
-		{
-			maxVelocity = l;
-		}
-		C->velocity = C->newvelocity;
-	}
+	
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                Vector3f vec;
+                
+                vec = this->traceParticle(i * CELL_WIDTH, (j+0.5f) * CELL_WIDTH , (k+0.5f) * CELL_WIDTH, deltaTime);
+                nu[posX][posY][posZ] = this->getVelocity(vec[0], vec[1], vec[2])[0];
+                
+                vec = this->traceParticle((i+0.5f) * CELL_WIDTH, j * CELL_WIDTH, (k+0.5f) * CELL_WIDTH, deltaTime);
+                nv[posX][posY][posZ] = this->getVelocity(vec[0], vec[1], vec[2])[1];
+                
+                vec = this->traceParticle((i+0.5f) * CELL_WIDTH, (j+0.5f) * CELL_WIDTH, k * CELL_WIDTH, deltaTime);
+                nw[posX][posY][posZ] = this->getVelocity(vec[0], vec[1], vec[2])[2];
+                
+                //printf("%f %f %f\n", nu[posX][posY][posZ],nv[posX][posY][posZ],nw[posX][posY][posZ]);
+                
+            }
+    
 }
 
 //apply gravity(external force)
 void Fluid::ApplyGravity()
 {
-	maxVelocity = 0.0f;
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
+	
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                u[posX][posY][posZ] = nu[posX][posY][posZ];
+                v[posX][posY][posZ] = nv[posX][posY][posZ];
+                w[posX][posY][posZ] = nw[posX][posY][posZ];
+                
+                if(status[posX][posY][posZ] == FLUID || status[posX][posY][posZ-1] == FLUID){
+                    v[posX][posY][posZ] -= deltaTime * GRAVITY;
+                }
+                
+                // printf("%f %f %f\n", u[posX][posY][posZ],v[posX][posY][posZ],w[posX][posY][posZ]);
+            }
+}
+
+//calculate the divergence of velocity at the centre of a cell
+float Fluid::divVelocity(int posX, int posY, int posZ)
+{
+    
+	float ret = 0.0f;
+	if (status[posX - 1][posY][posZ] == FLUID || status[posX - 1][posY][posZ] == AIR)
 	{
-		Cell *g = *iter;
-		int posX = BUFFER + g->x;
-		int posY = BUFFER + g->y;
-		int posZ = BUFFER + g->z;
-		if (g->status == FLUID || grid[posX][posY-1][posZ].status == FLUID)
-		{
-			g->velocity[1] += deltaTime * GRAVITY;
-			float l = g->velocity.norm();
-			if (l > maxVelocity)
-			{
-				maxVelocity = l;
-			}
-		}
+		ret += u[posX][posY][posZ];
 	}
+    
+	if (status[posX][posY - 1][posZ] == FLUID || status[posX][posY - 1][posZ] == AIR)
+	{
+		ret += v[posX][posY][posZ];
+	}
+    
+	if (status[posX][posY][posZ - 1] == FLUID || status[posX][posY][posZ - 1] == AIR)
+	{
+		ret += w[posX][posY][posZ];
+	}
+    
+	if (status[posX+1][posY][posZ] == FLUID || status[posX+1][posY][posZ] == AIR)
+	{
+		ret -= u[posX+1][posY][posZ];
+	}
+	
+    
+	if (status[posX][posY+1][posZ] == FLUID || status[posX][posY+1][posZ] == AIR)
+	{
+		ret -= v[posX][posY+1][posZ];
+	}
+	
+    
+	if (status[posX][posY][posZ+1] == FLUID || status[posX][posY][posZ+1] == AIR)
+	{
+		ret -= w[posX][posY][posZ+1];
+	}
+	
+	
+	return ret;
 }
 
 //apply pressure
 void Fluid::ApplyPressure()
 {
-	vector<Cell *> fluidCells;
 	int count = 0;
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		if (C->status == FLUID)
-		{
-			fluidCells.push_back(C);
-			C->layer = count;
-			count++;
-		}
-	}
-	float *sra = new float[7 * count];
-	int*clm = new int[7 * count];
-	int *fnz = new int[count + 1];
-	int pos = 0;
+	
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                if (status[posX][posY][posZ] == FLUID){
+                    layer[i][j][k] = count;
+                    count++;
+                }
+            }
+	Eigen::VectorXd b(count);
+	
+    Eigen::SparseMatrix<double> mat(count,count); // default is column major
+    mat.reserve(Eigen::VectorXi::Constant(count,7));
+    
 	count = 0;
-	for (vector<Cell *>::iterator iter = fluidCells.begin(); iter != fluidCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		fnz[count] = pos;
-		int neighbor = 0;
-
-		int posX = BUFFER + C->x;
-		int posY = BUFFER + C->y;
-		int posZ = BUFFER + C->z;
-		if (grid[posX - 1][posY][posZ].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX - 1][posY][posZ].layer;
-			pos++;
-		}
-		else if (grid[posX - 1][posY][posZ].status == AIR)
-		{
-			neighbor++;
-		}
-
-		if (grid[posX + 1][posY][posZ].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX + 1][posY][posZ].layer;
-			pos++;
-		}
-		else if (grid[posX + 1][posY][posZ].status == AIR)
-		{
-			neighbor++;
-		}
-
-		if (grid[posX][posY - 1][posZ].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX][posY - 1][posZ].layer;
-			pos++;
-		}
-		else if (grid[posX][posY - 1][posZ].status == AIR)
-		{
-			neighbor++;
-		}
-
-		if (grid[posX][posY + 1][posZ].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX][posY + 1][posZ].layer;
-			pos++;
-		}
-		else if (grid[posX][posY + 1][posZ].status == AIR)
-		{
-			neighbor++;
-		}
-
-		if (grid[posX][posY][posZ - 1].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX][posY][posZ - 1].layer;
-			pos++;
-		}
-		else if (grid[posX][posY][posZ - 1].status == AIR)
-		{
-			neighbor++;
-		}
-
-		if (grid[posX][posY][posZ + 1].status == FLUID)
-		{
-			neighbor++;
-			sra[pos] = 1.0f;
-			clm[pos] = grid[posX][posY][posZ + 1].layer;
-			pos++;
-		}
-		else if (grid[posX][posY][posZ + 1].status == AIR)
-		{
-			neighbor++;
-		}
-		
-		sra[pos] = static_cast<float>(-neighbor);
-		clm[pos] = count;
-		pos++;
-		count++;
-	}
-	fnz[count] = pos;
-	float *b = new float[count];
-	for (int i = 0; i != count; i++)
-	{
-		b[i] = divVelocity(fluidCells[i]);		
-	}
-	float *x = new float[count];
-	for (int i = 0; i != count; i++)
-	{
-		x[i] = 0.0f;		
-	}
-	PCG(count, sra, clm, fnz, x, b);
-	for (int i = 0; i != count; i++)
-	{
-		fluidCells[i]->pressure = x[i];
-	}
-	delete []sra;
-	delete []clm;
-	delete []b;
-	delete []fnz;
-	delete []x;
+	
+    for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                if (status[posX][posY][posZ] != FLUID){
+                    continue;
+                }
+                
+                b[layer[i][j][k]] = divVelocity(posX,posY,posZ);
+                
+                
+                int neighbor = 0;
+                
+                if (status[posX - 1][posY][posZ] == FLUID)
+                {
+                    neighbor++;
+                    printf("layer: %d\n", layer[i-1][j][k]);
+                    mat.insert(count,layer[i-1][j][k]) = -1.f;
+                    
+                }
+                else if (status[posX - 1][posY][posZ] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                if (status[posX + 1][posY][posZ] == FLUID)
+                {
+                    neighbor++;
+                    mat.insert(count,layer[i+1][j][k]) = -1.f;
+                }
+                else if (status[posX + 1][posY][posZ] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                if (status[posX][posY - 1][posZ] == FLUID)
+                {
+                    neighbor++;
+                    mat.insert(count,layer[i][j-1][k]) = -1.f;
+                }
+                else if (status[posX][posY - 1][posZ] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                if (status[posX][posY + 1][posZ] == FLUID)
+                {
+                    neighbor++;
+                    mat.insert(count,layer[i][j+1][k]) = -1.f;
+                }
+                else if (status[posX][posY + 1][posZ] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                if (status[posX][posY][posZ - 1] == FLUID)
+                {
+                    neighbor++;
+                    mat.insert(count,layer[i][j][k-1]) = -1.f;
+                }
+                else if (status[posX][posY][posZ - 1] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                if (status[posX][posY][posZ + 1] == FLUID)
+                {
+                    neighbor++;
+                    mat.insert(count,layer[i][j][k+1]) = -1.f;
+                }
+                else if (status[posX][posY][posZ + 1] == AIR)
+                {
+                    neighbor++;
+                }
+                
+                mat.insert(count,count) = (float)(neighbor);
+                count++;
+                
+            }
+    //std::cout<<b<<endl;
+    //std::cout<<mat;
+    // Solving:
+    Eigen::ConjugateGradient<Eigen::SparseMatrix<double>> solver(mat);
+    Eigen::VectorXd x = solver.solve(b); // use the factorization to solve for the given right hand side
+    
+    //update pressure
+	for (int i=0;i<Cell_NUM_X;i++)
+        for (int j=0; j<Cell_NUM_Y; j++)
+            for (int k=0; k<Cell_NUM_Z; k++) {
+                
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                if (status[posX][posY][posZ] != FLUID){
+                    p[i][j][k] = 0;
+                    continue;
+                }
+                p[i][j][k] = x[layer[i][j][k]];
+                printf("pressure: %f\n",p[i][j][k]);
+                
+                u[posX][posY][posZ] -= p[i][j][k];
+                u[posX+1][posY][posZ] += p[i][j][k];
+                
+                v[posX][posY][posZ] -= p[i][j][k];
+                v[posX][posY+1][posZ] += p[i][j][k];
+                
+                w[posX][posY][posZ] -= p[i][j][k];
+                w[posX][posY][posZ+1] += p[i][j][k];
+            }
+    
+	
+    
 	maxVelocity = 0.0f;
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		if (C->status == SOLID)
-		{
-			continue;
-		}
-		if (C->status == AIR)
-		{
-			C->pressure = 0;
-		}
-		C->velocity -= gradPressure(C);
-		float l = C->velocity.norm();
-		if (maxVelocity < l)
-		{
-			maxVelocity = l;
-		}
-	}
+	
+    for (int i=0;i<Cell_NUM_X+BUFFER;i++)
+        for (int j=0; j<Cell_NUM_Y+BUFFER; j++)
+            for (int k=0; k<Cell_NUM_Z+BUFFER; k++) {
+                
+                int posX = BUFFER + i;
+                int posY = BUFFER + j;
+                int posZ = BUFFER + k;
+                
+                if(status[posX][posY][posZ] != FLUID)
+                    continue;
+                
+                float l = u[posX][posY][posZ]*u[posX][posY][posZ] + v[posX][posY][posZ]*v[posX][posY][posZ] + w[posX][posY][posZ]*w[posX][posY][posZ];
+                
+                if (maxVelocity < l)
+                {
+                    maxVelocity = l;
+                }
+            }
+    maxVelocity = sqrt(maxVelocity);
+    printf("max: %f\n", maxVelocity);
 }
 
 //extrapolate the fluid velocity to the buffer zone
-void Fluid::UpdateBufferVelocity()
+void Fluid::UpdateBoundary()//SUPER IMPORTANT!
 {
-	list<Cell *> nfluidCells;
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		if (C->status == FLUID)
-		{
-			C->layer = 0;
-		}
-		else
-		{
-			C->layer = -1;
-			nfluidCells.push_back(C);
-		}
-	}
-	for (int i = 1; i <= 2 || i <= BUFFER; i++)
-	{
-		for (list<Cell *>::iterator iter = nfluidCells.begin(); iter != nfluidCells.end();)
-		{
-			Cell *C = *iter;
-			bool fN = false;
-			Cell *N;
-			int count = 0;
-			Vector3f sum(0.0f, 0.0f, 0.0f);
-			int posX = BUFFER + C->x;
-			int posY = BUFFER + C->y;
-			int posZ = BUFFER + C->z;
-			N = &grid[posX - 1][posY][posZ];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			N = &grid[posX + 1][posY][posZ];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			N = &grid[posX][posY - 1][posZ];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			N = &grid[posX][posY + 1][posZ];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			N = &grid[posX][posY][posZ - 1];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			N = &grid[posX][posY][posZ + 1];
-			if (N->layer == i - 1 && N->status != NOTHING)
-			{
-				fN = true;
-				count++;
-				sum += N->velocity;
-			}
-			if (fN)
-			{
-				if (grid[posX - 1][posY][posZ].status != FLUID)
-				{
-					C->velocity[0] = sum[0] / static_cast<float>(count);
-				}
-				if (grid[posX][posY - 1][posZ].status != FLUID)
-				{
-					C->velocity[1] = sum[1] / static_cast<float>(count);
-				}
-				if (grid[posX][posY][posZ - 1].status != FLUID)
-				{
-					C->velocity[2] = sum[2] / static_cast<float>(count);
-				}
-				C->layer = i;
-				iter = nfluidCells.erase(iter);
-			}
-			else
-			{
-				iter++;
-			}
-		}
-	}
-    /*
-	for (list<Vector *>::iterator iter = listParticles.begin(); iter != listParticles.end(); iter++)
-	{
-		Particle *p = *iter;
-		p->velocity = getVelocity(p->position.x, p->position.y, p->position.z);
-	}*/
+    float a =0.5;
+    float u0 = 0.5f;
+    
+    for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
+        for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++){
+            w[i][j][1] = 0.f;
+            w[i][j][0] = 0.f;
+            u[i][j][0] = a*u[i][j][1];
+            v[i][j][0] = a*v[i][j][1];
+            w[i][j][Cell_NUM_Z+BUFFER*2-1] = 0.f;
+            u[i][j][Cell_NUM_Z+BUFFER*2-1] = a*u[i][j][Cell_NUM_Z+BUFFER*2-2];
+            v[i][j][Cell_NUM_Z+BUFFER*2-1] = a*v[i][j][Cell_NUM_Z+BUFFER*2-2];
+            
+        }
+    for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
+        for (int k=0; k<Cell_NUM_Y+BUFFER*2; k++){
+            v[i][1][k] = 0.f;
+            u[i][0][k] = a*u[i][1][k];
+            v[i][0][k] = 0.f;
+            w[i][0][k] = a*w[i][1][k];
+            u[i][Cell_NUM_Y+BUFFER*2-1][k] = a*u[i][Cell_NUM_Y+BUFFER*2-2][k];
+            v[i][Cell_NUM_Y+BUFFER*2-1][k] = 0.f;
+            w[i][Cell_NUM_Y+BUFFER*2-1][k] = a*w[i][Cell_NUM_Y+BUFFER*2-2][k];
+            
+        }
+    for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++)
+        for (int k=0; k<Cell_NUM_Y+BUFFER*2; k++){
+            if(frameCount<80){
+                u[1][j][k] = u0;
+                u[0][j][k] = u0;
+            }
+            else{
+                u[1][j][k] = 0.f;
+                u[0][j][k] = 0.f;
+            }
+            v[0][j][k] = a*v[1][j][k];
+            w[0][j][k] = a*w[1][j][k];
+            u[Cell_NUM_X+BUFFER*2-1][j][k] = 0.f;
+            v[Cell_NUM_X+BUFFER*2-1][j][k] = a*v[Cell_NUM_X +BUFFER*2 -2][j][k];
+            w[Cell_NUM_X+BUFFER*2-1][j][k] = a*w[Cell_NUM_X +BUFFER*2 -2][j][k];
+            
+        }
+    
 }
 
-//set solid cell velocities
-void Fluid::SetSolidCells()
-{
-	for (list<Cell *>::iterator iter = listCells.begin(); iter != listCells.end(); iter++)
-	{
-		Cell *C = *iter;
-		int posX = BUFFER + C->x;
-		int posY = BUFFER + C->y;
-		int posZ = BUFFER + C->z;
-		if (C->status == SOLID)
-		{
-			if (grid[posX - 1][posY][posZ].status != SOLID && C->velocity[0] < 0)
-			{
-				//C->velocity.x = - C->velocity.x;
-				C->velocity[0] = 0;
-			}
-			if (grid[posX][posY - 1][posZ].status != SOLID && C->velocity[1] < 0)
-			{
-				//C->velocity.y = - C->velocity.y;
-				C->velocity[1] = 0;
-			}
-			if (grid[posX][posY][posZ - 1].status != SOLID && C->velocity[2] < 0)
-			{
-				//C->velocity.z = - C->velocity.z;
-				C->velocity[2] = 0;
-			}
-		}
-		if (C->status != SOLID)
-		{
-			if (grid[posX - 1][posY][posZ].status == SOLID && C->velocity[0] > 0)
-			{
-				//C->velocity.x = - C->velocity.x;
-				C->velocity[0] = 0;
-			}
-			if (grid[posX][posY - 1][posZ].status == SOLID && C->velocity[1] > 0)
-			{
-				//C->velocity.y = - C->velocity.y;
-				C->velocity[1] = 0;
-			}
-			if (grid[posX][posY][posZ - 1].status == SOLID && C->velocity[2] > 0)
-			{
-				//C->velocity.z = - C->velocity.z;
-				C->velocity[2] = 0;
-			}
-		}
-	}
-}
+
 
 //move particles for time t
 void Fluid::MoveParticles(float time)
@@ -908,38 +658,37 @@ void Fluid::MoveParticles(float time)
 	for (list<Vector3f *>::iterator iter = listParticles.begin(); iter != listParticles.end();)
 	{
 		Vector3f v = getVelocity((**iter)[0],(**iter)[1], (**iter)[2]);
-		//p->velocity = getVelocity(p->position.x, p->position.y, p->position.z) * -1.0f;
-		//p->position -= v * time;
-		/*if (!isInBound(getCell(p->position)))
+		
+        Vector3f test = **iter + v*time;
+        int i = (int)floor(test[0]/CELL_WIDTH);
+        int j = (int)floor(test[1]/CELL_WIDTH);
+        int k = (int)floor(test[2]/CELL_WIDTH);
+        
+		if (status[BUFFER+i][BUFFER+j][BUFFER+k] != SOLID)
 		{
-			delete (*iter);
-			iter = listParticles.erase(iter);
+			**iter = test;
+            iter++;
 		}
-		else
-		{
-			iter++;
-		}*/
-
-
-		/*if (isInBound(getCell(p->position - v * time)))
-		{
-			p->position -= v * time;
-		}*/
-        Vector3f test = **iter - v*time;
-		if (getCell(test)->status != SOLID)
-		{
-			**iter -= v * time;
-		}
-        test = **iter - v*time;
-		if (getCell(test)->z > 90)
-		{
-			delete (*iter);
-			iter = listParticles.erase(iter);
-			continue;
-		}
-
-		iter++;
+        else{
+            //iter++;
+            delete (*iter);
+            iter = listParticles.erase(iter);
+        }
 	}
+}
+
+void Fluid::AddSource(){
+    float y,z;
+    for (int j = 0; j < Cell_NUM_Y; j++)
+        for (int k = 0; k < Cell_NUM_Z; k++)
+        {
+            for(int step = 0; step<5; step++){
+                y = j+step*0.1f;
+                z = k+step*0.1f;
+                listParticles.push_back(new Vector3f(0.f , y* CELL_WIDTH, z * CELL_WIDTH));
+            }
+            
+        }
 }
 
 float* Fluid::GenVertexArray(){
@@ -973,22 +722,23 @@ float* Fluid::GenVertexArray(){
         center += **iter;
     }
     center /= listParticles.size();
-    printf("%f %f %f\n", center[0],center[1],center[2]);
+    //printf("%f %f %f\n", center[0],center[1],center[2]);
     return vertices;
 }
 
 void Fluid::RenderFrame(){
     Update();
-    TRIANGLE *tri = NULL;
-	int ntri = 0;
-    float * mesh = Surface(tri,ntri);
-    free(tri);
-    renderer->RenderFrame(mesh, ntri);
+    //TRIANGLE *tri = NULL;
+	//int ntri = 0;
+    float * mesh = GenVertexArray();//Surface(tri,ntri);
+    //free(tri);
+    //renderer->RenderFrame(mesh, ntri);
+    renderer->RenderFrame(mesh,listParticles.size()*6);
     delete[] mesh;
 }
 
 
-float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
+/*float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     //vertex grid store signed distance
     int R=1;
     mcCell mcgrid[BUFFER*2+R*Cell_NUM_X][BUFFER*2+R*Cell_NUM_Y][BUFFER*2+R*Cell_NUM_Z];
@@ -1004,9 +754,6 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     //iterate through particles, locally update
     for(list<Vector3f*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
         float px = (**iter)[0], py = (**iter)[1], pz = (**iter)[2];
-	    /*int i = static_cast<int>(max((int)floor(px / CELL_WIDTH), 0));
-	    int j = static_cast<int>(max((int)floor(py / CELL_WIDTH), 0));
-	    int k = static_cast<int>(max((int)floor(pz / CELL_WIDTH), 0));*/
         
         int i = static_cast<int>(floor(px / CELL_WIDTH));
 	    int j = static_cast<int>(floor(py / CELL_WIDTH));
@@ -1132,10 +879,10 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
 		int i = BUFFER + g->x;
 		int j = BUFFER + g->y;
 		int k = BUFFER + g->z;
-        /*if(grid[i-1][j][k].status == FLUID && grid[i+1][j][k].status == FLUID
+        if(grid[i-1][j][k].status == FLUID && grid[i+1][j][k].status == FLUID
          && grid[i][j-1][k].status == FLUID && grid[i][j+1][k].status == FLUID
          && grid[i][j][k-1].status == FLUID && grid[i][j][k+1].status == FLUID)
-         continue;*/
+         continue;
         if(grid[i+1][j][k].status==FLUID && (grid[i-1][j][k].status!=AIR
                                                 && grid[i][j+1][k].status!=AIR && grid[i][j-1][k].status!=AIR
                                                 && grid[i][j][k+1].status!=AIR && grid[i][j][k-1].status!=AIR))
@@ -1206,9 +953,7 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
         else
             Grid.val[7] = CELL_WIDTH;
         
-        /*for(int s=0;s<8;s++)
-         printf("%f ", Grid.val[s]);
-         printf("\n");*/
+    
         n = PolygoniseCube(Grid,0.0,triangles);
         tri = (TRIANGLE*)realloc(tri,(ntri+n)*sizeof(TRIANGLE));
         for (int l=0;l<n;l++)
@@ -1234,4 +979,4 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     return vertices;
     
     //calculate the signed distance value for the cell
-}
+}*/
