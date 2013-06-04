@@ -2,7 +2,7 @@
 
 #include "Eigen/Core"
 
-#define CELL_WIDTH 0.1f
+#define CELL_WIDTH 1.f
 #define SOURCE 0
 #define FLUID 1
 #define AIR 2
