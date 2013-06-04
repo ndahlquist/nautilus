@@ -42,7 +42,9 @@ RenderPipeline *pipeline = NULL;
 RenderObject *cave = NULL;
 RenderObject *character = NULL;
 PhysicsObject *bomb = NULL;
-RenderLight *pointLight = NULL;
+
+RenderLight *smallLight = NULL;
+RenderLight *bigLight = NULL;
 RenderLight *spotLight = NULL;
 RenderLight *globalLight = NULL;
 
@@ -76,7 +78,8 @@ void Setup(int w, int h) {
     character->AddTexture("raptor_albedo.jpg");
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
-    pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
     globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
@@ -173,16 +176,21 @@ void RenderFrame() {
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
-    scalef(100.0f);
-    pointLight->brightness[0] = 3000.0;
-    pointLight->Render();
+    scalef(200.0f);
+    bigLight->brightness[0] = 16000.0;
+    bigLight->brightness[1] = 16000.0;
+    bigLight->brightness[2] = 12000.0;
+    bigLight->Render();
     mvPopMatrix();
     
     mvPushMatrix();
     translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
-    scalef(100);
-    pointLight->brightness[0] = 3000.0;
-    pointLight->Render();
+    scalef(200);
+    smallLight->brightness[0] = 1500 + 1500 * sin(frameNum / 6.0f);
+    smallLight->brightness[1] = 500 + 500 * sin(frameNum / 6.0f);
+    smallLight->brightness[2] = 100;
+    
+    smallLight->Render();
     mvPopMatrix();
     
     mvPushMatrix();
@@ -191,6 +199,8 @@ void RenderFrame() {
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
     spotLight->brightness[0] = 8000.0;
+    spotLight->brightness[1] = 8000.0;
+    spotLight->brightness[2] = 6000.0;
     spotLight->Render();
     mvPopMatrix();
     

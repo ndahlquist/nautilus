@@ -29,10 +29,10 @@ void main() {
 	float angle = abs(dot(v_mvDirVector, normalize(delta)));
 	float spotEffect = min(2.0 * pow(angle, 10.0), 2.0);
 	vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
-	float value = u_Brightness.r * spotEffect / distsq;
+	float value = spotEffect / distsq;
     if(value <= 0.0)
         discard;
     if(value > 2.0)
         value = 2.0;
-	gl_FragColor = vec4(value * albedo , 1.0);
+	gl_FragColor = vec4(value * u_Brightness * albedo , 1.0);
 }
