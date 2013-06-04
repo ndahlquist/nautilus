@@ -38,8 +38,8 @@ RenderPipeline::RenderPipeline() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     checkGlError("colorTexture");
     
-    geometryTextureWidth = displayWidth / 2;
-    geometryTextureHeight = displayHeight / 2;
+    geometryTextureWidth = displayWidth;
+    geometryTextureHeight = displayHeight;
     
     // Allocate geometry depth buffer
     glGenRenderbuffers(1, &geometryDepthBuffer);

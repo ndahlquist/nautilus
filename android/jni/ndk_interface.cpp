@@ -123,3 +123,8 @@ extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerUp(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint pointerID) {
     PointerUp(x, y, pointerID);
 }
+
+extern "C"
+JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_updateOrientation(JNIEnv * env, jobject obj, jfloat roll, jfloat pitch, jfloat yaw) {
+    UpdateOrientation(roll, pitch, yaw); 
+}

@@ -15,6 +15,7 @@ void RenderFrame();
 void PointerDown(float x, float y, int pointerIndex = -1);
 void PointerMove(float x, float y, int pointerIndex = -1);
 void PointerUp(float x, float y, int pointerIndex = -1);
+void UpdateOrientation(float roll, float pitch, float yaw);
 
 
 /** This part of the interface is uesd by the "lower" level of the program. **/

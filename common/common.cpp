@@ -88,11 +88,12 @@ void setFrameBuffer(int handle) {
 
 float cameraPos[3] = {0,180,100};
 float cameraPan[3] = {0,0,0};
-float up[3] = {0,1,0};
 float rot[2] = {0,0};
 
 float touchTarget[3] = {0,0,0};
 float characterPos[3] = {0,0,0};
+
+float orientation[3] = {0,0,0};
 
 #define PAN_LERP_FACTOR .02
 #define CHARACTER_LERP_FACTOR .04
@@ -104,23 +105,25 @@ float lastTouch[2] = {0,0};
 
 void RenderFrame() {
 
-    // Setup pipeline and perspective matrices
-    glViewport(0, 0, displayWidth, displayHeight); // TODO
-    
     pipeline->ClearBuffers();
 
+    // Setup perspective matrices
     pLoadIdentity();
     perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
     
     mvLoadIdentity();
-    lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], up[0], up[1], up[2]);
+    lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], 0, 1, 0);
+    
+    // Rotate around the subject
+    translatef(cameraPan[0], cameraPan[1], cameraPan[2]);
+    rotate(orientation[2], 0, -orientation[1]);
+    translatef(-cameraPan[0], -cameraPan[1], -cameraPan[2]);
 
     //////////////////////////////////
     // Render to g buffer.
     
     mvPushMatrix();
     scalef(40);
-    //cave->HalfRender();
     cave->Render();
     mvPopMatrix();
     
@@ -223,5 +226,11 @@ void PointerMove(float x, float y, int pointerIndex) {
 
 void PointerUp(float x, float y, int pointerIndex) {
     touchDown = false;
+}
+
+void UpdateOrientation(float roll, float pitch, float yaw) {
+    orientation[0] = roll;
+    orientation[1] = pitch;
+    orientation[2] = yaw;
 }
 
