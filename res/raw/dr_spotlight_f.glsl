@@ -8,7 +8,8 @@ uniform mat4 u_pT_Matrix;
 uniform int u_FragWidth;
 uniform int u_FragHeight;
 
-uniform vec3 u_Brightness;
+uniform vec3 u_Color;
+uniform float u_Brightness;
 
 varying vec3 v_mvLightPos;
 varying vec3 v_mvDirVector;
@@ -28,11 +29,8 @@ void main() {
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 	float angle = abs(dot(v_mvDirVector, normalize(delta)));
 	float spotEffect = min(2.0 * pow(angle, 10.0), 2.0);
-	vec3 albedo = texture2D(u_ColorTexture, samplePoint).rgb;
-	float value = spotEffect / distsq;
-    if(value <= 0.0)
+	float brightness = min(u_Brightness * spotEffect / distsq, 2.0);
+    if(brightness <= 0.0)
         discard;
-    if(value > 2.0)
-        value = 2.0;
-	gl_FragColor = vec4(value * u_Brightness * albedo , 1.0);
+	gl_FragColor = vec4(brightness * u_Color * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 }

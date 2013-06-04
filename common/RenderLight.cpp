@@ -8,9 +8,10 @@
 #include "log.h"
 
 RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
-   brightness[0] = 100.0f;
-   brightness[1] = 100.0f;
-   brightness[2] = 100.0f;
+   color[0] = 1.0f;
+   color[1] = 1.0f;
+   color[2] = 1.0f;
+   brightness = 1000.0f;
 }
 
 void RenderLight::Render() {
@@ -37,9 +38,13 @@ void RenderLight::Render() {
     GLuint u_FragHeight = glGetUniformLocation(colorShader, "u_FragHeight");
     glUniform1i(u_FragHeight, displayHeight);   
     
+    // Pass color
+    GLuint colorUniform = glGetUniformLocation(colorShader, "u_Color");
+    glUniform3f(colorUniform, color[0], color[1], color[2]);
+    
     // Pass brightness
     GLuint brightnessUniform = glGetUniformLocation(colorShader, "u_Brightness");
-    glUniform3f(brightnessUniform, brightness[0], brightness[1], brightness[2]);
+    glUniform1f(brightnessUniform, brightness);
     
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();

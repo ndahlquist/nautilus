@@ -8,7 +8,8 @@ uniform mat4 u_pT_Matrix;
 uniform int u_FragWidth;
 uniform int u_FragHeight;
 
-uniform vec3 u_Brightness;
+uniform vec3 u_Color;
+uniform float u_Brightness;
 
 varying vec3 v_mvLightPos;
 
@@ -26,7 +27,9 @@ void main() {
 
     vec3 delta = v_mvLightPos - mvPos();
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z; 
-	vec3 value = clamp(u_Brightness / distsq - .2, 0.0, 1.0);
-    gl_FragColor = vec4(value * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
+	float brightness = min(u_Brightness / distsq, 1.5);
+	if(brightness <= 0.0)
+	    discard;
+    gl_FragColor = vec4(brightness * u_Color * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 	
 }

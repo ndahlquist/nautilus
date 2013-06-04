@@ -46,7 +46,6 @@ PhysicsObject *bomb = NULL;
 RenderLight *smallLight = NULL;
 RenderLight *bigLight = NULL;
 RenderLight *spotLight = NULL;
-RenderLight *globalLight = NULL;
 
 unsigned int frameNum = 0;
 
@@ -78,10 +77,9 @@ void Setup(int w, int h) {
     character->AddTexture("raptor_albedo.jpg");
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
-    smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
+    smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
-    globalLight = new RenderLight("square.obj", "dr_standard_v.glsl", "dr_normals_f.glsl");
 }
 
 void setFrameBuffer(int handle) {
@@ -176,20 +174,20 @@ void RenderFrame() {
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
-    scalef(200.0f);
-    bigLight->brightness[0] = 16000.0;
-    bigLight->brightness[1] = 16000.0;
-    bigLight->brightness[2] = 12000.0;
+    bigLight->color[0] = 1.0;
+    bigLight->color[1] = 1.0;
+    bigLight->color[2] = 0.8;
+    bigLight->brightness = 16000.0;
     bigLight->Render();
     mvPopMatrix();
     
     mvPushMatrix();
     translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
-    scalef(200);
-    smallLight->brightness[0] = 1500 + 1500 * sin(frameNum / 6.0f);
-    smallLight->brightness[1] = 500 + 500 * sin(frameNum / 6.0f);
-    smallLight->brightness[2] = 100;
-    
+    scalef(100);
+    smallLight->color[0] = 1.00f;
+    smallLight->color[1] = 0.33f;
+    smallLight->color[2] = 0.07f;
+    smallLight->brightness = 1500 + 1500 * sin(frameNum / 6.0f);
     smallLight->Render();
     mvPopMatrix();
     
@@ -198,15 +196,12 @@ void RenderFrame() {
     scalef(200.0f);
     rotate(0.0,rot[1],0);
     rotate(0.0,0,-90);
-    spotLight->brightness[0] = 8000.0;
-    spotLight->brightness[1] = 8000.0;
-    spotLight->brightness[2] = 6000.0;
+    spotLight->color[0] = 0.8f;
+    spotLight->color[0] = 0.8f;
+    spotLight->color[0] = 1.0f;
+    spotLight->brightness = 8000.0;
     spotLight->Render();
     mvPopMatrix();
-    
-    pLoadIdentity();
-    mvLoadIdentity();
-    //globalLight->Render();
     
     frameNum++;
     
