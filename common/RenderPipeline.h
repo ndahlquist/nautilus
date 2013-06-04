@@ -22,13 +22,17 @@ public:
 
     RenderPipeline();
     void ClearBuffers();
-    uint8_t * RayTracePixel(int x, int y, bool geometry);
+    uint8_t * RayTracePixel(float x, float y, bool geometry);
     
     GLuint frameBuffer;
-    GLuint depthBuffer;
 
     GLuint colorTexture; // R, G, B, UNUSED (specular)
+    GLuint depthBuffer;
+    
+    GLuint geometryDepthBuffer;
     GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
+    unsigned int geometryTextureWidth;
+    unsigned int geometryTextureHeight;
 
     GLuint geometryShader;
     GLuint halfGeometryShader;

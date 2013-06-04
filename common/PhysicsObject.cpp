@@ -42,8 +42,8 @@ void PhysicsObject::Update() {
     
     if(ScreenSpaceCollisions) {
         Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(position[0], position[1], position[2], 1.0);
-        int x = floor(displayWidth * ((1.0 + MVP_POS(0) / MVP_POS(3)) / 2.0));
-        int y = floor(displayHeight * ((1.0 + MVP_POS(1) / MVP_POS(3)) / 2.0));
+        float x = ((1.0f + MVP_POS(0) / MVP_POS(3)) / 2.0f);
+        float y = ((1.0f + MVP_POS(1) / MVP_POS(3)) / 2.0f);
         
         uint8_t * geometry = pipeline->RayTracePixel(x, y, true);
         uint8_t depth = geometry[3];

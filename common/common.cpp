@@ -72,7 +72,7 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
-    cave->AddTexture("cave_albedo.jpg", true); // Normal map
+    //cave->AddTexture("cave_albedo.jpg", true); // Normal map
     character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
@@ -105,7 +105,7 @@ float lastTouch[2] = {0,0};
 void RenderFrame() {
 
     // Setup pipeline and perspective matrices
-    glViewport(0, 0, displayWidth, displayHeight);
+    glViewport(0, 0, displayWidth, displayHeight); // TODO
     
     pipeline->ClearBuffers();
 
@@ -126,7 +126,7 @@ void RenderFrame() {
     
     // Process user input
     if(touchDown) {
-        uint8_t * geometry = pipeline->RayTracePixel((lastTouch[0]) * displayWidth, (1.0-lastTouch[1]) * displayHeight, true);
+        uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
         if(geometry[3] != 255) {
             float depth = geometry[3] / 128.0f - 1.0f;            
             
