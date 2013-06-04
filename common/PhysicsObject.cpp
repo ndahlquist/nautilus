@@ -7,6 +7,7 @@
 #include "RenderPipeline.h"
 #include "transform.h"
 #include "log.h"
+#include "Timer.h"
 
 #include "Eigen/Eigenvalues"
 
@@ -16,7 +17,7 @@ using Eigen::Vector4f;
 #define MAX_VELOCITY 800.0
 #define COEFF_RESTITUTION .85f
 
-static struct timeval lastUpdateTime;
+static Timer timer;
 
 PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
@@ -24,7 +25,7 @@ PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFi
     velocity = Vector3f(0, 0, 0);
     acceleration = Vector3f(0, -800.0, 0);
     ScreenSpaceCollisions = true;
-    gettimeofday(&lastUpdateTime, NULL);
+    timer.reset();
 }
 
 inline float clamp(float x, float a, float b) {
@@ -33,10 +34,8 @@ inline float clamp(float x, float a, float b) {
 
 void PhysicsObject::Update() {
 
-    struct timeval current;
-    gettimeofday(&current, NULL);
-    double timeElapsed = current.tv_sec - lastUpdateTime.tv_sec + (current.tv_usec  - lastUpdateTime.tv_usec) / 1000000.0;
-    gettimeofday(&lastUpdateTime, NULL);
+    float timeElapsed = timer.getSeconds();
+    timer.reset();
 
     velocity += acceleration * timeElapsed;
     

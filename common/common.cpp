@@ -25,6 +25,7 @@
 #include "RenderObject.h"
 #include "PhysicsObject.h"
 #include "RenderLight.h"
+#include "Timer.h"
 #include "glsl_helper.h"
 #include "log.h"
 
@@ -122,6 +123,8 @@ void RenderFrame() {
     //////////////////////////////////
     // Render to g buffer.
     
+    /** Any geometry that will be collision detected
+        should be rendered here, before user input. **/
     mvPushMatrix();
     scalef(40);
     cave->Render();
@@ -157,6 +160,7 @@ void RenderFrame() {
         shootBomb = false;
     }
     
+    // Run bomb physics.
     bomb->Update();
     
     mvPushMatrix();
