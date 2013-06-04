@@ -181,7 +181,7 @@ void RenderFrame() {
     mvPushMatrix();
     translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
     scalef(100);
-    pointLight->brightness[0] = 2000.0;
+    pointLight->brightness[0] = 3000.0;
     pointLight->Render();
     mvPopMatrix();
     

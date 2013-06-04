@@ -8,16 +8,19 @@
 #include "transform.h"
 #include "log.h"
 
+#include "Eigen/Eigenvalues"
+
+using Eigen::Vector3f;
 using Eigen::Vector4f;
 
 #define MAX_VELOCITY 1.0
-#define INTERSECTION_ADD .1
+#define COEFF_RESTITUTION .85f
 
 PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     position = Vector3f(0, 0, 0);
     velocity = Vector3f(0, 0, 0);
-    acceleration = Vector3f(0, -.0004, 0);
+    acceleration = Vector3f(0, -.0001, 0);
     ScreenSpaceCollisions = true;
 }
 
@@ -35,17 +38,21 @@ void PhysicsObject::Update(float timestep) {
         int y = floor(displayHeight * ((1.0 + MVP_POS(1) / MVP_POS(3)) / 2.0));
         
         uint8_t * geometry = pipeline->RayTracePixel(x, y, true);
-        float depth = geometry[3] / 256.0f;
+        uint8_t depth = geometry[3];
+        Vector4f MV_normal = Vector4f(geometry[0] / 128.0f - 1.0f, geometry[1] / 128.0f - 1.0f, geometry[2] / 128.0f - 1.0f, 0.0);
+        
+        Vector4f normal_hom = model_view.top().inverse() * MV_normal;
+        Vector3f normal = Vector3f(normal_hom(0), -normal_hom(1), normal_hom(2)); // TODO: Why is this negative??
+        normal.normalize();
+        
         delete[] geometry;
         
-        if(depth < MVP_POS(2) / MVP_POS(3) + INTERSECTION_ADD) {
-            velocity = -velocity;
-        }    
+        if(depth < 256 * MVP_POS(2) / MVP_POS(3))
+            velocity = COEFF_RESTITUTION * (-2 * velocity.dot(normal) * normal + velocity);
     }
     
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < 3; i++)
         velocity(i) = clamp(velocity(i), -MAX_VELOCITY, MAX_VELOCITY);
-    }
     
     position += velocity / timestep;
     
