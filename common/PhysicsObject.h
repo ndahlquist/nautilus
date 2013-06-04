@@ -28,7 +28,7 @@ using namespace std;
 class PhysicsObject : public RenderObject {
 public:
     PhysicsObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void Update(float timestep);
+    void Update();
     
     Vector3f position;
     Vector3f velocity;

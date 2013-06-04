@@ -149,11 +149,11 @@ void RenderFrame() {
         
     if(shootBomb) {
         bomb->position = Eigen::Vector3f(characterPos[0], characterPos[1], characterPos[2]);
-        bomb->velocity = Eigen::Vector3f(.1 * -cos(rot[1]), 0.1, .1 * sin(rot[1]));
+        bomb->velocity = Eigen::Vector3f(200.0f * -cos(rot[1]), 200.0f, 200.0f * sin(rot[1]));
         shootBomb = false;
     }
     
-    bomb->Update(1 / 30.0);
+    bomb->Update();
     
     mvPushMatrix();
     translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);

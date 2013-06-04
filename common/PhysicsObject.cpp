@@ -13,24 +13,32 @@
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 
-#define MAX_VELOCITY 1.0
+#define MAX_VELOCITY 800.0
 #define COEFF_RESTITUTION .85f
+
+static struct timeval lastUpdateTime;
 
 PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     position = Vector3f(0, 0, 0);
     velocity = Vector3f(0, 0, 0);
-    acceleration = Vector3f(0, -.0001, 0);
+    acceleration = Vector3f(0, -800.0, 0);
     ScreenSpaceCollisions = true;
+    gettimeofday(&lastUpdateTime, NULL);
 }
 
 inline float clamp(float x, float a, float b) {
     return x < a ? a : (x > b ? b : x);
 }
 
-void PhysicsObject::Update(float timestep) {
+void PhysicsObject::Update() {
 
-    velocity += acceleration / timestep;
+    struct timeval current;
+    gettimeofday(&current, NULL);
+    double timeElapsed = current.tv_sec - lastUpdateTime.tv_sec + (current.tv_usec  - lastUpdateTime.tv_usec) / 1000000.0;
+    gettimeofday(&lastUpdateTime, NULL);
+
+    velocity += acceleration * timeElapsed;
     
     if(ScreenSpaceCollisions) {
         Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(position[0], position[1], position[2], 1.0);
@@ -54,7 +62,7 @@ void PhysicsObject::Update(float timestep) {
     for(int i = 0; i < 3; i++)
         velocity(i) = clamp(velocity(i), -MAX_VELOCITY, MAX_VELOCITY);
     
-    position += velocity / timestep;
+    position += velocity * timeElapsed;
     
 }
 
