@@ -47,6 +47,7 @@ protected:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     GLuint normalMapUniform;
+    GLuint timeUniform;
     
     GLuint texture;
     GLuint normalTexture;

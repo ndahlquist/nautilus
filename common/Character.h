@@ -18,6 +18,7 @@
 #endif
 
 #include "RenderObject.h"
+#include "Timer.h"
 
 #include "Eigen/Core"
 
@@ -38,6 +39,7 @@ public:
     
 private:
     Vector3f velocity;
+    Timer timer;
 };
 
 

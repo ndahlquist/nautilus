@@ -8,6 +8,9 @@
 #include "transform.h"
 #include "common.h"
 #include "log.h"
+#include "Timer.h"
+
+Timer timer;
 
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
     // Parse obj file into an interleaved float buffer
@@ -25,6 +28,8 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     
     texture = -1;
     normalTexture = -1;
+    
+    timer.reset();
 }
 
 void RenderObject::SetShader(const GLuint shaderProgram) {
@@ -38,6 +43,7 @@ void RenderObject::SetShader(const GLuint shaderProgram) {
     gvTexCoords = glGetAttribLocation(shaderProgram, "a_TexCoordinate");
     textureUniform = glGetUniformLocation(shaderProgram, "u_Texture");
     normalMapUniform = glGetUniformLocation(shaderProgram, "u_NormalMap");
+    timeUniform = glGetUniformLocation(shaderProgram, "u_Time");
     checkGlError("glGetAttribLocation");
 }
 
@@ -104,6 +110,12 @@ void RenderObject::RenderPass() {
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
+    }
+    
+    // Pass currrent time
+    if(timeUniform != -1) {
+        glUniform1f(timeUniform, timer.getSeconds());
+        checkGlError("glUniform1i: time");
     }
     
     // Pass normal map

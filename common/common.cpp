@@ -43,6 +43,7 @@ RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
 Character *character = NULL;
+Character *jellyfish = NULL;
 PhysicsObject *bomb = NULL;
 
 RenderLight *smallLight = NULL;
@@ -79,6 +80,8 @@ void Setup(int w, int h) {
     //cave->AddTexture("cave_albedo.jpg", true); // Normal map
     character = new Character("submarine.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
+    jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
+    jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
@@ -91,7 +94,7 @@ void setFrameBuffer(int handle) {
 }
 
 float cameraPos[3] = {0,180,100};
-float cameraPan[3] = {0,0,0};
+float cameraPan[3] = {0,2000,0};
 
 float orientation[3] = {0,0,0};
 
@@ -162,12 +165,22 @@ void RenderFrame() {
     // Run physics.
     bomb->Update();
     character->Update();
+    jellyfish->targetPosition = Vector3f(character->position[0], character->position[1], character->position[2]);// character->position;
+    jellyfish->Update();
     
     mvPushMatrix();
     translatef(character->position[0], character->position[1], character->position[2]);
     rotate(0.0, character->rot[0], character->rot[1]);
     scalef(.15);
     character->Render();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    translatef(jellyfish->position[0], jellyfish->position[1], jellyfish->position[2]);
+    rotate(0.0, jellyfish->rot[0], jellyfish->rot[1]);
+    rotate(0.0, 0.0, PI / 2);
+    scalef(3.00);
+    jellyfish->Render();
     mvPopMatrix();
     
     mvPushMatrix();

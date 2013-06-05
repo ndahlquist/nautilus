@@ -7,7 +7,6 @@
 #include "RenderPipeline.h"
 #include "transform.h"
 #include "log.h"
-#include "Timer.h"
 
 #include "Eigen/Eigenvalues"
 
@@ -23,8 +22,6 @@ using Eigen::Vector4f;
 #define MAX_ACCELERATION 600.0f
 #define DRAG 550.0f
 
-static Timer timer;
-
 Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     position = Vector3f(0, 0, 0);
@@ -35,7 +32,7 @@ Character::Character(const char *objFilename, const char *vertexShaderFilename, 
     rot[1] = 0;
 }
 
-inline float clamp(float x, float a, float b) {
+static inline float clamp(float x, float a, float b) {
     return x < a ? a : (x > b ? b : x);
 }
 
