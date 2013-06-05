@@ -50,6 +50,8 @@ RenderLight *spotLight = NULL;
 
 unsigned int frameNum = 0;
 
+#define PI 3.14f
+
 // Callback function to load resources.
 void*(*resourceCallback)(const char *) = NULL;
 
@@ -104,6 +106,21 @@ bool touchDown = false;
 bool shootBomb = false;
 float lastTouch[2] = {0,0};
 
+// Clamps input to (-max, max) according to curve.
+inline float tanClamp(float input, float max) {
+    return max * atan(input / max);
+}
+
+// Rotate around the subject based on orientation
+void rotatePerspective() {
+    float rot0 = tanClamp( orientation[2], PI / 10.0f);
+    float rot2 = tanClamp(-orientation[1], PI / 10.0f);
+    
+    translatef(cameraPan[0], cameraPan[1], cameraPan[2]);
+    rotate(rot0, 0, rot2);
+    translatef(-cameraPan[0], -cameraPan[1], -cameraPan[2]);
+}
+
 void RenderFrame() {
 
     pipeline->ClearBuffers();
@@ -114,11 +131,7 @@ void RenderFrame() {
     
     mvLoadIdentity();
     lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], 0, 1, 0);
-    
-    // Rotate around the subject
-    translatef(cameraPan[0], cameraPan[1], cameraPan[2]);
-    rotate(orientation[2], 0, -orientation[1]);
-    translatef(-cameraPan[0], -cameraPan[1], -cameraPan[2]);
+    rotatePerspective();
 
     //////////////////////////////////
     // Render to g buffer.
@@ -202,7 +215,7 @@ void RenderFrame() {
     translatef(characterPos[0], characterPos[1], characterPos[2]);
     scalef(200.0f);
     rotate(0.0,rot[1],0);
-    rotate(0.0,0,-90);
+    rotate(0.0,0,-PI / 2);
     spotLight->color[0] = 0.8f;
     spotLight->color[0] = 0.8f;
     spotLight->color[0] = 1.0f;
