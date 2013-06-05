@@ -15,12 +15,9 @@ using Eigen::Vector4f;
 
 #define PI 3.1415f
 
-#define MAX_VELOCITY 800.0
-#define COEFF_RESTITUTION .85f
+//#define COEFF_RESTITUTION .85f
 
-#define ACCELERATION_MULTIPLIER 20.0f
-#define MAX_ACCELERATION 600.0f
-#define DRAG 550.0f
+#define ACCELERATION_MULTIPLIER 40.0f
 
 Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
@@ -30,6 +27,9 @@ Character::Character(const char *objFilename, const char *vertexShaderFilename, 
     timer.reset();
     rot[0] = 0;
     rot[1] = 0;
+    MaxVelocity = 800.0f;
+    MaxAcceleration = 660.0f;
+    Drag = 550.0f;
 }
 
 static inline float clamp(float x, float a, float b) {
@@ -46,10 +46,10 @@ void Character::Update() {
         Vector3f targetVector = targetPosition - position;
         
         if(velocity.norm() != 0.0f)
-            velocity += DRAG * -velocity.normalized() * timeElapsed;
+            velocity += Drag * -velocity.normalized() * timeElapsed;
         
         if(targetVector.norm() > 20.0f) {
-            float accel = clamp(ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, MAX_ACCELERATION);
+            float accel = clamp(MaxAcceleration / ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, MaxAcceleration);
             velocity += accel * targetVector.normalized() * timeElapsed;
         }
     }
@@ -74,9 +74,9 @@ void Character::Update() {
 
     // Clamp velocity   
     for(int i = 0; i < 3; i++)
-        velocity(i) = clamp(velocity(i), -MAX_VELOCITY, MAX_VELOCITY);
+        velocity(i) = clamp(velocity(i), -MaxVelocity, MaxVelocity);
     
-    
+    // Calculate rotation
     if(velocity.norm() > 20.0f) {
         rot[0] = atan2(velocity(0), velocity(2)) + PI / 2;
         rot[1] = acos(velocity.normalized()(1)) - PI / 2;

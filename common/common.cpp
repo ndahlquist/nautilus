@@ -77,11 +77,13 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
-    //cave->AddTexture("cave_albedo.jpg", true); // Normal map
     character = new Character("submarine.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
+    jellyfish->MaxAcceleration = 200.0f;
+    jellyfish->Drag = 100.0f;
+    jellyfish->MaxVelocity = 100.0f;
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");

@@ -32,6 +32,9 @@ public:
     void Update();
 
     Vector3f targetPosition;
+    float MaxVelocity;
+    float MaxAcceleration;
+    float Drag;
     
     Vector3f position;
     
