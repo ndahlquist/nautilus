@@ -51,9 +51,10 @@ void Character::Update() {
         if(velocity.norm() != 0.0f)
             velocity += DRAG * -velocity.normalized() * timeElapsed;
         
-        //if(targetVector.norm() > velocity.dot(targetVector))
-        float accel = clamp(ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, MAX_ACCELERATION);
-        velocity += accel * targetVector.normalized() * timeElapsed;
+        if(targetVector.norm() > 20.0f) {
+            float accel = clamp(ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, MAX_ACCELERATION);
+            velocity += accel * targetVector.normalized() * timeElapsed;
+        }
     }
     
     // Check for collisions

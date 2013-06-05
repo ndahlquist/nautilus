@@ -77,8 +77,8 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
     //cave->AddTexture("cave_albedo.jpg", true); // Normal map
-    character = new Character("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
-    character->AddTexture("raptor_albedo.jpg");
+    character = new Character("submarine.obj", "standard_v.glsl", "albedo_f.glsl");
+    character->AddTexture("submarine_albedo.jpg", false);
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
@@ -95,9 +95,7 @@ float cameraPan[3] = {0,0,0};
 
 float orientation[3] = {0,0,0};
 
-#define PAN_LERP_FACTOR .02
-#define CHARACTER_LERP_FACTOR .04
-#define TOUCH_DISP_FACTOR 100.0f
+#define PAN_LERP_FACTOR .04
 
 bool touchDown = false;
 bool shootBomb = false;
@@ -168,7 +166,7 @@ void RenderFrame() {
     mvPushMatrix();
     translatef(character->position[0], character->position[1], character->position[2]);
     rotate(0.0, character->rot[0], character->rot[1]);
-    scalef(.3);
+    scalef(.15);
     character->Render();
     mvPopMatrix();
     
@@ -206,8 +204,8 @@ void RenderFrame() {
     rotate(0.0,0,-PI / 2);
     scalef(300.0f);
     spotLight->color[0] = 0.4f;
-    spotLight->color[0] = 0.6f;
-    spotLight->color[0] = 1.0f;
+    spotLight->color[1] = 0.6f;
+    spotLight->color[2] = 1.0f;
     spotLight->brightness = 16000.0;
     spotLight->Render();
     mvPopMatrix();
