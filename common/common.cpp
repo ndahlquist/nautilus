@@ -24,6 +24,7 @@
 #include "transform.h"
 #include "RenderObject.h"
 #include "PhysicsObject.h"
+#include "Character.h"
 #include "RenderLight.h"
 #include "Timer.h"
 #include "glsl_helper.h"
@@ -41,7 +42,7 @@ GLuint defaultFrameBuffer = 0;
 RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
-RenderObject *character = NULL;
+Character *character = NULL;
 PhysicsObject *bomb = NULL;
 
 RenderLight *smallLight = NULL;
@@ -76,7 +77,7 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
     //cave->AddTexture("cave_albedo.jpg", true); // Normal map
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
+    character = new Character("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
     
@@ -91,10 +92,6 @@ void setFrameBuffer(int handle) {
 
 float cameraPos[3] = {0,180,100};
 float cameraPan[3] = {0,0,0};
-float rot[2] = {0,0};
-
-float touchTarget[3] = {0,0,0};
-float characterPos[3] = {0,0,0};
 
 float orientation[3] = {0,0,0};
 
@@ -148,37 +145,29 @@ void RenderFrame() {
         uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
         if(geometry[3] != 255) {
             float depth = geometry[3] / 128.0f - 1.0f;            
-            
             Matrix4f mvp = projection.top()*model_view.top();
             Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
-        
-            touchTarget[0] = pos(0) / pos(3);
-            touchTarget[2] = pos(2) / pos(3);
-            touchTarget[1] = pos(1) / pos(3);
+            character->targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
         }
         delete[] geometry;
     }
     
-    for(int i = 0; i < 3; i++) {
-        characterPos[i] = (1.0 - CHARACTER_LERP_FACTOR) * characterPos[i] + CHARACTER_LERP_FACTOR * touchTarget[i];
-        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * characterPos[i];
-    }
-    
-    if(abs(characterPos[2] - touchTarget[2]) > .01)
-        rot[1] = atan2((characterPos[0] - touchTarget[0]), (characterPos[2] - touchTarget[2])) - 3.14 / 2;
+    for(int i = 0; i < 3; i++)
+        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->position[i];
         
     if(shootBomb) {
-        bomb->position = Eigen::Vector3f(characterPos[0], characterPos[1], characterPos[2]);
-        bomb->velocity = Eigen::Vector3f(200.0f * -cos(rot[1]), 200.0f, 200.0f * sin(rot[1]));
+        bomb->position = Eigen::Vector3f(character->position[0], character->position[1], character->position[2]);
+        bomb->velocity = 200.0f * Eigen::Vector3f(-cos(character->rot[0]), 1.0f, sin(character->rot[0]));
         shootBomb = false;
     }
     
-    // Run bomb physics.
+    // Run physics.
     bomb->Update();
+    character->Update();
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
-    rotate(0.0,rot[1],0);
+    translatef(character->position[0], character->position[1], character->position[2]);
+    rotate(0.0, character->rot[0], character->rot[1]);
     scalef(.3);
     character->Render();
     mvPopMatrix();
@@ -193,7 +182,7 @@ void RenderFrame() {
     // Using g buffer, render lights
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1] - 50.0f, characterPos[2]);
+    translatef(character->position[0], character->position[1], character->position[2]);
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
@@ -212,14 +201,14 @@ void RenderFrame() {
     mvPopMatrix();
     
     mvPushMatrix();
-    translatef(characterPos[0], characterPos[1], characterPos[2]);
-    scalef(200.0f);
-    rotate(0.0,rot[1],0);
+    translatef(character->position[0], character->position[1], character->position[2]);
+    rotate(0.0, character->rot[0], character->rot[1]);
     rotate(0.0,0,-PI / 2);
-    spotLight->color[0] = 0.8f;
-    spotLight->color[0] = 0.8f;
+    scalef(300.0f);
+    spotLight->color[0] = 0.4f;
+    spotLight->color[0] = 0.6f;
     spotLight->color[0] = 1.0f;
-    spotLight->brightness = 8000.0;
+    spotLight->brightness = 16000.0;
     spotLight->Render();
     mvPopMatrix();
     

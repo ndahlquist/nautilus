@@ -19,6 +19,7 @@ LOCAL_SRC_FILES := ndk_interface.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderPipeline.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderObject.cpp \
                    $(PROJECT_ROOT_PATH)/common/PhysicsObject.cpp \
+                   $(PROJECT_ROOT_PATH)/common/Character.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderLight.cpp \
                    $(PROJECT_ROOT_PATH)/common/transform.cpp \
                    $(PROJECT_ROOT_PATH)/common/glsl_helper.cpp

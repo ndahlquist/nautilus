@@ -9,7 +9,8 @@ FILES   := mainlinux ../common/common \
                      ../common/RenderLight \
                      ../common/transform \
                      ../common/glsl_helper \
-                     ../common/PhysicsObject
+                     ../common/PhysicsObject \
+                     ../common/Character
 
 #################################################################
 
