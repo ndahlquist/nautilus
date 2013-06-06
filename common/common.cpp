@@ -45,14 +45,16 @@ RenderObject *cave = NULL;
 Character *character = NULL;
 Character *jellyfish = NULL;
 PhysicsObject *bomb = NULL;
+Timer bombTimer;
+#define BOMB_TIMER_LENGTH 2.0f
+#define BOMB_EXPLOSION_LENGTH .3f
 
 RenderLight *smallLight = NULL;
 RenderLight *bigLight = NULL;
+RenderLight *explosiveLight = NULL;
 RenderLight *spotLight = NULL;
 
-unsigned int frameNum = 0;
-
-#define PI 3.14f
+#define PI 3.1415f
 
 // Callback function to load resources.
 void*(*resourceCallback)(const char *) = NULL;
@@ -81,6 +83,7 @@ void Setup(int w, int h) {
     character->AddTexture("submarine_albedo.jpg", false);
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
+    jellyfish->position = Vector3f(200, 300, 400);
     jellyfish->MaxAcceleration = 200.0f;
     jellyfish->Drag = 100.0f;
     jellyfish->MaxVelocity = 100.0f;
@@ -88,6 +91,7 @@ void Setup(int w, int h) {
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
+    explosiveLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_explosive_pointlight_f.glsl");
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
 }
 
@@ -162,12 +166,13 @@ void RenderFrame() {
         bomb->position = Eigen::Vector3f(character->position[0], character->position[1], character->position[2]);
         bomb->velocity = 200.0f * Eigen::Vector3f(-cos(character->rot[0]), 1.0f, sin(character->rot[0]));
         shootBomb = false;
+        bombTimer.reset();
     }
     
     // Run physics.
     bomb->Update();
     character->Update();
-    jellyfish->targetPosition = Vector3f(character->position[0], character->position[1], character->position[2]);// character->position;
+    jellyfish->targetPosition = character->position;
     jellyfish->Update();
     
     mvPushMatrix();
@@ -181,15 +186,17 @@ void RenderFrame() {
     translatef(jellyfish->position[0], jellyfish->position[1], jellyfish->position[2]);
     rotate(0.0, jellyfish->rot[0], jellyfish->rot[1]);
     rotate(0.0, 0.0, PI / 2);
-    scalef(3.00);
+    scalef(2.00);
     jellyfish->Render();
     mvPopMatrix();
     
-    mvPushMatrix();
-    translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
-    scalef(10);
-    bomb->Render();
-    mvPopMatrix();
+    if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH) {
+        mvPushMatrix();
+        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        scalef(10);
+        bomb->Render();
+        mvPopMatrix();
+    }
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
@@ -203,15 +210,28 @@ void RenderFrame() {
     bigLight->Render();
     mvPopMatrix();
     
-    mvPushMatrix();
-    translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
-    scalef(100);
-    smallLight->color[0] = 1.00f;
-    smallLight->color[1] = 0.33f;
-    smallLight->color[2] = 0.07f;
-    smallLight->brightness = 1500 + 1500 * sin(frameNum / 6.0f);
-    smallLight->Render();
-    mvPopMatrix();
+    if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH) {
+        mvPushMatrix();
+        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        scalef(100);
+        smallLight->color[0] = 1.00f;
+        smallLight->color[1] = 0.33f;
+        smallLight->color[2] = 0.07f;
+        smallLight->brightness = 1500 + 1500 * sin(bombTimer.getSeconds() * 4.0f * PI);
+        smallLight->Render();
+        mvPopMatrix();
+    } else if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH + BOMB_EXPLOSION_LENGTH) {
+        mvPushMatrix();
+        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        scalef(250);
+        explosiveLight->color[0] = 1.00f;
+        explosiveLight->color[1] = 1.00f;
+        explosiveLight->color[2] = 1.00f;
+        float explosionTime = (bombTimer.getSeconds() - BOMB_TIMER_LENGTH) / BOMB_EXPLOSION_LENGTH;
+        explosiveLight->brightness = 10000000.0f * sin(PI * sqrt(explosionTime));
+        explosiveLight->Render();
+        mvPopMatrix();   
+    }
     
     mvPushMatrix();
     translatef(character->position[0], character->position[1], character->position[2]);
@@ -224,8 +244,6 @@ void RenderFrame() {
     spotLight->brightness = 16000.0;
     spotLight->Render();
     mvPopMatrix();
-    
-    frameNum++;
     
     fpsMeter();
 }
