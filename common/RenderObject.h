@@ -34,6 +34,7 @@ public:
     void Render();
      
     GLuint colorShader;
+    GLuint geometryShader;
     
 protected:
     void SetShader(const GLuint shaderProgram);

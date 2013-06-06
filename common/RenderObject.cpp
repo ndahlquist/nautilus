@@ -23,8 +23,16 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     free(interleavedBuffer);
     
     // Compile and link shader program
-    colorShader = createShaderProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback(fragmentShaderFilename));
+    const char * vertexShader = "standard_v.glsl";
+    if(vertexShaderFilename)
+        vertexShader = vertexShaderFilename;
+    colorShader = createShaderProgram((char *)resourceCallback(vertexShader), (char *)resourceCallback(fragmentShaderFilename));
     SetShader(colorShader);
+    
+    if(vertexShaderFilename)
+        geometryShader = createShaderProgram((char *)resourceCallback(vertexShader), (char *)resourceCallback("geometry_f.glsl"));
+    else
+        geometryShader = -1;
     
     texture = -1;
     normalTexture = -1;
@@ -160,7 +168,10 @@ void RenderObject::Render() {
     RenderPass();
     
     // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
-    SetShader(pipeline->geometryShader);
+    if(geometryShader != -1)
+        SetShader(geometryShader);
+    else
+        SetShader(pipeline->geometryShader);
     
     glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);

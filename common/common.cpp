@@ -75,16 +75,16 @@ void Setup(int w, int h) {
     
     pipeline = new RenderPipeline();
     
-    cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
+    cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
-    character = new Character("submarine.obj", "standard_v.glsl", "albedo_f.glsl");
+    character = new Character("submarine.obj", NULL, "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     jellyfish->MaxAcceleration = 200.0f;
     jellyfish->Drag = 100.0f;
     jellyfish->MaxVelocity = 100.0f;
-    bomb = new PhysicsObject("icosphere.obj", "standard_v.glsl", "solid_color_f.glsl");
+    bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
@@ -96,7 +96,7 @@ void setFrameBuffer(int handle) {
 }
 
 float cameraPos[3] = {0,180,100};
-float cameraPan[3] = {0,2000,0};
+float cameraPan[3] = {0,200,0};
 
 float orientation[3] = {0,0,0};
 
