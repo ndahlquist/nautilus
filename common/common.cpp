@@ -249,7 +249,14 @@ void RenderFrame() {
             float explosionTime = (bomb->instances[i].timer.getSeconds() - BOMB_TIMER_LENGTH) / BOMB_EXPLOSION_LENGTH;
             explosiveLight->brightness = 10000000.0f * sin(PI * sqrt(explosionTime));
             explosiveLight->Render();
-            mvPopMatrix();   
+            mvPopMatrix();
+            for(int j = 0; j < jellyfish->instances.size(); j++) {
+                if((jellyfish->instances[j].position - bomb->instances[i].position).norm() < 200) {
+                    // Kill this jellyfish
+                    jellyfish->instances.erase(jellyfish->instances.begin()+j);
+                    j--;  
+                }
+            }  
         } else {
             bomb->instances.erase(bomb->instances.begin()+i);
             i--;
