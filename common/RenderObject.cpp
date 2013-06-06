@@ -88,8 +88,8 @@ void RenderObject::RenderPass() {
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
     checkGlError("glUniformMatrix4fv");
-    delete mv_Matrix;
-    delete mvp_Matrix;
+    delete[] mv_Matrix;
+    delete[] mvp_Matrix;
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     

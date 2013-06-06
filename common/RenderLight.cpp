@@ -56,9 +56,9 @@ void RenderLight::Render() {
     GLuint gpT_MatrixHandle = glGetUniformLocation(colorShader, "u_pT_Matrix");
     glUniformMatrix4fv(gpT_MatrixHandle, 1, GL_FALSE, pT_Matrix);
     checkGlError("glUniformMatrix4fv");
-    delete mv_Matrix;
-    delete mvp_Matrix;
-    delete pT_Matrix;
+    delete[] mv_Matrix;
+    delete[] mvp_Matrix;
+    delete[] pT_Matrix;
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
