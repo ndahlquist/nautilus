@@ -22,8 +22,6 @@ using Eigen::Vector4f;
 Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool collide)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     this->collide = collide;
-    struct characterInstance instance;
-    instances.push_back(instance);
 }
 
 static inline float clamp(float x, float a, float b) {
@@ -36,6 +34,10 @@ void Character::Update() {
 }
 
 void Character::Update(int instanceNum) {
+    if(instanceNum >= instances.size()) {
+        LOGE("Character::Update: Out of bounds exception.");
+        return;
+    }
 
     struct characterInstance * instance = &instances[instanceNum];
 

@@ -19,9 +19,6 @@ using Eigen::Vector4f;
 PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool collide)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     ScreenSpaceCollisions = collide;
-    
-    struct physicsInstance instance;
-    instances.push_back(instance);
 }
 
 inline float clamp(float x, float a, float b) {
@@ -34,6 +31,10 @@ void PhysicsObject::Update() {
 }
 
 void PhysicsObject::Update(int instanceNum) {
+    if(instanceNum >= instances.size()) {
+        LOGE("PhysicsObject::Update: Out of bounds exception.");
+        return;
+    }
 
     struct physicsInstance * instance = &instances[instanceNum];
 

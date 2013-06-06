@@ -78,14 +78,15 @@ void Setup(int w, int h) {
     
     cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
+    
     character = new Character("submarine.obj", NULL, "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
+    struct characterInstance instance;
+    character->instances.push_back(instance);
+    
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
-    jellyfish->instances[0].position = Vector3f(200, 300, 400);
-    jellyfish->instances[0].MaxAcceleration = 200.0f;
-    jellyfish->instances[0].Drag = 100.0f;
-    jellyfish->instances[0].MaxVelocity = 100.0f;
+    
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
@@ -122,6 +123,15 @@ void rotatePerspective() {
     translatef(cameraPan[0], cameraPan[1], cameraPan[2]);
     rotate(rot0, 0, rot2);
     translatef(-cameraPan[0], -cameraPan[1], -cameraPan[2]);
+}
+
+void addJellyfish() {
+    struct characterInstance instance;
+    instance.position = character->instances[0].position + 600.0f * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
+    instance.MaxAcceleration = 200.0f;
+    instance.Drag = 100.0f;
+    instance.MaxVelocity = 100.0f;
+    jellyfish->instances.push_back(instance);
 }
 
 void RenderFrame() {
@@ -169,31 +179,37 @@ void RenderFrame() {
         shootBomb = false;
     }
     
+    while(jellyfish->instances.size() < 15)
+        addJellyfish();
+    
     // Run physics.
     bomb->Update();
     character->Update();
-    jellyfish->instances[0].targetPosition = character->instances[0].position;
+    for(int i = 0; i < jellyfish->instances.size(); i++)
+        jellyfish->instances[i].targetPosition = character->instances[0].position;
     jellyfish->Update();
     
     mvPushMatrix();
-    translatef(character->instances[0].position[0],character->instances[0].position[1], character->instances[0].position[2]); // TODO
+    translate(character->instances[0].position);
     rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
-    scalef(.15);
+    scalef(.15f);
     character->Render();
     mvPopMatrix();
     
-    mvPushMatrix();
-    translatef(jellyfish->instances[0].position[0], jellyfish->instances[0].position[1], jellyfish->instances[0].position[2]);
-    rotate(0.0, jellyfish->instances[0].rot[0], jellyfish->instances[0].rot[1]);
-    rotate(0.0, 0.0, PI / 2);
-    scalef(2.00);
-    jellyfish->Render();
-    mvPopMatrix();
+    for(int i = 0; i < jellyfish->instances.size(); i++) {
+        mvPushMatrix();
+        translate(jellyfish->instances[i].position);
+        rotate(0.0, jellyfish->instances[i].rot[0], jellyfish->instances[i].rot[1]);
+        rotate(0.0, 0.0, PI / 2);
+        scalef(1.0f);
+        jellyfish->Render();
+        mvPopMatrix();
+    }
     
     for(int i = 0; i < bomb->instances.size(); i++) {
         if(bomb->instances[i].timer.getSeconds() <= BOMB_TIMER_LENGTH) {
             mvPushMatrix();
-            translatef(bomb->instances[i].position[0], bomb->instances[i].position[1], bomb->instances[i].position[2]);
+            translate(bomb->instances[i].position);
             scalef(10);
             bomb->Render();
             mvPopMatrix();
@@ -204,7 +220,7 @@ void RenderFrame() {
     // Using g buffer, render lights
     
     mvPushMatrix();
-    translatef(character->instances[0].position[0], character->instances[0].position[1], character->instances[0].position[2]);
+    translate(character->instances[0].position);
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
@@ -215,7 +231,7 @@ void RenderFrame() {
     for(int i = 0; i < bomb->instances.size(); i++) {
         if(bomb->instances[i].timer.getSeconds() <= BOMB_TIMER_LENGTH) {
             mvPushMatrix();
-            translatef(bomb->instances[i].position[0], bomb->instances[i].position[1], bomb->instances[i].position[2]);
+            translate(bomb->instances[i].position);
             scalef(100);
             smallLight->color[0] = 1.00f;
             smallLight->color[1] = 0.33f;
@@ -225,7 +241,7 @@ void RenderFrame() {
             mvPopMatrix();
         } else if(bomb->instances[i].timer.getSeconds() <= BOMB_TIMER_LENGTH + BOMB_EXPLOSION_LENGTH) {
             mvPushMatrix();
-            translatef(bomb->instances[i].position[0], bomb->instances[i].position[1], bomb->instances[i].position[2]);
+            translate(bomb->instances[i].position);
             scalef(250);
             explosiveLight->color[0] = 1.00f;
             explosiveLight->color[1] = 1.00f;
@@ -241,7 +257,7 @@ void RenderFrame() {
     }
     
     mvPushMatrix();
-    translatef(character->instances[0].position[0], character->instances[0].position[1], character->instances[0].position[2]);
+    translate(character->instances[0].position);
     rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     rotate(0.0,0,-PI / 2);
     scalef(300.0f);
