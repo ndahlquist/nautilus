@@ -20,8 +20,6 @@
 #include <stdio.h>
 #endif
 
-#include <vector>
-
 #include "RenderObject.h"
 
 using namespace std;

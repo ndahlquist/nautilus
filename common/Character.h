@@ -17,6 +17,8 @@
 #include <stdio.h>
 #endif
 
+#include <vector>
+
 #include "RenderObject.h"
 #include "Timer.h"
 
@@ -26,23 +28,43 @@ using Eigen::Vector3f;
 
 using namespace std;
 
-class Character : public RenderObject {
-public:
-    Character(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void Update();
-
+struct characterInstance {
+    characterInstance() {
+        targetPosition = Vector3f(0, 0, 0);
+        MaxVelocity = 800.0f;
+        MaxAcceleration = 660.0f;
+        Drag = 550.0f;
+        position = Vector3f(0, 0, 0);
+        velocity = Vector3f(0, 0, 0);
+        rot[0] = 0;
+        rot[1] = 0;
+        timer.reset();
+        lastUpdate.reset();
+    }
+    
     Vector3f targetPosition;
     float MaxVelocity;
     float MaxAcceleration;
     float Drag;
     
     Vector3f position;
-    
+    Vector3f velocity;    
     float rot[2];
     
-private:
-    Vector3f velocity;
     Timer timer;
+    Timer lastUpdate;
+};
+
+class Character : public RenderObject {
+public:
+    Character(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool collisions = false);
+    void Update(); // Update all instances
+    void Update(int instance); // Update a specific instance
+    
+    vector<struct characterInstance> instances;
+
+private:
+    bool collide;
 };
 
 

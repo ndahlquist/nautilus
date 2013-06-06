@@ -82,10 +82,10 @@ void Setup(int w, int h) {
     character->AddTexture("submarine_albedo.jpg", false);
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
-    jellyfish->position = Vector3f(200, 300, 400);
-    jellyfish->MaxAcceleration = 200.0f;
-    jellyfish->Drag = 100.0f;
-    jellyfish->MaxVelocity = 100.0f;
+    jellyfish->instances[0].position = Vector3f(200, 300, 400);
+    jellyfish->instances[0].MaxAcceleration = 200.0f;
+    jellyfish->instances[0].Drag = 100.0f;
+    jellyfish->instances[0].MaxVelocity = 100.0f;
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
     
     smallLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_sat_f.glsl");
@@ -153,18 +153,18 @@ void RenderFrame() {
             float depth = geometry[3] / 128.0f - 1.0f;            
             Matrix4f mvp = projection.top()*model_view.top();
             Vector4f pos = mvp.inverse() * Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
-            character->targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
+            character->instances[0].targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
         }
         delete[] geometry;
     }
     
     for(int i = 0; i < 3; i++)
-        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->position[i];
+        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->instances[0].position[i];
         
     if(shootBomb) {
         struct physicsInstance newBomb;
-        newBomb.position = Eigen::Vector3f(character->position[0], character->position[1], character->position[2]); // TODO
-        newBomb.velocity = 200.0f * Eigen::Vector3f(-cos(character->rot[0]), 1.0f, sin(character->rot[0]));
+        newBomb.position = character->instances[0].position;
+        newBomb.velocity = 200.0f * Eigen::Vector3f(-cos(character->instances[0].rot[0]), 1.0f, sin(character->instances[0].rot[0]));
         bomb->instances.push_back(newBomb);
         shootBomb = false;
     }
@@ -172,19 +172,19 @@ void RenderFrame() {
     // Run physics.
     bomb->Update();
     character->Update();
-    jellyfish->targetPosition = character->position;
+    jellyfish->instances[0].targetPosition = character->instances[0].position;
     jellyfish->Update();
     
     mvPushMatrix();
-    translatef(character->position[0], character->position[1], character->position[2]);
-    rotate(0.0, character->rot[0], character->rot[1]);
+    translatef(character->instances[0].position[0],character->instances[0].position[1], character->instances[0].position[2]); // TODO
+    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     scalef(.15);
     character->Render();
     mvPopMatrix();
     
     mvPushMatrix();
-    translatef(jellyfish->position[0], jellyfish->position[1], jellyfish->position[2]);
-    rotate(0.0, jellyfish->rot[0], jellyfish->rot[1]);
+    translatef(jellyfish->instances[0].position[0], jellyfish->instances[0].position[1], jellyfish->instances[0].position[2]);
+    rotate(0.0, jellyfish->instances[0].rot[0], jellyfish->instances[0].rot[1]);
     rotate(0.0, 0.0, PI / 2);
     scalef(2.00);
     jellyfish->Render();
@@ -204,7 +204,7 @@ void RenderFrame() {
     // Using g buffer, render lights
     
     mvPushMatrix();
-    translatef(character->position[0], character->position[1], character->position[2]);
+    translatef(character->instances[0].position[0], character->instances[0].position[1], character->instances[0].position[2]);
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
@@ -241,8 +241,8 @@ void RenderFrame() {
     }
     
     mvPushMatrix();
-    translatef(character->position[0], character->position[1], character->position[2]);
-    rotate(0.0, character->rot[0], character->rot[1]);
+    translatef(character->instances[0].position[0], character->instances[0].position[1], character->instances[0].position[2]);
+    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     rotate(0.0,0,-PI / 2);
     scalef(300.0f);
     spotLight->color[0] = 0.4f;

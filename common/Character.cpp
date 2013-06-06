@@ -19,17 +19,11 @@ using Eigen::Vector4f;
 
 #define ACCELERATION_MULTIPLIER 40.0f
 
-Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
+Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool collide)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
-    position = Vector3f(0, 0, 0);
-    targetPosition = Vector3f(0, 0, 0);
-    velocity = Vector3f(0, 0, 0);
-    timer.reset();
-    rot[0] = 0;
-    rot[1] = 0;
-    MaxVelocity = 800.0f;
-    MaxAcceleration = 660.0f;
-    Drag = 550.0f;
+    this->collide = collide;
+    struct characterInstance instance;
+    instances.push_back(instance);
 }
 
 static inline float clamp(float x, float a, float b) {
@@ -37,20 +31,27 @@ static inline float clamp(float x, float a, float b) {
 }
 
 void Character::Update() {
+    for(int i = 0; i < instances.size(); i++)
+        Update(i);
+}
 
-    float timeElapsed = timer.getSeconds();
-    timer.reset();
+void Character::Update(int instanceNum) {
+
+    struct characterInstance * instance = &instances[instanceNum];
+
+    float timeElapsed = instance->lastUpdate.getSeconds();
+    instance->lastUpdate.reset();
     
     // Accelerate towards target
-    if(targetPosition != position) {
-        Vector3f targetVector = targetPosition - position;
+    if(instance->targetPosition != instance->position) {
+        Vector3f targetVector = instance->targetPosition - instance->position;
         
-        if(velocity.norm() != 0.0f)
-            velocity += Drag * -velocity.normalized() * timeElapsed;
+        if(instance->velocity.norm() != 0.0f)
+            instance->velocity += instance->Drag * -instance->velocity.normalized() * timeElapsed;
         
         if(targetVector.norm() > 20.0f) {
-            float accel = clamp(MaxAcceleration / ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, MaxAcceleration);
-            velocity += accel * targetVector.normalized() * timeElapsed;
+            float accel = clamp(instance->MaxAcceleration / ACCELERATION_MULTIPLIER * targetVector.norm(), 0.0, instance->MaxAcceleration);
+            instance->velocity += accel * targetVector.normalized() * timeElapsed;
         }
     }
     
@@ -74,17 +75,17 @@ void Character::Update() {
 
     // Clamp velocity   
     for(int i = 0; i < 3; i++)
-        velocity(i) = clamp(velocity(i), -MaxVelocity, MaxVelocity);
+        instance->velocity(i) = clamp(instance->velocity(i), -instance->MaxVelocity, instance->MaxVelocity);
     
     // Calculate rotation
-    if(velocity.norm() > 20.0f) {
-        rot[0] = atan2(velocity(0), velocity(2)) + PI / 2;
-        rot[1] = acos(velocity.normalized()(1)) - PI / 2;
+    if(instance->velocity.norm() > 20.0f) {
+        instance->rot[0] = atan2(instance->velocity(0), instance->velocity(2)) + PI / 2;
+        instance->rot[1] = acos(instance->velocity.normalized()(1)) - PI / 2;
     } else {
-        rot[1] *= .99;
+        instance->rot[1] *= .99;
     }
     
-    position += velocity * timeElapsed;
+    instance->position += instance->velocity * timeElapsed;
     
 }
 
