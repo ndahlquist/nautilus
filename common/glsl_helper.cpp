@@ -8,28 +8,14 @@
 
 #include "log.h"
 
-static const char defaultVertexShader[] =
-"attribute vec4 a_Position;\n"
-"void main() {\n"
-"  gl_Position = a_Position;\n"
-"}\n";
-
-static const char defaultFragmentShader[] =
-#ifdef ANDROID_NDK
-"precision mediump float;\n"
-#endif
-"void main() {\n"
-"  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-"}\n";
-
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
-    if (shader) {
+    if(shader) {
         glShaderSource(shader, 1, &pSource, NULL);
         glCompileShader(shader);
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) {
+        if(!compiled) {
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
             if (infoLen) {
@@ -50,19 +36,19 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
 
 GLuint createShaderProgram(const char* pVertexSource, const char* pFragmentSource) {
     GLuint vertexShader;
-    if(pVertexSource)
-        vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
-    else
-        vertexShader = loadShader(GL_VERTEX_SHADER, defaultVertexShader);
+    if(pVertexSource == NULL) {
+        LOGE("VertexSource is NULL");
+    }
+    vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     
     GLuint pixelShader;
-    if(pFragmentSource)
-        pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    else
-        pixelShader = loadShader(GL_FRAGMENT_SHADER, defaultFragmentShader);
+    if(pFragmentSource == NULL) {
+        LOGE("FragmentSource is NULL");
+    }
+    pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
     
     GLuint program = glCreateProgram();
-    if (program) {
+    if(program) {
         glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
         glAttachShader(program, pixelShader);

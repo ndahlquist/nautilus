@@ -26,7 +26,7 @@ using namespace std;
 
 class RenderObject {
 public:
-    RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
+    RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool writegeometry = true);
 
     void AddTexture(const char *textureFilename, bool normalmap = false);
     

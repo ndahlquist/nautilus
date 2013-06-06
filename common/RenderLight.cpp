@@ -7,7 +7,7 @@
 #include "common.h"
 #include "log.h"
 
-RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
+RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename, false) {
    color[0] = 1.0f;
    color[1] = 1.0f;
    color[2] = 1.0f;

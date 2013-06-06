@@ -12,7 +12,7 @@
 
 Timer timer;
 
-RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) {
+RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
     // Parse obj file into an interleaved float buffer
     GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
@@ -29,8 +29,8 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     colorShader = createShaderProgram((char *)resourceCallback(vertexShader), (char *)resourceCallback(fragmentShaderFilename));
     SetShader(colorShader);
     
-    if(vertexShaderFilename)
-        geometryShader = createShaderProgram((char *)resourceCallback(vertexShader), (char *)resourceCallback("geometry_f.glsl"));
+    if(vertexShaderFilename && writegeometry)
+        geometryShader = createShaderProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback("geometry_f.glsl"));
     else
         geometryShader = -1;
     
