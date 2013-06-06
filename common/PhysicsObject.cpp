@@ -7,7 +7,6 @@
 #include "RenderPipeline.h"
 #include "transform.h"
 #include "log.h"
-#include "Timer.h"
 
 #include "Eigen/Eigenvalues"
 
@@ -17,15 +16,16 @@ using Eigen::Vector4f;
 #define MAX_VELOCITY 800.0
 #define COEFF_RESTITUTION .85f
 
-static Timer timer;
-
-PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename)
+PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool collide)
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
-    position = Vector3f(0, 0, 0);
-    velocity = Vector3f(0, 0, 0);
-    acceleration = Vector3f(0, -800.0, 0);
-    ScreenSpaceCollisions = true;
-    timer.reset();
+    ScreenSpaceCollisions = collide;
+    
+    struct physicsInstance instance; // TODO
+    instance.position = Vector3f(0, 0, 0);
+    instance.velocity = Vector3f(0, 0, 0);
+    instance.acceleration = Vector3f(0, -800.0, 0);
+    instance.timer.reset();
+    instances.push_back(instance);
 }
 
 inline float clamp(float x, float a, float b) {
@@ -33,14 +33,21 @@ inline float clamp(float x, float a, float b) {
 }
 
 void PhysicsObject::Update() {
+    for(int i = 0; i < instances.size(); i++)
+        Update(i);
+}
 
-    float timeElapsed = timer.getSeconds();
-    timer.reset();
+void PhysicsObject::Update(int instanceNum) {
 
-    velocity += acceleration * timeElapsed;
+    struct physicsInstance * instance = &instances[instanceNum];
+
+    float timeElapsed = instance->timer.getSeconds();
+    instance->timer.reset();
+
+    instance->velocity += instance->acceleration * timeElapsed;
     
     if(ScreenSpaceCollisions) {
-        Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(position[0], position[1], position[2], 1.0);
+        Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(instance->position[0], instance->position[1], instance->position[2], 1.0); // TODO
         float x = ((1.0f + MVP_POS(0) / MVP_POS(3)) / 2.0f);
         float y = ((1.0f + MVP_POS(1) / MVP_POS(3)) / 2.0f);
         
@@ -55,14 +62,13 @@ void PhysicsObject::Update() {
         delete[] geometry;
         
         if(depth < 256 * MVP_POS(2) / MVP_POS(3))
-            velocity = COEFF_RESTITUTION * (-2 * velocity.dot(normal) * normal + velocity);
+            instance->velocity = COEFF_RESTITUTION * (-2 * instance->velocity.dot(normal) * normal + instance->velocity);
     }
     
     for(int i = 0; i < 3; i++)
-        velocity(i) = clamp(velocity(i), -MAX_VELOCITY, MAX_VELOCITY);
+        instance->velocity(i) = clamp(instance->velocity(i), -MAX_VELOCITY, MAX_VELOCITY);
     
-    position += velocity * timeElapsed;
+    instance->position += instance->velocity * timeElapsed;
     
 }
-
 

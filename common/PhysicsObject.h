@@ -18,6 +18,9 @@
 #endif
 
 #include "RenderObject.h"
+#include "Timer.h"
+
+#include <vector>
 
 #include "Eigen/Core"
 
@@ -25,15 +28,22 @@ using Eigen::Vector3f;
 
 using namespace std;
 
-class PhysicsObject : public RenderObject {
-public:
-    PhysicsObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
-    void Update();
-    
+struct physicsInstance {
     Vector3f position;
     Vector3f velocity;
     Vector3f acceleration;
+    Timer timer;
+};
+
+class PhysicsObject : public RenderObject {
+public:
+    PhysicsObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool collide = true);
+    void Update(); // Update all instances
+    void Update(int instance); // Update a specific instance
     
+    vector<struct physicsInstance> instances;
+    
+private:
     bool ScreenSpaceCollisions;
 };
 

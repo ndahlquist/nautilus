@@ -45,7 +45,7 @@ RenderObject *cave = NULL;
 Character *character = NULL;
 Character *jellyfish = NULL;
 PhysicsObject *bomb = NULL;
-Timer bombTimer;
+Timer bombTimer; // TODO
 #define BOMB_TIMER_LENGTH 2.0f
 #define BOMB_EXPLOSION_LENGTH .3f
 
@@ -163,8 +163,8 @@ void RenderFrame() {
         cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->position[i];
         
     if(shootBomb) {
-        bomb->position = Eigen::Vector3f(character->position[0], character->position[1], character->position[2]);
-        bomb->velocity = 200.0f * Eigen::Vector3f(-cos(character->rot[0]), 1.0f, sin(character->rot[0]));
+        bomb->instances[0].position = Eigen::Vector3f(character->position[0], character->position[1], character->position[2]);
+        bomb->instances[0].velocity = 200.0f * Eigen::Vector3f(-cos(character->rot[0]), 1.0f, sin(character->rot[0]));
         shootBomb = false;
         bombTimer.reset();
     }
@@ -192,7 +192,7 @@ void RenderFrame() {
     
     if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH) {
         mvPushMatrix();
-        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        translatef(bomb->instances[0].position[0], bomb->instances[0].position[1], bomb->instances[0].position[2]);
         scalef(10);
         bomb->Render();
         mvPopMatrix();
@@ -212,7 +212,7 @@ void RenderFrame() {
     
     if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH) {
         mvPushMatrix();
-        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        translatef(bomb->instances[0].position[0], bomb->instances[0].position[1], bomb->instances[0].position[2]);
         scalef(100);
         smallLight->color[0] = 1.00f;
         smallLight->color[1] = 0.33f;
@@ -222,7 +222,7 @@ void RenderFrame() {
         mvPopMatrix();
     } else if(bombTimer.getSeconds() <= BOMB_TIMER_LENGTH + BOMB_EXPLOSION_LENGTH) {
         mvPushMatrix();
-        translatef(bomb->position[0], bomb->position[1], bomb->position[2]);
+        translatef(bomb->instances[0].position[0], bomb->instances[0].position[1], bomb->instances[0].position[2]);
         scalef(250);
         explosiveLight->color[0] = 1.00f;
         explosiveLight->color[1] = 1.00f;
