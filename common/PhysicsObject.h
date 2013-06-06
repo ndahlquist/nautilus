@@ -29,10 +29,19 @@ using Eigen::Vector3f;
 using namespace std;
 
 struct physicsInstance {
+    physicsInstance() {
+        position = Vector3f(0, 0, 0);
+        velocity = Vector3f(0, 0, 0);
+        acceleration = Vector3f(0, -800.0, 0);
+        timer.reset();
+        lastUpdate.reset();
+    }
+
     Vector3f position;
     Vector3f velocity;
     Vector3f acceleration;
     Timer timer;
+    Timer lastUpdate;
 };
 
 class PhysicsObject : public RenderObject {

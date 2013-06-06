@@ -20,11 +20,7 @@ PhysicsObject::PhysicsObject(const char *objFilename, const char *vertexShaderFi
                                                   : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
     ScreenSpaceCollisions = collide;
     
-    struct physicsInstance instance; // TODO
-    instance.position = Vector3f(0, 0, 0);
-    instance.velocity = Vector3f(0, 0, 0);
-    instance.acceleration = Vector3f(0, -800.0, 0);
-    instance.timer.reset();
+    struct physicsInstance instance;
     instances.push_back(instance);
 }
 
@@ -41,8 +37,8 @@ void PhysicsObject::Update(int instanceNum) {
 
     struct physicsInstance * instance = &instances[instanceNum];
 
-    float timeElapsed = instance->timer.getSeconds();
-    instance->timer.reset();
+    float timeElapsed = instance->lastUpdate.getSeconds();
+    instance->lastUpdate.reset();
 
     instance->velocity += instance->acceleration * timeElapsed;
     
