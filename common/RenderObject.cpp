@@ -8,9 +8,6 @@
 #include "transform.h"
 #include "common.h"
 #include "log.h"
-#include "Timer.h"
-
-Timer timer;
 
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
     // Parse obj file into an interleaved float buffer
@@ -36,8 +33,6 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     
     texture = -1;
     normalTexture = -1;
-    
-    timer.reset();
 }
 
 void RenderObject::SetShader(const GLuint shaderProgram) {
@@ -81,7 +76,7 @@ void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
         texture = newTex;
 }
 
-void RenderObject::RenderPass() {
+void RenderObject::RenderPass(int instance) {
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
@@ -120,12 +115,6 @@ void RenderObject::RenderPass() {
         checkGlError("texture");
     }
     
-    // Pass currrent time
-    if(timeUniform != -1) {
-        glUniform1f(timeUniform, timer.getSeconds());
-        checkGlError("glUniform1i: time");
-    }
-    
     // Pass normal map
     if(normalMapUniform != -1 && normalTexture != -1) {
         glActiveTexture(GL_TEXTURE1);
@@ -139,7 +128,7 @@ void RenderObject::RenderPass() {
 
 }
 
-void RenderObject::Render() {
+void RenderObject::Render(int instance) {
 
     if(!pipeline) {
         LOGE("RenderPipeline inaccessible.");
@@ -165,7 +154,7 @@ void RenderObject::Render() {
     glDisable(GL_DITHER);
     checkGlError("glClear");
     
-    RenderPass();
+    RenderPass(instance);
     
     // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
     if(geometryShader != -1)
@@ -180,7 +169,7 @@ void RenderObject::Render() {
     
     glEnable(GL_DITHER);
     
-    RenderPass();
+    RenderPass(instance);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
 }

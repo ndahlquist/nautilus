@@ -202,7 +202,7 @@ void RenderFrame() {
         rotate(0.0, jellyfish->instances[i].rot[0], jellyfish->instances[i].rot[1]);
         rotate(0.0, 0.0, PI / 2);
         scalef(1.0f);
-        jellyfish->Render();
+        jellyfish->Render(i);
         mvPopMatrix();
     }
     
@@ -211,7 +211,7 @@ void RenderFrame() {
             mvPushMatrix();
             translate(bomb->instances[i].position);
             scalef(10);
-            bomb->Render();
+            bomb->Render(i);
             mvPopMatrix();
         }
     }

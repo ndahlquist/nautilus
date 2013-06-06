@@ -60,6 +60,7 @@ public:
     Character(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool collisions = false);
     void Update(); // Update all instances
     void Update(int instance); // Update a specific instance
+    void RenderPass(int instance);
     
     vector<struct characterInstance> instances;
 

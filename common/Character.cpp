@@ -91,4 +91,13 @@ void Character::Update(int instanceNum) {
     
 }
 
+void Character::RenderPass(int instance) {
+    // Pass currrent time
+    if(timeUniform != -1) {
+        glUniform1f(timeUniform, instances[instance].timer.getSeconds());
+        checkGlError("glUniform1i: time");
+    }
+    RenderObject::RenderPass(instance);
+}
+
 

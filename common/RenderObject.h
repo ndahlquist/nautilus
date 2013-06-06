@@ -31,14 +31,14 @@ public:
     void AddTexture(const char *textureFilename, bool normalmap = false);
     
     // Render color and geometry to g buffer.
-    void Render();
+    void Render(int instance = 0);
      
     GLuint colorShader;
     GLuint geometryShader;
     
 protected:
     void SetShader(const GLuint shaderProgram);
-    void RenderPass();
+    virtual void RenderPass(int instance = 0);
     
     GLuint gvPositionHandle;
     GLuint gmvMatrixHandle;
