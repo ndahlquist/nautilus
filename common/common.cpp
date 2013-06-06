@@ -185,8 +185,12 @@ void RenderFrame() {
     // Run physics.
     bomb->Update();
     character->Update();
-    for(int i = 0; i < jellyfish->instances.size(); i++)
+    for(int i = 0; i < jellyfish->instances.size(); i++) {
         jellyfish->instances[i].targetPosition = character->instances[0].position;
+        // Randomize movement
+        float dist = (character->instances[0].position - jellyfish->instances[i].position).norm();
+        jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
+    }
     jellyfish->Update();
     
     mvPushMatrix();

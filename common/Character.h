@@ -38,8 +38,8 @@ struct characterInstance {
         velocity = Vector3f(0, 0, 0);
         rot[0] = 0;
         rot[1] = 0;
-        timer.reset();
         lastUpdate.reset();
+        animationTime = 0.0f;
     }
     
     Vector3f targetPosition;
@@ -51,8 +51,8 @@ struct characterInstance {
     Vector3f velocity;    
     float rot[2];
     
-    Timer timer;
     Timer lastUpdate;
+    float animationTime;
 };
 
 class Character : public RenderObject {
@@ -64,7 +64,6 @@ public:
     
     vector<struct characterInstance> instances;
 
-private:
     bool collide;
 };
 

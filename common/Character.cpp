@@ -89,12 +89,14 @@ void Character::Update(int instanceNum) {
     
     instance->position += instance->velocity * timeElapsed;
     
+    instance->animationTime += (4.0f * instance->velocity.norm() / instance->MaxVelocity + 1.0f) * timeElapsed;
+    
 }
 
 void Character::RenderPass(int instance) {
-    // Pass currrent time
+    // Pass animation time
     if(timeUniform != -1) {
-        glUniform1f(timeUniform, instances[instance].timer.getSeconds());
+        glUniform1f(timeUniform, instances[instance].animationTime);
         checkGlError("glUniform1i: time");
     }
     RenderObject::RenderPass(instance);
