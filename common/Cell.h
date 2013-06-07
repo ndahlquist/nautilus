@@ -8,6 +8,18 @@
 #define AIR 2
 #define SOLID 3
 
+struct Particle{
+    Vector3f vel;
+    Vector3f pos;
+    int life;
+    bool inBound;
+    Particle(const Vector3f& p, const Vector3f& v){
+        pos = p;
+        vel = v;
+        life = 10;
+        inBound = true;
+    }
+};
 
 class mcCell
 {

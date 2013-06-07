@@ -43,8 +43,9 @@ void SetResourceCallback(void*(*cb)(const char *)) {
 }
 
 RenderObject *cave;
-//RenderObject *character;
+RenderObject *character;
 Fluid* Water;
+RenderObject *triangle;
 
 // Initialize the application, loading all of the settings that
 // we will be accessing later in our fragment shaders.
@@ -59,9 +60,9 @@ void Setup(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
     
-    cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
-    //character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
-    //character->AddTexture("raptor_albedo.jpg");
+    //cave = new RenderObject("cave0.obj", "standard_v.glsl", "diffuse_f.glsl");
+    character = new RenderObject("raptor.obj", "standard_v.glsl", "tex_diffuse_f.glsl");
+    character->AddTexture("raptor_albedo.jpg");
 
     width = w;
     height = h;
@@ -69,12 +70,14 @@ void Setup(int w, int h) {
     checkGlError("glViewport");
     
     Water = new Fluid();
+    
 }
 
 float cameraPos[4] = {5,3,22,1};
 float pan[3] = {0,0,0}, up[3] = {0,1,0};
 float rot[2] = {0,0};
 
+float t=0;
 void RenderFrame() {
     
     glDisable(GL_CULL_FACE);
@@ -90,11 +93,34 @@ void RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+pan[0], cameraPos[1]+pan[1], cameraPos[2]+pan[2], pan[0], pan[1], pan[2], up[0], up[1], up[2]);
 
-    translatef(0, 0, -10);
-    rotate(rot[1],rot[0],0);
-    translatef(-8, 0, -5);
-    Water->RenderFrame();
+    t+=0.1;
+    if (t>100)
+        t=0;
+    //translatef(-t*0.01,0, 0);
     
+ 
+    
+    //cave->RenderFrame();
+    //scalef(0.5,0.5,0.5);
+    
+    translatef(-1, 0, -10);
+    rotate(rot[1],rot[0],0);
+    
+    /*mvPushMatrix();
+    
+    rotate(0,t*0.1,0);
+     
+    
+    
+    mvPopMatrix();*/
+     rotate(0,-t*0.1,0);
+    Water->RenderFrameOutBound();
+    Water->RenderFrameInBound();
+    translatef(0.0, 0, 1);
+    scalef(0.06, 0.06, 0.06);
+    character->RenderFrame();
+
+        
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }

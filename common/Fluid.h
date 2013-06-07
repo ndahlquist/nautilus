@@ -10,15 +10,15 @@ using std::vector;
 using Eigen::Vector3f;
 
 typedef Eigen::Triplet<double> T;
-#define Cell_NUM_X 8
-#define Cell_NUM_Y 4
-#define Cell_NUM_Z 4
+#define Cell_NUM_X 5
+#define Cell_NUM_Y 6
+#define Cell_NUM_Z 6
 #define KCFL 0.7f
 #define BUFFER 1
 #define DIRECTION_X 0
 #define DIRECTION_Y 1
 #define DIRECTION_Z 2
-#define GRAVITY 1.0f
+#define GRAVITY -0.8f
 #define FRAME_TIME 0.04f
 
 class Fluid
@@ -58,15 +58,16 @@ private:
     //mobile
     RenderObject* renderer;
     void RenderSetup();
-    float* GenVertexArray();
+    float* GenVertexArrayInBound();
+    float* GenVertexArrayOutBound();
     float* Surface(TRIANGLE*&, int&);
     
 public:
     Fluid();
-	list<Vector3f*> listParticles;
+	list<struct Particle*> listParticles;
     void Update();
-    void RenderFrame();
-
+    void RenderFrameOutBound();
+    void RenderFrameInBound();
     
    
 };
@@ -101,6 +102,7 @@ Fluid::Fluid(){
             status[0][j][k] = SOURCE;
             status[Cell_NUM_X+BUFFER*2-1][j][k] = SOLID;
         }
+
     renderer = new RenderObject("standard_v.glsl", "normals_f.glsl");
     //renderer = new RenderObject("standard_v.glsl", "depth_f.glsl");
 }
@@ -238,7 +240,7 @@ void Fluid::Update()
 {
     if (remainderTime >= FRAME_TIME)
     {
-        if(frameCount<600 && frameCount%10 == 0)
+        //if(frameCount<600 && frameCount%10 == 0)
             AddSource();
         remainderTime -= FRAME_TIME;
         MoveParticles(FRAME_TIME);
@@ -255,7 +257,7 @@ void Fluid::Update()
             deltaTime = FRAME_TIME;
             remainderTime = deltaTime - FRAME_TIME;
         }
-        if(frameCount<60)
+        //if(frameCount<60)
             AddSource();
         UpdateCells();			//2
         ApplyAdvection();		//3a
@@ -267,7 +269,7 @@ void Fluid::Update()
         
     }
     
-    frameCount++;
+    //frameCount++;
 }
 
 //calculate the simulation time step
@@ -286,15 +288,32 @@ void Fluid::UpdateCells()
                 layer[i][j][k]=-1;
             }
     
-	for (list<Vector3f*>::iterator iter = listParticles.begin(); iter != listParticles.end();)
+	for (list<struct Particle*>::iterator iter = listParticles.begin(); iter != listParticles.end();)
 	{
-        int i=(int)floor((**iter)[0]/CELL_WIDTH);
-        int j=(int)floor((**iter)[1]/CELL_WIDTH);
-        int k=(int)floor((**iter)[2]/CELL_WIDTH);
+        if (!(*iter)->inBound) {
+            if(!(*iter)->life){
+                delete (*iter);
+                iter = listParticles.erase(iter);
+                continue;
+            }
+            (*iter)->life--;
+            iter++;
+        }
+        else{
+        
+        int i=(int)floor((*iter)->pos[0]/CELL_WIDTH);
+        int j=(int)floor((*iter)->pos[1]/CELL_WIDTH);
+        int k=(int)floor((*iter)->pos[2]/CELL_WIDTH);
         
         int posX = BUFFER+i;
         int posY = BUFFER+j;
         int posZ = BUFFER+k;
+        
+        if(posX<0||posX>Cell_NUM_X+2*BUFFER-1||posY<0||posY>Cell_NUM_Y+2*BUFFER-1||posZ<0||posZ>Cell_NUM_Z+2*BUFFER-1){
+            (*iter)->inBound = false;
+            iter++;
+            continue;
+        }
         
         if (status[posX][posY][posZ]!=SOLID && status[posX][posY][posZ]!= SOURCE)
         {
@@ -302,12 +321,12 @@ void Fluid::UpdateCells()
             layer[i][j][k] = 0;
             iter++;
         }
-		else
+		else if (status[posX][posY][posZ]==SOLID)
 		{
-			delete(*iter);
-			iter = listParticles.erase(iter);
-			
+            (*iter)->inBound = false;
+            iter++;
 		}
+        }
 	}
     
     for (int i=0;i<Cell_NUM_X;i++)
@@ -598,44 +617,40 @@ void Fluid::ApplyPressure()
 //extrapolate the fluid velocity to the buffer zone
 void Fluid::UpdateBoundary()//SUPER IMPORTANT!
 {
-    float a =0.5;
-    float u0 = 0.5f;
+    float a =1.f;
+    float u0 = 4.f;
     
     for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
         for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++){
-            w[i][j][1] = 0.f;
-            w[i][j][0] = 0.f;
+            w[i][j][1] = a*w[i][j][1];
+            w[i][j][0] = a*w[i][j][1];
             u[i][j][0] = a*u[i][j][1];
             v[i][j][0] = a*v[i][j][1];
-            w[i][j][Cell_NUM_Z+BUFFER*2-1] = 0.f;
+            w[i][j][Cell_NUM_Z+BUFFER*2-1] = a*w[i][j][Cell_NUM_Z+BUFFER*2-2];
             u[i][j][Cell_NUM_Z+BUFFER*2-1] = a*u[i][j][Cell_NUM_Z+BUFFER*2-2];
             v[i][j][Cell_NUM_Z+BUFFER*2-1] = a*v[i][j][Cell_NUM_Z+BUFFER*2-2];
             
         }
     for (int i=0;i<Cell_NUM_X+BUFFER*2;i++)
         for (int k=0; k<Cell_NUM_Y+BUFFER*2; k++){
-            v[i][1][k] = 0.f;
+            v[i][1][k] = a*v[i][1][k];
             u[i][0][k] = a*u[i][1][k];
-            v[i][0][k] = 0.f;
+            v[i][0][k] = a*v[i][1][k];
             w[i][0][k] = a*w[i][1][k];
             u[i][Cell_NUM_Y+BUFFER*2-1][k] = a*u[i][Cell_NUM_Y+BUFFER*2-2][k];
-            v[i][Cell_NUM_Y+BUFFER*2-1][k] = 0.f;
+            v[i][Cell_NUM_Y+BUFFER*2-1][k] = a*v[i][Cell_NUM_Y+BUFFER*2-2][k];
             w[i][Cell_NUM_Y+BUFFER*2-1][k] = a*w[i][Cell_NUM_Y+BUFFER*2-2][k];
             
         }
     for (int j=0; j<Cell_NUM_Y+BUFFER*2; j++)
         for (int k=0; k<Cell_NUM_Y+BUFFER*2; k++){
-            if(frameCount<610){
+            
                 u[1][j][k] = u0;
                 u[0][j][k] = u0;
-            }
-            else{
-                u[1][j][k] = 0.f;
-                u[0][j][k] = 0.f;
-            }
+           
             v[0][j][k] = a*v[1][j][k];
             w[0][j][k] = a*w[1][j][k];
-            u[Cell_NUM_X+BUFFER*2-1][j][k] = 0.f;
+            u[Cell_NUM_X+BUFFER*2-1][j][k] =  u0;//a*u[Cell_NUM_X +BUFFER*2 -2][j][k];
             v[Cell_NUM_X+BUFFER*2-1][j][k] = a*v[Cell_NUM_X +BUFFER*2 -2][j][k];
             w[Cell_NUM_X+BUFFER*2-1][j][k] = a*w[Cell_NUM_X +BUFFER*2 -2][j][k];
             
@@ -648,83 +663,122 @@ void Fluid::UpdateBoundary()//SUPER IMPORTANT!
 //move particles for time t
 void Fluid::MoveParticles(float time)
 {
-	for (list<Vector3f *>::iterator iter = listParticles.begin(); iter != listParticles.end();)
+	for (list<struct Particle *>::iterator iter = listParticles.begin(); iter != listParticles.end();iter++)
 	{
-		Vector3f v = getVelocity((**iter)[0],(**iter)[1], (**iter)[2]);
+		Vector3f v = getVelocity((*iter)->pos[0],(*iter)->pos[1], (*iter)->pos[2]);
 		
-        Vector3f test = **iter + v*time;
-        int i = (int)floor(test[0]/CELL_WIDTH);
-        int j = (int)floor(test[1]/CELL_WIDTH);
-        int k = (int)floor(test[2]/CELL_WIDTH);
-        
-		if (status[BUFFER+i][BUFFER+j][BUFFER+k] != SOLID)
-		{
-			**iter = test;
-            iter++;
-		}
-        else{
-            //iter++;
-            delete (*iter);
-            iter = listParticles.erase(iter);
+        if ((*iter)->inBound){
+            (*iter)->vel = v;
         }
+        
+        (*iter)->pos += (*iter)->vel * time;
 	}
 }
 
 void Fluid::AddSource(){
     float y,z;
-    for (int j = 0; j < Cell_NUM_Y; j++)
-        for (int k = 0; k < Cell_NUM_Z; k++)
+    for (int j = 1; j < Cell_NUM_Y-3; j++)
+        for (int k = 1; k < Cell_NUM_Z-3; k++)
         {
-            for(int step = 0; step<5; step++){
+            for(int step = 0; step<1; step++){
                 y = j+((float) rand()) / (float) RAND_MAX;
                 z = k+((float) rand()) / (float) RAND_MAX;
-                listParticles.push_back(new Vector3f(0.f , y* CELL_WIDTH, z * CELL_WIDTH));
+                
+                struct Particle* newp = new struct Particle(Vector3f(0. , y* CELL_WIDTH, z * CELL_WIDTH), Vector3f(0,0,0));
+                listParticles.push_back(newp);
             }
             
         }
 }
 
-float* Fluid::GenVertexArray(){
+float* Fluid::GenVertexArrayInBound(){
     float* vertices = new float[6*8*listParticles.size()];
     int bufferIndex = 0;
     float radius = .1;
-    Vector3f center(0,0,0);
-    for(list<Vector3f*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
+    //Vector3f center(0,0,0);
+    for(list<struct Particle*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
+        if((*iter)->inBound){
         // Triangle 1
-        vertices[bufferIndex++] =(**iter)[0]-radius;
-        vertices[bufferIndex++] =(**iter)[1]-radius;
-        vertices[bufferIndex++] =(**iter)[2];
-        vertices[bufferIndex++] =(**iter)[0]+radius;
-        vertices[bufferIndex++] =(**iter)[1]-radius;
-        vertices[bufferIndex++] =(**iter)[2];
-        vertices[bufferIndex++] =(**iter)[0]+radius;
-        vertices[bufferIndex++] =(**iter)[1]+radius;
-        vertices[bufferIndex++] =(**iter)[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
         
         // Triangle 2
-        vertices[bufferIndex++] =(**iter)[0]-radius;
-        vertices[bufferIndex++] =(**iter)[1]-radius;
-        vertices[bufferIndex++] =(**iter)[2];
-        vertices[bufferIndex++] =(**iter)[0]-radius;
-        vertices[bufferIndex++] =(**iter)[1]+radius;
-        vertices[bufferIndex++] =(**iter)[2];
-        vertices[bufferIndex++] =(**iter)[0]+radius;
-        vertices[bufferIndex++] =(**iter)[1]+radius;
-        vertices[bufferIndex++] =(**iter)[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
+        vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+        vertices[bufferIndex++] =(*iter)->pos[2];
         
-        center += **iter;
+        //center += (*iter)->pos;
+        }
     }
-    center /= listParticles.size();
+    //center /= listParticles.size();
+    //printf("%f %f %f\n", center[0],center[1],center[2]);
+    return vertices;
+}
+float* Fluid::GenVertexArrayOutBound(){
+    float* vertices = new float[6*8*listParticles.size()];
+    int bufferIndex = 0;
+    float radius = .1;
+    //Vector3f center(0,0,0);
+    for(list<struct Particle*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
+        if(!(*iter)->inBound){
+            // Triangle 1
+            vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            
+            // Triangle 2
+            vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            vertices[bufferIndex++] =(*iter)->pos[0]-radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            vertices[bufferIndex++] =(*iter)->pos[0]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[1]+radius;
+            vertices[bufferIndex++] =(*iter)->pos[2];
+            
+            //center += (*iter)->pos;
+        }
+    }
+    //center /= listParticles.size();
     //printf("%f %f %f\n", center[0],center[1],center[2]);
     return vertices;
 }
 
-void Fluid::RenderFrame(){
-    Update();
+void Fluid::RenderFrameInBound(){
+    
     //TRIANGLE *tri = NULL;
 	int ntri = 0;
     //float * mesh = Surface(tri,ntri);//GenVertexArray();
-    float * mesh = GenVertexArray();
+    float * mesh = GenVertexArrayInBound();
+    //free(tri);
+    //renderer->RenderFrame(mesh, ntri);
+    renderer->RenderFrame(mesh,listParticles.size()*6);
+    delete[] mesh;
+}
+
+void Fluid::RenderFrameOutBound(){
+    Update();
+    float * mesh = GenVertexArrayOutBound();
     //free(tri);
     //renderer->RenderFrame(mesh, ntri);
     renderer->RenderFrame(mesh,listParticles.size()*6);
@@ -732,7 +786,7 @@ void Fluid::RenderFrame(){
 }
 
 
-float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
+/*float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     //vertex grid store signed distance
     int R=4;
     mcCell mcgrid[BUFFER*2+R*Cell_NUM_X][BUFFER*2+R*Cell_NUM_Y][BUFFER*2+R*Cell_NUM_Z];
@@ -884,10 +938,10 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
                 int k0 = BUFFER + k_*R;
                 if(status[BUFFER+i_][BUFFER+j_][BUFFER+k_]!=FLUID && status[BUFFER+i_][BUFFER+j_][BUFFER+k_]!=AIR)
                     continue;
-                /*if(grid[i0+1][j0][k0].status==FLUID && (grid[i0-1][j0][k0].status!=AIR
+                if(grid[i0+1][j0][k0].status==FLUID && (grid[i0-1][j0][k0].status!=AIR
                  && grid[i0][j0+1][k0].status!=AIR && grid[i0][j0-1][k0].status!=AIR
                  && grid[i0][j0][k0+1].status!=AIR && grid[i0][j0][k0-1].status!=AIR))
-                 continue;*/
+                 continue;
                 //if(g->x==0||g->x==Cell_NUM_X-1||g->y==0||g->y==Cell_NUM_Y-1||g->z==0||g->z==Cell_NUM_Z-1)
                 //  continue;
                 
@@ -990,4 +1044,4 @@ float* Fluid::Surface(TRIANGLE*& tri, int& ntri){
     return vertices;
     
     //calculate the signed distance value for the cell
-}
+}*/
