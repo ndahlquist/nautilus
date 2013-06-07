@@ -26,22 +26,19 @@ using namespace std;
 
 class RenderObject {
 public:
-    RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
+    RenderObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool writegeometry = true);
 
     void AddTexture(const char *textureFilename, bool normalmap = false);
     
     // Render color and geometry to g buffer.
-    void Render();
-    
-    // Render only a portion of the geometry.
-    // (Used for screen-space intersections)
-    void HalfRender();
+    void Render(int instance = 0);
      
     GLuint colorShader;
+    GLuint geometryShader;
     
 protected:
     void SetShader(const GLuint shaderProgram);
-    void RenderPass();
+    virtual void RenderPass(int instance = 0);
     
     GLuint gvPositionHandle;
     GLuint gmvMatrixHandle;
@@ -51,6 +48,7 @@ protected:
     GLuint gvNormals;
     GLuint gVertexBuffer;
     GLuint normalMapUniform;
+    GLuint timeUniform;
     
     GLuint texture;
     GLuint normalTexture;

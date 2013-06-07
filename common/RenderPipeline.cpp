@@ -6,6 +6,7 @@
 #include "common.h"
 #include "glsl_helper.h"
 #include "log.h"
+#include "cmath"
 
 RenderPipeline::RenderPipeline() {
     
@@ -37,10 +38,19 @@ RenderPipeline::RenderPipeline() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     checkGlError("colorTexture");
     
-    // Allocate normal texture to render to.
+    geometryTextureWidth = displayWidth;
+    geometryTextureHeight = displayHeight;
+    
+    // Allocate geometry depth buffer
+    glGenRenderbuffers(1, &geometryDepthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, geometryDepthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, geometryTextureWidth, geometryTextureHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
+    
+    // Allocate geometry texture to render to.
     glGenTextures(1, &geometryTexture);
     glBindTexture(GL_TEXTURE_2D, geometryTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, displayWidth, displayHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, geometryTextureWidth, geometryTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -51,22 +61,31 @@ RenderPipeline::RenderPipeline() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-uint8_t * RenderPipeline::RayTracePixel(int x, int y, bool geometry) {
+inline int clamp(int x, int a, int b) {
+    return x < a ? a : (x > b ? b : x);
+}
+
+uint8_t * RenderPipeline::RayTracePixel(float x, float y, bool geometry) {
     
+    int xpixel, ypixel;
     if(geometry) {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
+        xpixel = clamp((int) floor(x * pipeline->geometryTextureWidth), 0, pipeline->geometryTextureWidth - 1);
+        ypixel = clamp((int) floor(y * pipeline->geometryTextureHeight), 0, pipeline->geometryTextureHeight - 1);
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+        xpixel = clamp((int) floor(x * displayWidth), 0, displayWidth - 1);
+        ypixel = clamp((int) floor(y * displayHeight), 0, displayHeight - 1);
     }
 
     uint8_t * data = new uint8_t[4];
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     checkGlError("glPixelStorei");
-    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
     checkGlError("glReadPixels");
     
     return data;
@@ -85,9 +104,9 @@ void RenderPipeline::ClearBuffers() {
     
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
     
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
