@@ -127,7 +127,9 @@ inline Vector3 operator*(float a, const Vector3& v) {
 inline Vector3 operator*(const Vector3& left, const Vector3& right) {
 	return Vector3(left.x * right.x, left.y * right.y, left.z * right.z);
 }
-inline Vector3 operator/(const Vector3& left, float right);
+inline Vector3 operator/(const Vector3& left, float right) {
+    return Vector3(left.x / right, left.y / right, left.z / right);
+}
 inline Vector3 operator+(const Vector3& left, const Vector3& right) {
 	return Vector3(left.x + right.x, left.y + right.y, left.z + right.z);
 }

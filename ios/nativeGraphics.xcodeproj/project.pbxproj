@@ -53,6 +53,8 @@
 		55E2D2A2175D5A510099F69E /* cone.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D29F175D5A510099F69E /* cone.obj */; };
 		55E2D2A4175D5A5C0099F69E /* solid_color_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */; };
 		55E2D2A6175D5AFA0099F69E /* cave_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */; };
+		55E2D2A9175D60070099F69E /* RenderDestructible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E2D2A7175D60070099F69E /* RenderDestructible.cpp */; };
+		55E2D2AC175D73B70099F69E /* obj_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E2D2AA175D73B70099F69E /* obj_parser.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +116,10 @@
 		55E2D29F175D5A510099F69E /* cone.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cone.obj; path = ../../res/raw/cone.obj; sourceTree = "<group>"; };
 		55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = solid_color_f.glsl; path = ../../res/raw/solid_color_f.glsl; sourceTree = "<group>"; };
 		55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cave_albedo.jpg; path = ../../res/drawable/cave_albedo.jpg; sourceTree = "<group>"; };
+		55E2D2A7175D60070099F69E /* RenderDestructible.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderDestructible.cpp; path = ../../common/RenderDestructible.cpp; sourceTree = "<group>"; };
+		55E2D2A8175D60070099F69E /* RenderDestructible.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderDestructible.h; path = ../../common/RenderDestructible.h; sourceTree = "<group>"; };
+		55E2D2AA175D73B70099F69E /* obj_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = obj_parser.cpp; path = ../../common/obj_parser.cpp; sourceTree = "<group>"; };
+		55E2D2AB175D73B70099F69E /* obj_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obj_parser.h; path = ../../common/obj_parser.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +193,8 @@
 		55906D9B17302DDB00BD92BF /* nativeGraphics */ = {
 			isa = PBXGroup;
 			children = (
+				55E2D2A8175D60070099F69E /* RenderDestructible.h */,
+				55E2D2A7175D60070099F69E /* RenderDestructible.cpp */,
 				55906DA417302DDB00BD92BF /* nativeGraphicsAppDelegate.h */,
 				55906DA517302DDB00BD92BF /* nativeGraphicsAppDelegate.m */,
 				55906DAD17302DDB00BD92BF /* MainStoryboard.storyboard */,
@@ -196,6 +204,8 @@
 				55906DBF17303A9D00BD92BF /* renderView.mm */,
 				559071251732580500BD92BF /* common.h */,
 				5590712C1732FEC500BD92BF /* common.cpp */,
+				55E2D2AA175D73B70099F69E /* obj_parser.cpp */,
+				55E2D2AB175D73B70099F69E /* obj_parser.h */,
 				55B66B9F173CAA440094F000 /* RenderObject.h */,
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				55D577C4173CC9C800BE1A50 /* transform.h */,
@@ -363,6 +373,8 @@
 				55793615174F075200E1AB4E /* glsl_helper.cpp in Sources */,
 				55793616174F075200E1AB4E /* RenderLight.cpp in Sources */,
 				55E2D294175D59A60099F69E /* RenderPipeline.cpp in Sources */,
+				55E2D2A9175D60070099F69E /* RenderDestructible.cpp in Sources */,
+				55E2D2AC175D73B70099F69E /* obj_parser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

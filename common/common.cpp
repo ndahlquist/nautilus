@@ -24,6 +24,7 @@
 #include "transform.h"
 #include "RenderObject.h"
 #include "RenderLight.h"
+#include "RenderDestructible.h"
 #include "glsl_helper.h"
 #include "log.h"
 
@@ -39,7 +40,7 @@ GLuint defaultFrameBuffer = 0;
 RenderPipeline *pipeline = NULL;
 
 RenderObject *cave = NULL;
-RenderObject *character = NULL;
+RenderDestructible *character = NULL;
 RenderLight *pointLight = NULL;
 RenderLight *spotLight = NULL;
 RenderLight *globalLight = NULL;
@@ -70,7 +71,7 @@ void Setup(int w, int h) {
     cave = new RenderObject("cave2.obj", "standard_v.glsl", "albedo_f.glsl");
     cave->AddTexture("cave_albedo.jpg", false);
     cave->AddTexture("cave_albedo.jpg", true); // Normal map
-    character = new RenderObject("raptor.obj", "standard_v.glsl", "albedo_f.glsl");
+    character = new RenderDestructible("square.obj", "standard_v.glsl", "albedo_f.glsl");
     character->AddTexture("raptor_albedo.jpg");
     
     pointLight = new RenderLight("icosphere.obj", "dr_standard_v.glsl", "dr_pointlight_f.glsl");
