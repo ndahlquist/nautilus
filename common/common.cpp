@@ -45,6 +45,7 @@ RenderPipeline *pipeline = NULL;
 RenderObject *cave = NULL;
 Character *character = NULL;
 Character *jellyfish = NULL;
+RenderDestructible *destructible = NULL;
 PhysicsObject *bomb = NULL;
 #define BOMB_TIMER_LENGTH 2.0f
 #define BOMB_EXPLOSION_LENGTH .3f
@@ -87,6 +88,9 @@ void Setup(int w, int h) {
     
     jellyfish = new Character("jellyfish.obj", "jellyfish_v.glsl", "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
+    
+    destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");
+    destructible->AddTexture("cave_albedo.jpg", false);
     
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
     
@@ -155,6 +159,10 @@ void RenderFrame() {
     mvPushMatrix();
     scalef(40);
     cave->Render();
+    mvPopMatrix();
+    
+    mvPushMatrix();
+    destructible->Render();
     mvPopMatrix();
     
     // Process user input
