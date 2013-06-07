@@ -99,7 +99,7 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
     int xrows = ceil((xmax - xmin)/voxelSize) + 1;
     
     //Set up voxel grid
-    voxelGrid3D = (int *) malloc(xrows * sizeof(int *));
+    voxelGrid3D = (int ***) malloc(xrows * sizeof(int *));
     
     for (int i = 0; i < xrows; i++) {
         int *voxelGrid2D = (int *) malloc(yrows * sizeof(int *));
