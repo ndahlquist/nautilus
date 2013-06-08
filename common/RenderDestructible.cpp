@@ -300,10 +300,10 @@ static struct DestructibleBond *createBond(DestructibleNode *node1, Destructible
     bond->nodes.push_back(node2);
     
     bond->origLength = sqrt(pow(node1->position[0]-node2->position[0],2) + pow(node1->position[1]-node2->position[1],2) + pow(node1->position[2]-node2->position[2],2));
-    bond->breakThresh = (GLfloat)(rand() % 100)/100;
-    bond->springConst = .4;
+    bond->breakThresh = (GLfloat)(rand() % 100)/10;
+    bond->springConst = .5;
     bond->broken = false;
-    bond->dampConst = .4;
+    bond->dampConst = 2;
     bond->cells.push_back(cell);
     bonds.push_back(bond);
     
@@ -336,17 +336,20 @@ bool explode = false;
 void RenderDestructible::RenderPass() {
 
     if (!explode) {
-        nodes[0]->velocity = Vector3(1.0, 1.0, 1.0);
-        nodes[1]->velocity = Vector3(1.0, 1.0, 1.0);
+        nodes[0]->velocity = Vector3(.1, .01, -.01);
+        /*nodes[1]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[2]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[3]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[4]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[5]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[6]->velocity = Vector3(1.0, 1.0, 1.0);
-        nodes[7]->velocity = Vector3(1.0, 1.0, 1.0);
+        nodes[7]->velocity = Vector3(1.0, 1.0, 1.0);*/
 
         explode = true;
     }
+    
+    int numFragments = 0;
+    std::vector<struct DestructibleNode *> fragmentNodes;
     
     for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
         DestructibleNode *node = nodes[node_idx];
@@ -379,12 +382,16 @@ void RenderDestructible::RenderPass() {
             
             force = force + vec + vel;
         }
-        Vector3 accel = force / 10.0;
+        Vector3 accel = force / 5.0;
         node->velocity = node->velocity + (accel * .1);
         node->position[0] = node->position[0] + (node->velocity.x * .1);
         node->position[1] = node->position[1] + (node->velocity.y * .1);
         node->position[2] = node->position[2] + (node->velocity.z * .1);
         
+        if (node->bonds.size() == 0) {
+            numFragments++;
+            fragmentNodes.push_back(node);
+        }
     }
     
     //Check for broken cells
@@ -451,7 +458,7 @@ void RenderDestructible::RenderPass() {
         }
     }
     
-    GLfloat * vertexBuffer = (float *)malloc(numSurfaceVertices * (3+3+2) * sizeof(float));
+    GLfloat * vertexBuffer = (float *)malloc((numSurfaceVertices + numFragments*12) * (3+3+2) * sizeof(float));
     int bufferIndex = 0;
     for (int node_idx = 0; node_idx < surfaceNodes.size(); node_idx++) {
         vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position[0];
@@ -464,7 +471,106 @@ void RenderDestructible::RenderPass() {
         vertexBuffer[bufferIndex++] = 0.0;
     }
     
-    numVertices = numSurfaceVertices;
+    for (int nodef_idx = 0; nodef_idx < fragmentNodes.size(); nodef_idx++) {
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0] + voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1]; 
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0] + voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
+        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+        vertexBuffer[bufferIndex++] = 0.0;
+    }
+    
+    numVertices = numSurfaceVertices + numFragments*12;
     
     //Create vbo
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
