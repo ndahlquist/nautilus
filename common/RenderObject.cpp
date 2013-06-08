@@ -9,7 +9,13 @@
 #include "common.h"
 #include "log.h"
 
+RenderObject::RenderObject(const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
+    BasicInit(vertexShaderFilename, fragmentShaderFilename, writegeometry);
+}
+
 RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
+    BasicInit(vertexShaderFilename, fragmentShaderFilename, writegeometry);
+
     // Parse obj file into an interleaved float buffer
     GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
@@ -18,6 +24,10 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     checkGlError("VertexBuffer Generation");
     free(interleavedBuffer);
+}
+
+void RenderObject::BasicInit(const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
+    numVertices=0;
     
     // Compile and link shader program
     const char * vertexShader = "standard_v.glsl";
@@ -76,7 +86,9 @@ void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
         texture = newTex;
 }
 
-void RenderObject::RenderPass(int instance) {
+// Renders to the currently-active frame buffer.
+void RenderObject::RenderPass(int instance, GLfloat *buffer, int num) {
+
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
@@ -86,24 +98,27 @@ void RenderObject::RenderPass(int instance) {
     delete[] mv_Matrix;
     delete[] mvp_Matrix;
     
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
+    if(buffer != NULL)
+        glBindBuffer(GL_ARRAY_BUFFER, 0); // Don't use vertex buffer
+    else
+        glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
     // Pass vertices
     glEnableVertexAttribArray(gvPositionHandle);
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*)(0 + buffer));
     checkGlError("gvPositionHandle");
     
     // Pass normals
     if(gvNormals != -1) {
         glEnableVertexAttribArray(gvNormals);
-        glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
+        glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*)(3 + buffer));
         checkGlError("gvNormals");
     }
     
     // Pass texture coords
     if(gvTexCoords != -1) {
     	glEnableVertexAttribArray(gvTexCoords);
-    	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
+    	glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*)(6 + buffer));
     	checkGlError("gvTexCoords");
     }
     
@@ -123,12 +138,16 @@ void RenderObject::RenderPass(int instance) {
         checkGlError("normalTexture");
     }
     
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);
+    if(buffer != NULL)
+        glDrawArrays(GL_TRIANGLES, 0, num);
+    else
+        glDrawArrays(GL_TRIANGLES, 0, numVertices);
+
     checkGlError("glDrawArrays");
 
 }
 
-void RenderObject::Render(int instance) {
+void RenderObject::Render(int instance, GLfloat *buffer, int num) {
 
     if(!pipeline) {
         LOGE("RenderPipeline inaccessible.");
@@ -154,7 +173,7 @@ void RenderObject::Render(int instance) {
     glDisable(GL_DITHER);
     checkGlError("glClear");
     
-    RenderPass(instance);
+    RenderPass(instance, buffer, num);
     
     // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
     if(geometryShader != -1)
@@ -169,7 +188,7 @@ void RenderObject::Render(int instance) {
     
     glEnable(GL_DITHER);
     
-    RenderPass(instance);
+    RenderPass(instance, buffer, num);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
 }
