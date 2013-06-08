@@ -14,12 +14,9 @@
 		5579360E174F067200E1AB4E /* solid_color_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793608174F067200E1AB4E /* solid_color_f.glsl */; };
 		55793615174F075200E1AB4E /* glsl_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5579360F174F075200E1AB4E /* glsl_helper.cpp */; };
 		55793616174F075200E1AB4E /* RenderLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55793611174F075200E1AB4E /* RenderLight.cpp */; };
-		558ED131174598A7000DD7F3 /* cave0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12C174598A7000DD7F3 /* cave0.obj */; };
-		558ED133174598A7000DD7F3 /* raptor.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED12E174598A7000DD7F3 /* raptor.obj */; };
 		558ED135174598A7000DD7F3 /* square.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED130174598A7000DD7F3 /* square.obj */; };
 		558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* geometry_f.glsl */; };
 		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
-		558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 558ED14217459905000DD7F3 /* raptor_albedo.jpg */; };
 		558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */; };
 		558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */; };
 		558ED14B174ADBA4000DD7F3 /* water_droplets_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED147174ADBA4000DD7F3 /* water_droplets_1.wav */; };
@@ -41,14 +38,25 @@
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
+		55B120D11763E03700A9912A /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120CF1763E03700A9912A /* Character.cpp */; };
+		55B120D41763E05200A9912A /* PhysicsObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120D21763E05200A9912A /* PhysicsObject.cpp */; };
+		55B120D81763E09400A9912A /* jellyfish_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55B120D51763E09400A9912A /* jellyfish_albedo.jpg */; };
+		55B120D91763E09400A9912A /* octopus_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55B120D61763E09400A9912A /* octopus_albedo.jpg */; };
+		55B120DA1763E09400A9912A /* submarine_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55B120D71763E09400A9912A /* submarine_albedo.jpg */; };
+		55B120DF1763E0E700A9912A /* dr_explosive_pointlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120DB1763E0E700A9912A /* dr_explosive_pointlight_f.glsl */; };
+		55B120E01763E0E700A9912A /* dr_pointlight_sat_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120DC1763E0E700A9912A /* dr_pointlight_sat_f.glsl */; };
+		55B120E11763E0E700A9912A /* dr_square_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120DD1763E0E700A9912A /* dr_square_v.glsl */; };
+		55B120E21763E0E700A9912A /* jellyfish_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120DE1763E0E700A9912A /* jellyfish_v.glsl */; };
+		55B120E61763E0F600A9912A /* jellyfish.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120E31763E0F600A9912A /* jellyfish.obj */; };
+		55B120E71763E0F600A9912A /* octopus.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120E41763E0F600A9912A /* octopus.obj */; };
+		55B120E81763E0F600A9912A /* submarine.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120E51763E0F600A9912A /* submarine.obj */; };
+		55B120EA1763E18800A9912A /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120E91763E18800A9912A /* cube.obj */; };
 		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 		55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D577C3173CC9C800BE1A50 /* transform.cpp */; };
 		55E2D294175D59A60099F69E /* RenderPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E2D292175D59A60099F69E /* RenderPipeline.cpp */; };
 		55E2D296175D5A350099F69E /* geometry_far_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D295175D5A350099F69E /* geometry_far_f.glsl */; };
-		55E2D29A175D5A430099F69E /* dr_ambientlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D297175D5A430099F69E /* dr_ambientlight_f.glsl */; };
 		55E2D29B175D5A430099F69E /* dr_normals_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D298175D5A430099F69E /* dr_normals_f.glsl */; };
 		55E2D29C175D5A430099F69E /* dr_spotlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D299175D5A430099F69E /* dr_spotlight_f.glsl */; };
-		55E2D2A0175D5A510099F69E /* cave1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D29D175D5A510099F69E /* cave1.obj */; };
 		55E2D2A1175D5A510099F69E /* cave2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D29E175D5A510099F69E /* cave2.obj */; };
 		55E2D2A2175D5A510099F69E /* cone.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D29F175D5A510099F69E /* cone.obj */; };
 		55E2D2A4175D5A5C0099F69E /* solid_color_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */; };
@@ -67,12 +75,9 @@
 		55793610174F075200E1AB4E /* glsl_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glsl_helper.h; path = ../../common/glsl_helper.h; sourceTree = "<group>"; };
 		55793611174F075200E1AB4E /* RenderLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderLight.cpp; path = ../../common/RenderLight.cpp; sourceTree = "<group>"; };
 		55793612174F075200E1AB4E /* RenderLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderLight.h; path = ../../common/RenderLight.h; sourceTree = "<group>"; };
-		558ED12C174598A7000DD7F3 /* cave0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave0.obj; path = ../../res/raw/cave0.obj; sourceTree = "<group>"; };
-		558ED12E174598A7000DD7F3 /* raptor.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = raptor.obj; path = ../../res/raw/raptor.obj; sourceTree = "<group>"; };
 		558ED130174598A7000DD7F3 /* square.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = square.obj; path = ../../res/raw/square.obj; sourceTree = "<group>"; };
 		558ED138174598B1000DD7F3 /* geometry_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = geometry_f.glsl; path = ../../res/raw/geometry_f.glsl; sourceTree = "<group>"; };
 		558ED139174598B1000DD7F3 /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = standard_v.glsl; path = ../../res/raw/standard_v.glsl; sourceTree = "<group>"; };
-		558ED14217459905000DD7F3 /* raptor_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = raptor_albedo.jpg; path = ../../res/drawable/raptor_albedo.jpg; sourceTree = "<group>"; };
 		558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = water_droplet_1.wav; path = ../../res/raw/water_droplet_1.wav; sourceTree = "<group>"; };
 		558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = water_droplet_2.wav; path = ../../res/raw/water_droplet_2.wav; sourceTree = "<group>"; };
 		558ED147174ADBA4000DD7F3 /* water_droplets_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = water_droplets_1.wav; path = ../../res/raw/water_droplets_1.wav; sourceTree = "<group>"; };
@@ -101,6 +106,21 @@
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
+		55B120CF1763E03700A9912A /* Character.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Character.cpp; path = ../../common/Character.cpp; sourceTree = "<group>"; };
+		55B120D01763E03700A9912A /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../common/Character.h; sourceTree = "<group>"; };
+		55B120D21763E05200A9912A /* PhysicsObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsObject.cpp; path = ../../common/PhysicsObject.cpp; sourceTree = "<group>"; };
+		55B120D31763E05200A9912A /* PhysicsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicsObject.h; path = ../../common/PhysicsObject.h; sourceTree = "<group>"; };
+		55B120D51763E09400A9912A /* jellyfish_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = jellyfish_albedo.jpg; path = ../../res/drawable/jellyfish_albedo.jpg; sourceTree = "<group>"; };
+		55B120D61763E09400A9912A /* octopus_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = octopus_albedo.jpg; path = ../../res/drawable/octopus_albedo.jpg; sourceTree = "<group>"; };
+		55B120D71763E09400A9912A /* submarine_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = submarine_albedo.jpg; path = ../../res/drawable/submarine_albedo.jpg; sourceTree = "<group>"; };
+		55B120DB1763E0E700A9912A /* dr_explosive_pointlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_explosive_pointlight_f.glsl; path = ../../res/raw/dr_explosive_pointlight_f.glsl; sourceTree = "<group>"; };
+		55B120DC1763E0E700A9912A /* dr_pointlight_sat_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_pointlight_sat_f.glsl; path = ../../res/raw/dr_pointlight_sat_f.glsl; sourceTree = "<group>"; };
+		55B120DD1763E0E700A9912A /* dr_square_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_square_v.glsl; path = ../../res/raw/dr_square_v.glsl; sourceTree = "<group>"; };
+		55B120DE1763E0E700A9912A /* jellyfish_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfish_v.glsl; path = ../../res/raw/jellyfish_v.glsl; sourceTree = "<group>"; };
+		55B120E31763E0F600A9912A /* jellyfish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfish.obj; path = ../../res/raw/jellyfish.obj; sourceTree = "<group>"; };
+		55B120E41763E0F600A9912A /* octopus.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = octopus.obj; path = ../../res/raw/octopus.obj; sourceTree = "<group>"; };
+		55B120E51763E0F600A9912A /* submarine.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = submarine.obj; path = ../../res/raw/submarine.obj; sourceTree = "<group>"; };
+		55B120E91763E18800A9912A /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cube.obj; path = ../../res/raw/cube.obj; sourceTree = "<group>"; };
 		55B66B9E173CAA440094F000 /* RenderObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderObject.cpp; path = ../../common/RenderObject.cpp; sourceTree = "<group>"; };
 		55B66B9F173CAA440094F000 /* RenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderObject.h; path = ../../common/RenderObject.h; sourceTree = "<group>"; };
 		55D577C3173CC9C800BE1A50 /* transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = transform.cpp; path = ../../common/transform.cpp; sourceTree = "<group>"; };
@@ -108,10 +128,8 @@
 		55E2D292175D59A60099F69E /* RenderPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderPipeline.cpp; path = ../../common/RenderPipeline.cpp; sourceTree = "<group>"; };
 		55E2D293175D59A60099F69E /* RenderPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderPipeline.h; path = ../../common/RenderPipeline.h; sourceTree = "<group>"; };
 		55E2D295175D5A350099F69E /* geometry_far_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = geometry_far_f.glsl; path = ../../res/raw/geometry_far_f.glsl; sourceTree = "<group>"; };
-		55E2D297175D5A430099F69E /* dr_ambientlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_ambientlight_f.glsl; path = ../../res/raw/dr_ambientlight_f.glsl; sourceTree = "<group>"; };
 		55E2D298175D5A430099F69E /* dr_normals_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_normals_f.glsl; path = ../../res/raw/dr_normals_f.glsl; sourceTree = "<group>"; };
 		55E2D299175D5A430099F69E /* dr_spotlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_spotlight_f.glsl; path = ../../res/raw/dr_spotlight_f.glsl; sourceTree = "<group>"; };
-		55E2D29D175D5A510099F69E /* cave1.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave1.obj; path = ../../res/raw/cave1.obj; sourceTree = "<group>"; };
 		55E2D29E175D5A510099F69E /* cave2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cave2.obj; path = ../../res/raw/cave2.obj; sourceTree = "<group>"; };
 		55E2D29F175D5A510099F69E /* cone.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cone.obj; path = ../../res/raw/cone.obj; sourceTree = "<group>"; };
 		55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = solid_color_f.glsl; path = ../../res/raw/solid_color_f.glsl; sourceTree = "<group>"; };
@@ -143,7 +161,9 @@
 			isa = PBXGroup;
 			children = (
 				55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */,
-				558ED14217459905000DD7F3 /* raptor_albedo.jpg */,
+				55B120D51763E09400A9912A /* jellyfish_albedo.jpg */,
+				55B120D61763E09400A9912A /* octopus_albedo.jpg */,
+				55B120D71763E09400A9912A /* submarine_albedo.jpg */,
 			);
 			name = drawables;
 			sourceTree = "<group>";
@@ -208,6 +228,10 @@
 				55E2D2AB175D73B70099F69E /* obj_parser.h */,
 				55B66B9F173CAA440094F000 /* RenderObject.h */,
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
+				55B120CF1763E03700A9912A /* Character.cpp */,
+				55B120D01763E03700A9912A /* Character.h */,
+				55B120D21763E05200A9912A /* PhysicsObject.cpp */,
+				55B120D31763E05200A9912A /* PhysicsObject.h */,
 				55D577C4173CC9C800BE1A50 /* transform.h */,
 				55D577C3173CC9C800BE1A50 /* transform.cpp */,
 				5579360F174F075200E1AB4E /* glsl_helper.cpp */,
@@ -243,12 +267,13 @@
 			isa = PBXGroup;
 			children = (
 				55793606174F067200E1AB4E /* icosphere.obj */,
-				558ED12C174598A7000DD7F3 /* cave0.obj */,
-				55E2D29D175D5A510099F69E /* cave1.obj */,
 				55E2D29E175D5A510099F69E /* cave2.obj */,
 				55E2D29F175D5A510099F69E /* cone.obj */,
-				558ED12E174598A7000DD7F3 /* raptor.obj */,
+				55B120E91763E18800A9912A /* cube.obj */,
 				558ED130174598A7000DD7F3 /* square.obj */,
+				55B120E31763E0F600A9912A /* jellyfish.obj */,
+				55B120E41763E0F600A9912A /* octopus.obj */,
+				55B120E51763E0F600A9912A /* submarine.obj */,
 			);
 			name = obj;
 			sourceTree = "<group>";
@@ -256,8 +281,11 @@
 		5594978917377361006E176F /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				55B120DB1763E0E700A9912A /* dr_explosive_pointlight_f.glsl */,
+				55B120DC1763E0E700A9912A /* dr_pointlight_sat_f.glsl */,
+				55B120DD1763E0E700A9912A /* dr_square_v.glsl */,
+				55B120DE1763E0E700A9912A /* jellyfish_v.glsl */,
 				55793603174F067200E1AB4E /* albedo_f.glsl */,
-				55E2D297175D5A430099F69E /* dr_ambientlight_f.glsl */,
 				55E2D298175D5A430099F69E /* dr_normals_f.glsl */,
 				55E2D299175D5A430099F69E /* dr_spotlight_f.glsl */,
 				55793604174F067200E1AB4E /* dr_pointlight_f.glsl */,
@@ -328,12 +356,9 @@
 				55906DAA17302DDB00BD92BF /* Default@2x.png in Resources */,
 				55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */,
 				55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */,
-				558ED131174598A7000DD7F3 /* cave0.obj in Resources */,
-				558ED133174598A7000DD7F3 /* raptor.obj in Resources */,
 				558ED135174598A7000DD7F3 /* square.obj in Resources */,
 				558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */,
 				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
-				558ED14317459905000DD7F3 /* raptor_albedo.jpg in Resources */,
 				55793609174F067200E1AB4E /* albedo_f.glsl in Resources */,
 				5579360A174F067200E1AB4E /* dr_pointlight_f.glsl in Resources */,
 				5579360B174F067200E1AB4E /* dr_standard_v.glsl in Resources */,
@@ -345,14 +370,23 @@
 				558ED14C174ADBA4000DD7F3 /* water_droplets_2.wav in Resources */,
 				558ED150174AE552000DD7F3 /* bomb_04.wav in Resources */,
 				55E2D296175D5A350099F69E /* geometry_far_f.glsl in Resources */,
-				55E2D29A175D5A430099F69E /* dr_ambientlight_f.glsl in Resources */,
 				55E2D29B175D5A430099F69E /* dr_normals_f.glsl in Resources */,
 				55E2D29C175D5A430099F69E /* dr_spotlight_f.glsl in Resources */,
-				55E2D2A0175D5A510099F69E /* cave1.obj in Resources */,
 				55E2D2A1175D5A510099F69E /* cave2.obj in Resources */,
 				55E2D2A2175D5A510099F69E /* cone.obj in Resources */,
 				55E2D2A4175D5A5C0099F69E /* solid_color_f.glsl in Resources */,
 				55E2D2A6175D5AFA0099F69E /* cave_albedo.jpg in Resources */,
+				55B120D81763E09400A9912A /* jellyfish_albedo.jpg in Resources */,
+				55B120D91763E09400A9912A /* octopus_albedo.jpg in Resources */,
+				55B120DA1763E09400A9912A /* submarine_albedo.jpg in Resources */,
+				55B120DF1763E0E700A9912A /* dr_explosive_pointlight_f.glsl in Resources */,
+				55B120E01763E0E700A9912A /* dr_pointlight_sat_f.glsl in Resources */,
+				55B120E11763E0E700A9912A /* dr_square_v.glsl in Resources */,
+				55B120E21763E0E700A9912A /* jellyfish_v.glsl in Resources */,
+				55B120E61763E0F600A9912A /* jellyfish.obj in Resources */,
+				55B120E71763E0F600A9912A /* octopus.obj in Resources */,
+				55B120E81763E0F600A9912A /* submarine.obj in Resources */,
+				55B120EA1763E18800A9912A /* cube.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +409,8 @@
 				55E2D294175D59A60099F69E /* RenderPipeline.cpp in Sources */,
 				55E2D2A9175D60070099F69E /* RenderDestructible.cpp in Sources */,
 				55E2D2AC175D73B70099F69E /* obj_parser.cpp in Sources */,
+				55B120D11763E03700A9912A /* Character.cpp in Sources */,
+				55B120D41763E05200A9912A /* PhysicsObject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

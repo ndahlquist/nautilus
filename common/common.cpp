@@ -26,11 +26,8 @@
 #include "PhysicsObject.h"
 #include "Character.h"
 #include "RenderLight.h"
-<<<<<<< HEAD
 #include "RenderDestructible.h"
-=======
 #include "Timer.h"
->>>>>>> d75268b68429e0f00f4eaf65ccc6e9188d2e465a
 #include "glsl_helper.h"
 #include "log.h"
 
