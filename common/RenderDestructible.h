@@ -41,7 +41,7 @@ public:
     void Render();
     void RenderPass();
     
-    int *voxelGrid3D;
+    int **voxelGrid3D;
 };
 
 

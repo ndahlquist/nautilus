@@ -90,7 +90,7 @@ void Setup(int w, int h) {
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
     destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");
-    destructible->AddTexture("cave_albedo.jpg", false);
+    destructible->AddTexture("submarine_albedo.jpg", false);
     
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
     
