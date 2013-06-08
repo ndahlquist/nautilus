@@ -19,4 +19,6 @@ void main() {
 	vec4 v_MVP_Position = u_MVPMatrix * a_Position;
 	gl_Position = v_MVP_Position;
 	depth_MVP = v_MVP_Position.z / v_MVP_Position.w;
+	
+	gl_PointSize = 2.0;
 }

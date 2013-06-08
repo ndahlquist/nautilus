@@ -22,8 +22,13 @@ void UpdateOrientation(float roll, float pitch, float yaw);
 
 // Callback function to load resources.
 extern void*(*resourceCallback)(const char *);
+
+// Globally accessible variables
 extern int displayWidth;
 extern int displayHeight;
+extern bool touchDown;
+extern float lastTouch[2];
+extern float orientation[3];
 extern GLuint defaultFrameBuffer;
 extern RenderPipeline * pipeline;
 

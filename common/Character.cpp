@@ -20,7 +20,7 @@ using Eigen::Vector4f;
 #define ACCELERATION_MULTIPLIER 40.0f
 
 Character::Character(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename, bool collide)
-                                                  : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename)  {
+                                                  : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename, true) {
     this->collide = collide;
 }
 
@@ -99,7 +99,7 @@ void Character::RenderPass(int instance) {
         glUniform1f(timeUniform, instances[instance].animationTime);
         checkGlError("glUniform1i: time");
     }
-    RenderObject::RenderPass(instance);
+    RenderObject::RenderPass(instance, 0, -1);
 }
 
 
