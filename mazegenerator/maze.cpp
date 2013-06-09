@@ -47,7 +47,7 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
       for (int k = 0; k <= length; k++){
         double distortx = (double)(rand() % maxDistort)/(1.8*maxDistort/tileSize);
         double distorty = (double)(rand() % maxDistort)/(1.8*maxDistort/tileSize);
-        double distortz = (double)(rand() % maxDistort)/(2*maxDistort/tileSize);
+        double distortz = (double)(rand() % maxDistort)/(1.8*maxDistort/tileSize);
         if (k != length-1 && (k%2==1 || k == 0)) distortx = -distortx;
         if (j != width-1 && (j%2==1 || j == 0)) distortz = -distortz;
         if (i != height-1 && (i%2==1 || i == 0)) distorty = -distorty;
