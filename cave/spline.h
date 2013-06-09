@@ -19,7 +19,7 @@ Eigen::Matrix4d b;
 const int TOLERANCE = 0.00001f;
 const double spacing = 1;
 const double pi = 3.14159265359;
-const int offsetLimit = 100;
+int offsetLimit = 100;
 double offsetMax = (double)offsetLimit * 3;
 
 Vec3f getPoint(double u, Vec3f p1, Vec3f p2, Vec3f p3, Vec3f p4) {
@@ -91,8 +91,10 @@ vector<vector<Vec3f> > genControlPts(double width, double length, double height)
 	int dec = 10;
 	vector<vector<Vec3f> > control; //control points
 	for (int i = 3; i >= 0; i--){
-		a -= (double)(rand()%dec) /40; 
+		a -= (double)(rand()%dec) /40;
+		if (a < 0) a = 0.5; 
 		b -= (double)(rand()%dec) /40;
+		if (b < 0) b = 0.5;
 		h = (a - b)*(a - b) / ( (a + b)*(a + b) );
 		vector<Vec3f> row; 
 		for (int j = 0; j < numHoriz; j++){

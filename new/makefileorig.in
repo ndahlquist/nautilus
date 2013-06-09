@@ -1,0 +1,5 @@
+CPP = g++
+LD = g++
+OPENMESH_INCLUDE_DIR = /Users/tianxindai/OpenMesh-2.3.1/src/
+OPENMESH_LIB_DIR = /Users/tianxindai/OpenMesh-2.3.1/buildDebug/Build/lib/OpenMesh
+EIGEN_DIR = /Users/tianxindai/eigen
