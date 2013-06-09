@@ -64,6 +64,7 @@ void Setup(int w, int h) {
     displayWidth = w;
     displayHeight = h;
     pipeline = new RenderPipeline();
+
     level = new level0();
 }
 

@@ -23,7 +23,8 @@ LOCAL_SRC_FILES := ndk_interface.cpp \
                    $(PROJECT_ROOT_PATH)/common/RenderLight.cpp \
                    $(PROJECT_ROOT_PATH)/common/transform.cpp \
                    $(PROJECT_ROOT_PATH)/common/glsl_helper.cpp \
-                   $(PROJECT_ROOT_PATH)/common/obj_parser.cpp
+                   $(PROJECT_ROOT_PATH)/common/obj_parser.cpp \
+                   $(PROJECT_ROOT_PATH)/common/RenderDestructible.cpp
                    
 LOCAL_LDLIBS    := -llog \
                    -lGLESv2 \

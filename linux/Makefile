@@ -11,7 +11,8 @@ FILES   := mainlinux ../common/common \
                      ../common/glsl_helper \
                      ../common/obj_parser \
                      ../common/PhysicsObject \
-                     ../common/Character
+                     ../common/Character \
+                     ../common/RenderDestructible
 
 #################################################################
 
