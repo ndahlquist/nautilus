@@ -196,9 +196,9 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
   for (int i = 0; i <= height; i++){
     for (int j = 0; j <= width; j++){
       for (int k = 0; k <= length; k++){
-        double distortx = (double)(rand() % maxDistort)/(1.5*maxDistort/tileSize);
-        double distorty = (double)(rand() % maxDistort)/(1.5*maxDistort/tileSize);
-        double distortz = (double)(rand() % maxDistort)/(1.5*maxDistort/tileSize);
+        double distortx = (double)(rand() % maxDistort)/(2*maxDistort/tileSize);
+        double distorty = (double)(rand() % maxDistort)/(2*maxDistort/tileSize);
+        double distortz = (double)(rand() % maxDistort)/(2*maxDistort/tileSize);
         if (k != length-1 && (k%2==1 || k == 0)) distortx = -distortx;
         if (j != width-1 && (j%2==1 || j == 0)) distortz = -distortz;
         if (i != height-1 && (i%2==1 || i == 0)) distorty = -distorty;
@@ -322,7 +322,7 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
   double scale = max(max(length, width), height)*tileSize;
   for (Mesh::ConstVertexIter vIt = maze.vertices_begin(); vIt != maze.vertices_end(); ++vIt){
     Vec3f vert = maze.point(vIt);
-    double effect = 0.5 * octave_noise_3d(6.0, .75, 2, vert[0]/scale, vert[1]/scale, vert[2]/scale);
+    double effect = 0.4 * octave_noise_3d(6.0, .75, 2, vert[0]/scale, vert[1]/scale, vert[2]/scale);
     Vec3f shift(effect*maze.normal(vIt)[0], effect*maze.normal(vIt)[1], effect*maze.normal(vIt)[2]);
     maze.set_point(vIt, vert - shift);
     maze.set_texcoord2D(vIt, Vec2f(0,0));
