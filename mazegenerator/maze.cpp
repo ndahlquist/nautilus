@@ -221,13 +221,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (i == 0 || !cells[k][i-1][j].isWall() ){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j]);
-              face_vhandles.push_back(mainVert[k][i][j+1]);
               face_vhandles.push_back(mainVert[k+1][i][j+1]);
+              face_vhandles.push_back(mainVert[k][i][j+1]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k+1][i][j]);
-              face_vhandles.push_back(mainVert[k][i][j]);
               face_vhandles.push_back(mainVert[k+1][i][j+1]);
+              face_vhandles.push_back(mainVert[k][i][j]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -235,13 +235,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (i == height-1 || !cells[k][i+1][j].isWall()){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i+1][j]);
-              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               face_vhandles.push_back(mainVert[k][i+1][j+1]);
+              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i+1][j]);
-              face_vhandles.push_back(mainVert[k+1][i+1][j]);
               face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
+              face_vhandles.push_back(mainVert[k+1][i+1][j]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -251,13 +251,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (k == 0 || !cells[k-1][i][j].isWall()){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j]);
-              face_vhandles.push_back(mainVert[k][i+1][j]);
               face_vhandles.push_back(mainVert[k][i+1][j+1]);
+              face_vhandles.push_back(mainVert[k][i+1][j]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j]);
-              face_vhandles.push_back(mainVert[k][i+1][j+1]);
               face_vhandles.push_back(mainVert[k][i][j+1]);
+              face_vhandles.push_back(mainVert[k][i+1][j+1]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -265,13 +265,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (k == length-1 || !cells[k+1][i][j].isWall()){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k+1][i][j]);
-              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               face_vhandles.push_back(mainVert[k+1][i+1][j]);
+              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k+1][i][j]);
-              face_vhandles.push_back(mainVert[k+1][i][j+1]);
               face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
+              face_vhandles.push_back(mainVert[k+1][i][j+1]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -281,13 +281,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (j == 0 || !cells[k][i][j-1].isWall()){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j]);
-              face_vhandles.push_back(mainVert[k+1][i+1][j]);
               face_vhandles.push_back(mainVert[k][i+1][j]);
+              face_vhandles.push_back(mainVert[k+1][i+1][j]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j]);
-              face_vhandles.push_back(mainVert[k+1][i][j]);
               face_vhandles.push_back(mainVert[k+1][i+1][j]);
+              face_vhandles.push_back(mainVert[k+1][i][j]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -295,13 +295,13 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
             if (j == width-1 || !cells[k][i][j+1].isWall()){
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j+1]);
-              face_vhandles.push_back(mainVert[k][i+1][j+1]);
               face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
+              face_vhandles.push_back(mainVert[k][i+1][j+1]);
               maze.add_face(face_vhandles);
               face_vhandles.clear();
               face_vhandles.push_back(mainVert[k][i][j+1]);
-              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               face_vhandles.push_back(mainVert[k+1][i][j+1]);
+              face_vhandles.push_back(mainVert[k+1][i+1][j+1]);
               maze.add_face(face_vhandles);
               n_faces += 2;
             }
@@ -315,7 +315,7 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
   // subdivide
   Loop sDivide;
   sDivide.attach(maze);
-  bool success = sDivide(3);
+  bool success = sDivide(4);
   sDivide.detach();
   maze.update_normals();
 
@@ -550,18 +550,18 @@ void reshape(int width, int height) {
 }
 
 int main(int argc, char** argv){
-  up = Vec3f(0, 1, 0);
-  pan = Vec3f(0, 0, 0);
-  Vec3f center = Vec3f(0, 0, 0);
+  // up = Vec3f(0, 1, 0);
+  // pan = Vec3f(0, 0, 0);
+  // Vec3f center = Vec3f(0, 0, 0);
 
-  glutInit(&argc, argv); 
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); 
-  glutInitWindowSize(windowWidth, windowHeight); 
-  glutCreateWindow(argv[0]);
+  // glutInit(&argc, argv); 
+  // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); 
+  // glutInitWindowSize(windowWidth, windowHeight); 
+  // glutCreateWindow(argv[0]);
   
-  init();
+  // init();
   if (argc > 3){
-    if (argc = 4) {
+    if (argc == 5) {
       generateMaze(atof(argv[1]), atof(argv[2]), atof(argv[3]), atof(argv[4]));
     } else {
       generateMaze(atof(argv[1]), atof(argv[2]), atof(argv[3]), 1);
