@@ -189,7 +189,8 @@ void level0::RenderFrame() {
             explosiveLight->color[1] = 1.00f;
             explosiveLight->color[2] = 1.00f;
             float explosionTime = (bomb->instances[i].timer.getSeconds() - BOMB_TIMER_LENGTH) / BOMB_EXPLOSION_LENGTH;
-            explosiveLight->brightness = 10000000.0f * sin(PI * sqrt(explosionTime));
+            float intensity = sin(PI * sqrt(explosionTime));
+            explosiveLight->brightness = 10000000.0f * intensity;
             explosiveLight->Render();
             mvPopMatrix();
             for(int j = 0; j < jellyfish->instances.size(); j++) {
@@ -198,7 +199,9 @@ void level0::RenderFrame() {
                     jellyfish->instances.erase(jellyfish->instances.begin()+j);
                     j--;  
                 }
-            }  
+            }
+            // Shake screen
+            cameraPan += 5.0f * intensity * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
         } else {
             bomb->instances.erase(bomb->instances.begin()+i);
             i--;
