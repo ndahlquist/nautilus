@@ -61,6 +61,7 @@
 		55E2D2A2175D5A510099F69E /* cone.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D29F175D5A510099F69E /* cone.obj */; };
 		55E2D2A4175D5A5C0099F69E /* solid_color_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */; };
 		55E2D2A6175D5AFA0099F69E /* cave_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */; };
+		95EC7EC91765283300EC1A43 /* jellyfish.obj in Resources */ = {isa = PBXBuildFile; fileRef = 95EC7EC81765283300EC1A43 /* jellyfish.obj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -134,6 +135,7 @@
 		55E2D29F175D5A510099F69E /* cone.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cone.obj; path = ../../res/raw/cone.obj; sourceTree = "<group>"; };
 		55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = solid_color_f.glsl; path = ../../res/raw/solid_color_f.glsl; sourceTree = "<group>"; };
 		55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cave_albedo.jpg; path = ../../res/drawable/cave_albedo.jpg; sourceTree = "<group>"; };
+		95EC7EC81765283300EC1A43 /* jellyfish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfish.obj; path = ../../res/raw/jellyfish.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +266,7 @@
 			children = (
 				55793606174F067200E1AB4E /* icosphere.obj */,
 				55E2D29E175D5A510099F69E /* cave2.obj */,
+				95EC7EC81765283300EC1A43 /* jellyfish.obj */,
 				55B120AF1763DE4E00A9912A /* cube.obj */,
 				55E2D29F175D5A510099F69E /* cone.obj */,
 				558ED130174598A7000DD7F3 /* square.obj */,
@@ -379,6 +382,7 @@
 				55B120C01763DE9D00A9912A /* dr_pointlight_sat_f.glsl in Resources */,
 				55B120C11763DE9D00A9912A /* dr_square_v.glsl in Resources */,
 				55B120C21763DE9D00A9912A /* jellyfish_v.glsl in Resources */,
+				95EC7EC91765283300EC1A43 /* jellyfish.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

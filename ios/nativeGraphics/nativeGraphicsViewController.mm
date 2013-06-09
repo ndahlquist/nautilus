@@ -71,7 +71,7 @@ void *resourceCB(const char *cfileName, int * width, int * height)
     } else if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"jpeg"]) {
         if(width && height)
             return imageResourceCB([fileComponents objectAtIndex:0], fileType, *width, *height);
-        LOGE("You should probably have passed width and height here.");
+        printf("You should probably have passed width and height here.");
         int tempw, temph;
         return imageResourceCB([fileComponents objectAtIndex:0], fileType, tempw, temph);
     }
