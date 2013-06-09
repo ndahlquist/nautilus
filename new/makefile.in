@@ -1,0 +1,5 @@
+CPP = g++
+LD = g++
+OPENMESH_INCLUDE_DIR = /Users/Lithium/Documents/CS248/OpenMesh-2.3.1/src/
+OPENMESH_LIB_DIR = /Users/Lithium/Documents/CS248/OpenMesh-2.3.1/build/Build/lib/OpenMesh
+EIGEN_DIR = /Users/Lithium/Documents/CS248/eigen3.1.1
