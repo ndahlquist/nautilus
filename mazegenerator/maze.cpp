@@ -322,7 +322,7 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
   double scale = max(max(length, width), height)*tileSize;
   for (Mesh::ConstVertexIter vIt = maze.vertices_begin(); vIt != maze.vertices_end(); ++vIt){
     Vec3f vert = maze.point(vIt);
-    double effect = 0.4 * octave_noise_3d(6.0, .75, 2, vert[0]/scale, vert[1]/scale, vert[2]/scale);
+    double effect = 0.4*tileSize * octave_noise_3d(6.0, .75, 2, vert[0]/scale, vert[1]/scale, vert[2]/scale);
     Vec3f shift(effect*maze.normal(vIt)[0], effect*maze.normal(vIt)[1], effect*maze.normal(vIt)[2]);
     maze.set_point(vIt, vert - shift);
     maze.set_texcoord2D(vIt, Vec2f(0,0));
@@ -560,8 +560,12 @@ int main(int argc, char** argv){
   glutCreateWindow(argv[0]);
   
   init();
-  if (argc == 4){
-    generateMaze(atof(argv[1]), atof(argv[2]), atof(argv[3]), 1);
+  if (argc > 3){
+    if (argc = 4) {
+      generateMaze(atof(argv[1]), atof(argv[2]), atof(argv[3]), atof(argv[4]));
+    } else {
+      generateMaze(atof(argv[1]), atof(argv[2]), atof(argv[3]), 1);
+    }
   } else {
     generateMaze(3, 4, 3, 1);
   }
