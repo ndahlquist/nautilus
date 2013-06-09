@@ -50,6 +50,7 @@ class GL2JNIView extends GLSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
     private Context context;
+    private Renderer renderer;
     
     public GL2JNIView(Context context) {
         super(context);
@@ -88,7 +89,20 @@ class GL2JNIView extends GLSurfaceView {
                              new ConfigChooser(5, 6, 5, 0, depth, stencil) );
 
         /* Set the renderer responsible for frame rendering */
-        setRenderer(new Renderer(context));
+        renderer = new Renderer(context);
+        setRenderer(renderer);
+    }
+    
+    @Override
+    public void onResume() {
+        renderer.onResume();
+        super.onResume();
+    }
+    
+    @Override
+    public void onPause() {
+        renderer.onPause();
+        super.onPause();
     }
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -355,16 +369,30 @@ class GL2JNIView extends GLSurfaceView {
     private static class Renderer implements GLSurfaceView.Renderer {
         private Context mContext;
 
-        NativeLib mNative;
+        private NativeLib mNative;
+	    private OrientationTracker orientationTracker;
 	    
 	    public static int width;
         public static int height;
 	    
         public Renderer(Context context) {
             mContext = context;
+            onResume();
+        }
+        
+        public void onResume() {
+		    orientationTracker = new OrientationTracker(mContext);
+        }
+        
+        public void onPause() {
+            orientationTracker.destroy();
+            orientationTracker = null;
         }
         
         public void onDrawFrame(GL10 gl) {
+            orientationTracker.update(.1f);
+		    float[] orientation = orientationTracker.getOrientationDifference();
+		    mNative.updateOrientation(orientation[0], orientation[1], orientation[2]);
             mNative.renderFrame();
         }
 

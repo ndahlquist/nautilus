@@ -29,7 +29,12 @@ static bool VerifyBitmap(JNIEnv * env, jobject bitmap, AndroidBitmapInfo & info)
 	return true;
 }
 
-void * resourcecb(const char * fileName) {
+void * resourcecb(const char * fileName, int * width, int * height) {
+    if(width)
+        *width = -1;
+    if(height)
+        *height = -1;
+
     int status;
     JNIEnv *env;
     int isAttached = 0;
@@ -78,11 +83,20 @@ void * resourcecb(const char * fileName) {
     }
     
     jobject mBitmap = (jstring) env->CallObjectMethod(callbackObject, method, jfileName);
+    
     AndroidBitmapInfo info;
     if(!VerifyBitmap(env, mBitmap, info)) {
         LOGE("Unable to locate resource %s.", fileName);
 		return 0;
     }
+    
+    if(width && height) {
+        *width = info.width;
+        *height = info.height;
+    } else {
+        LOGI("You should probably pass width and height here.");
+    }
+    
     void * mPixels;
     if(AndroidBitmap_lockPixels(env, mBitmap, &mPixels) < 0)
 		LOGE("AndroidBitmap_lockPixels() failed!");
@@ -122,4 +136,9 @@ JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerMove(JN
 extern "C"
 JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_pointerUp(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint pointerID) {
     PointerUp(x, y, pointerID);
+}
+
+extern "C"
+JNIEXPORT void JNICALL Java_edu_stanford_nativegraphics_NativeLib_updateOrientation(JNIEnv * env, jobject obj, jfloat roll, jfloat pitch, jfloat yaw) {
+    UpdateOrientation(roll, pitch, yaw); 
 }

@@ -39,6 +39,9 @@ void scalef(float sx, float sy, float sz){
     model_view.top() *= scale;
 }
 //Translate
+void translate(Eigen::Vector3f translation){
+    translatef(translation[0], translation[1], translation[2]);
+}
 void translatef(float x, float y, float z){
     Matrix4f translation;
     translation<<1.f,0.f,0.f,x,0.f,1.f,0.f,y,0.f,0.f,1.f,z,0.f,0.f,0.f,1.f;

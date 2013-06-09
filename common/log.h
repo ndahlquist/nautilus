@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include <sys/time.h>
+#include "Timer.h"
 
 #ifdef ANDROID_NDK
     #include "importgl.h"
@@ -46,21 +46,15 @@ static void checkGlError(const char* op) {
     }
 }
 
-#ifndef BUILD_RELEASE
-static struct timeval lastMeterTime;
-static unsigned int lastMeterFrame = 200;
-#endif
-
 static void fpsMeter() {
 #ifndef BUILD_RELEASE
-    if(++lastMeterFrame >= 200) {
-        struct timeval current;
-        gettimeofday(&current, NULL);
-        float elapsed = current.tv_sec - lastMeterTime.tv_sec + (current.tv_usec  - lastMeterTime.tv_usec) / 1000000.0;
-        float FramesPerSecond = lastMeterFrame / elapsed;
+    static Timer timer;
+    static unsigned int frameNum = 0;
+    if(++frameNum >= 200) {
+        float FramesPerSecond = frameNum / timer.getSeconds();
+        timer.reset();
         LOGI("%i FPS", (int) FramesPerSecond);
-        gettimeofday(&lastMeterTime, NULL);
-		lastMeterFrame = 0;
+		frameNum = 0;
     }
 #endif // BUILD_RELEASE
 }

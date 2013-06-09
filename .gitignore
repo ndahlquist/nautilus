@@ -1,0 +1,10 @@
+.DS_Store
+*.o
+android/bin/
+android/gen/
+android/libs/
+android/local.properties
+android/obj/
+android/project.properties
+linux/NativeGraphics
+

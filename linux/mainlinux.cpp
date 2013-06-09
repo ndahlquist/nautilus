@@ -11,6 +11,7 @@
 #include <jpeglib.h>
 
 #include "common.h"
+#include "log.h"
 
 using namespace std;
 
@@ -109,7 +110,7 @@ char * stringResourceCallback(const char * fileName) {
 
 // Adpted from 
 // stackoverflow.com/questions/694080/how-do-i-read-jpeg-and-png-pixels-in-c-on-linux/694092#694092
-void * jpegResourceCallback(const char * fileName) {
+void * jpegResourceCallback(const char * fileName, int & width, int & height) {
 
     const char * path = "../res/drawable/";
     char * filePath = (char *) malloc(strlen(path) + strlen(fileName) + 1);
@@ -129,8 +130,8 @@ void * jpegResourceCallback(const char * fileName) {
     jpeg_stdio_src(&cinfo, infile);
     (void) jpeg_read_header(&cinfo, TRUE);
     (void) jpeg_start_decompress(&cinfo);
-    int width = cinfo.output_width;
-    int height = cinfo.output_height;
+    width = cinfo.output_width;
+    height = cinfo.output_height;
 
     unsigned char * pDummy = new unsigned char [width*height*4];
     unsigned char * pTest=pDummy;
@@ -169,9 +170,18 @@ void * jpegResourceCallback(const char * fileName) {
     return pTest;
 }
 
-void * ResourceCallback(const char * fileName) {
-    if(checkExt(fileName, "jpg") || checkExt(fileName, "jpeg"))
-        return jpegResourceCallback(fileName);
+void * ResourceCallback(const char * fileName, int * width, int * height) {
+    if(checkExt(fileName, "jpg") || checkExt(fileName, "jpeg")) {
+        if(width && height)
+            return jpegResourceCallback(fileName, *width, *height);
+        LOGI("You should probably pass width and height here.");
+        int temp1, temp2;
+        return jpegResourceCallback(fileName, temp1, temp2);
+    }
+    if(width)
+        *width = -1;
+    if(height)
+        *height = -1;
     return stringResourceCallback(fileName);
 }
 

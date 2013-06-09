@@ -24,6 +24,7 @@ void mvLoadIdentity();
 void scalef(float s);
 void scalef(float sx, float sy, float sz);
 //Translate
+void translate(Eigen::Vector3f translation);
 void translatef(float x, float y, float z);
 //Rotate, angle in degrees
 void rotatef(float angle, float x, float y, float z);

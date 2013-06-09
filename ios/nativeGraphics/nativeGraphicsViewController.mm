@@ -55,8 +55,13 @@ NSString *parseResource(NSString *fileName, NSString *fileType)
     return fileContents;
 }
 
-void *resourceCB(const char *cfileName)
+void *resourceCB(const char *cfileName, int * width, int * height)
 {
+    if(width)
+        *width = -1;
+    if(height)
+        *height = -1;
+    
     NSString *fileName = [NSString stringWithFormat:@"%s", cfileName];
     NSArray *fileComponents = [fileName componentsSeparatedByString:@"."];
     NSString *fileType = [fileComponents objectAtIndex:1];
@@ -64,7 +69,11 @@ void *resourceCB(const char *cfileName)
     if ([fileType isEqualToString:@"obj"] || [fileType isEqualToString:@"glsl"]) {
         return objResourceCB([fileComponents objectAtIndex:0], fileType);
     } else if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"jpeg"]) {
-        return imageResourceCB([fileComponents objectAtIndex:0], fileType);
+        if(width && height)
+            return imageResourceCB([fileComponents objectAtIndex:0], fileType, *width, *height);
+        LOGE("You should probably have passed width and height here.");
+        int tempw, temph;
+        return imageResourceCB([fileComponents objectAtIndex:0], fileType, tempw, temph);
     }
     return NULL;
 }
@@ -75,7 +84,7 @@ void *objResourceCB(NSString *fileName, NSString *fileType)
     return strdup([fileContents UTF8String]);
 }
 
-void *imageResourceCB(NSString *fileName, NSString *fileType)
+void *imageResourceCB(NSString *fileName, NSString *fileType, int & width, int & height)
 {
     // Get Core Graphics image referece
     NSString *path = [[NSBundle mainBundle] pathForResource:fileName ofType:fileType];
@@ -89,8 +98,8 @@ void *imageResourceCB(NSString *fileName, NSString *fileType)
     }
     
     // Create bitmap context
-    size_t width = CGImageGetWidth(imageRef);
-    size_t height = CGImageGetHeight(imageRef);
+    width = CGImageGetWidth(imageRef);
+    height = CGImageGetHeight(imageRef);
     GLubyte * imageData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
     CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
                                                        CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);

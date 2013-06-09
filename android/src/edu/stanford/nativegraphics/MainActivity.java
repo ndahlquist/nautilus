@@ -18,8 +18,6 @@ package edu.stanford.nativegraphics;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
 public class MainActivity extends Activity {
 	
@@ -29,9 +27,6 @@ public class MainActivity extends Activity {
         super.onCreate(icicle);
         mView = new GL2JNIView(getApplication());
         setContentView(mView);
-        
-        View overlay = getLayoutInflater().inflate(R.layout.overlay, null);
-		addContentView(overlay, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     @Override protected void onPause() {
