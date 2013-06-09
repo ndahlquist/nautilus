@@ -17,7 +17,7 @@ RenderObject::RenderObject(const char *objFilename, const char *vertexShaderFile
     BasicInit(vertexShaderFilename, fragmentShaderFilename, writegeometry);
 
     // Parse obj file into an interleaved float buffer
-    GLfloat * interleavedBuffer = getInterleavedBuffer((char *)resourceCallback(objFilename), numVertices, true, true);
+    GLfloat * interleavedBuffer = getInterleavedBuffer((char *)loadResource(objFilename), numVertices, true, true);
     glGenBuffers(1, &gVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, numVertices * (3+3+2) * sizeof(float), interleavedBuffer, GL_STATIC_DRAW);
@@ -33,11 +33,11 @@ void RenderObject::BasicInit(const char *vertexShaderFilename, const char *fragm
     const char * vertexShader = "standard_v.glsl";
     if(vertexShaderFilename)
         vertexShader = vertexShaderFilename;
-    colorShader = createShaderProgram((char *)resourceCallback(vertexShader), (char *)resourceCallback(fragmentShaderFilename));
+    colorShader = createShaderProgram((char *)loadResource(vertexShader), (char *)loadResource(fragmentShaderFilename));
     SetShader(colorShader);
     
     if(vertexShaderFilename && writegeometry)
-        geometryShader = createShaderProgram((char *)resourceCallback(vertexShaderFilename), (char *)resourceCallback("geometry_f.glsl"));
+        geometryShader = createShaderProgram((char *)loadResource(vertexShaderFilename), (char *)loadResource("geometry_f.glsl"));
     else
         geometryShader = -1;
     
@@ -62,12 +62,13 @@ void RenderObject::SetShader(const GLuint shaderProgram) {
 
 void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
     // Load textures
-    GLubyte *imageData = (GLubyte *)resourceCallback(textureFilename);
+    int width, height;
+    GLubyte *imageData = (GLubyte *)loadResource(textureFilename, &width, &height);
     
     GLuint newTex = -1;
     glGenTextures(1, &newTex);
     glBindTexture(GL_TEXTURE_2D, newTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); // TODO: hardcoded size
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

@@ -50,9 +50,13 @@ RenderPipeline * pipeline = NULL;
 basicLevel * level = NULL;
 
 // Callback function to load resources.
-void*(*resourceCallback)(const char *) = NULL;
+void*(*resourceCallback)(const char *, int *, int *) = NULL;
 
-void SetResourceCallback(void*(*cb)(const char *)) {
+void * loadResource(const char * fileName, int * width, int * height) {
+    return resourceCallback(fileName, width, height);
+}
+
+void SetResourceCallback(void*(*cb)(const char *, int *, int *)) {
     resourceCallback = cb;
 }
 

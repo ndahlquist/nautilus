@@ -70,7 +70,7 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
     
     std::vector<struct Vertex> vertices;
     std::vector<struct face> faces;
-    getObjectData((char *)resourceCallback(objFilename), numVertices, vertices, faces, false, false);
+    getObjectData((char *)loadResource(objFilename), numVertices, vertices, faces, false, false);
     
     float xmax = -100;
     float ymax = -100;
