@@ -106,7 +106,7 @@ void RenderPipeline::ClearBuffers() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
     
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     checkGlError("glClear");
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);

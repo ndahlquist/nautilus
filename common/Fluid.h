@@ -714,6 +714,12 @@ float* Fluid::GenVertexArrayOutBound(){
 
 // Overrides RenderObject::Render
 void Fluid::Render() {
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
+    glViewport(0, 0, displayWidth, displayHeight);
+
     // In bound
     float * mesh = GenVertexArrayInBound();
     RenderObject::Render(0, mesh, listParticles.size());

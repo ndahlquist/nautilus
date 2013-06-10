@@ -189,7 +189,7 @@ int main(int argc, char** argv) {
 
     // Initialize GLUT.
     glutInit(&argc, argv);
-    glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(20, 20);
     glutInitWindowSize(1000, 800);
     glutCreateWindow("nativeGraphics");
