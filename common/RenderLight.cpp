@@ -12,6 +12,7 @@ RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilena
    color[1] = 1.0f;
    color[2] = 1.0f;
    brightness = 1000.0f;
+   causticTexture = -1;
    
    mv_inverse_Matrix = NULL;
 }
@@ -98,13 +99,13 @@ void RenderLight::Render() {
     checkGlError("albTextureUniform");
     
     // Pass caustic texture
-    /*GLuint causticTextureUniform = glGetUniformLocation(colorShader, "u_CausticTexture");
-    if(causticTextureUniform != -1) {
+    GLuint causticTextureUniform = glGetUniformLocation(colorShader, "u_CausticTexture");
+    if(causticTextureUniform != -1 && causticTexture != -1) {
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, pipeline->causticTexture);
+        glBindTexture(GL_TEXTURE_2D, causticTexture);
         glUniform1i(causticTextureUniform, 2);
         checkGlError("causticTextureUniform");
-    }*/
+    }
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");

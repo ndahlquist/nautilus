@@ -17,7 +17,7 @@ RenderCaustic::RenderCaustic(const char *objFilename, const char *vertexShaderFi
     // Allocate texture to render to
     glGenTextures(1, &outputTexture);
     glBindTexture(GL_TEXTURE_2D, outputTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -32,6 +32,7 @@ void RenderCaustic::Render() {
     
     SetShader(colorShader);
     
+    glViewport(0, 0, 64, 64);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
     glClearColor(0., 0., 0., 1.);

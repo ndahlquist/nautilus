@@ -34,6 +34,7 @@ public:
     float brightness; // (0, inf)
     
     GLfloat* mv_inverse_Matrix;
+    GLuint causticTexture;
 };
 
 

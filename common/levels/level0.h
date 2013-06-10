@@ -36,8 +36,11 @@ private:
 level0::level0() : basicLevel() {
 
     caustic = new RenderCaustic("square.obj", "dr_square_v.glsl", "caustic_f.glsl");
+    caustic->AddTexture("caustic_albedo.jpg", false);
+    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_caustic_f.glsl");
+    bigLight->causticTexture = caustic->outputTexture;
     
-    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
+    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
     destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");

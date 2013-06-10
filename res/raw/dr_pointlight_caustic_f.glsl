@@ -35,7 +35,8 @@ void main() {
 	    discard;
 	
 	vec4 Pos = u_mv_inverse * mvPos;
-	vec3 caustic = texture2D(u_CausticTexture, Pos.xy / Pos.w / 100.0) + .6;
+	vec3 caustic = texture2D(u_CausticTexture, Pos.xy / Pos.w / 100.0).rgb + .6;
+    //gl_FragColor = vec4(caustic, 1.0);
     gl_FragColor = vec4(caustic * brightness * u_Color * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 	
 }

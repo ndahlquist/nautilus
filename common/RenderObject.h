@@ -41,7 +41,7 @@ public:
     GLuint colorShader;
     GLuint geometryShader; // NULL, except when a custom v shader is specified.
     
-protected:
+//protected:
     void BasicInit(const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry);
     void SetShader(const GLuint shaderProgram);
     virtual void RenderPass(int instance, GLfloat *buffer, int num);
