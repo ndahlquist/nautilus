@@ -47,7 +47,7 @@ RenderPipeline::RenderPipeline() {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, geometryTextureWidth, geometryTextureHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
     
-    // Allocate geometry texture to render to.
+    // Allocate geometry texture to render to
     glGenTextures(1, &geometryTexture);
     glBindTexture(GL_TEXTURE_2D, geometryTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, geometryTextureWidth, geometryTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -57,8 +57,35 @@ RenderPipeline::RenderPipeline() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     checkGlError("geometryTexture");
     
+    // Load caustic texture
+    AddCausticTexture("caustic_albedo.jpg");
+    
     glBindTexture(GL_TEXTURE_2D, 0);       
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderPipeline::AddCausticTexture(const char *textureFilename) {
+    // Load texture
+    int width, height;
+    GLubyte *imageData = (GLubyte *)loadResource(textureFilename, &width, &height);
+    
+    GLuint newTex = -1;
+    glGenTextures(1, &newTex);
+    glBindTexture(GL_TEXTURE_2D, newTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //free(imageData); // TODO: Not allowed on Samsung Galaxy (not malloc'd).
+    
+    checkGlError("AddTexture");
+    
+    causticTexture = newTex;
 }
 
 inline int clamp(int x, int a, int b) {

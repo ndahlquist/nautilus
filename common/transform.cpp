@@ -175,6 +175,15 @@ float* pInverseMatrix(){
     return pMatrix;
 }
 
+float* mvInverseMatrix(){
+    Matrix4f inverse = model_view.top().inverse();
+    float* pMatrix = new float[16];
+    for(int i=0; i<4; i++)
+        for(int j=0; j<4; j++)
+            pMatrix[i*4+j] = inverse(j,i);
+    return pMatrix;
+}
+
 //Push
 void pPushMatrix(){
     projection.push(projection.top());

@@ -161,6 +161,8 @@ void level0::RenderFrame() {
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
+    
+    bigLight->PreTranslate();
     mvPushMatrix();
     translate(character->instances[0].position);
     bigLight->color[0] = 1.0;

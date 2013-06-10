@@ -6,12 +6,22 @@
 #include "transform.h"
 #include "common.h"
 #include "log.h"
+#include "Timer.h"
+
+Timer timer; // TODO
 
 RenderLight::RenderLight(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename, false) {
    color[0] = 1.0f;
    color[1] = 1.0f;
    color[2] = 1.0f;
    brightness = 1000.0f;
+   timer.reset();
+   
+   mv_inverse_Matrix = NULL;
+}
+
+void RenderLight::PreTranslate() {
+    mv_inverse_Matrix = (GLfloat*)mvInverseMatrix();
 }
 
 void RenderLight::Render() {
@@ -49,16 +59,26 @@ void RenderLight::Render() {
     
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
+    GLuint u_mvMatrixHandle = glGetUniformLocation(colorShader, "u_MVMatrix");
+    glUniformMatrix4fv(u_mvMatrixHandle, 1, GL_FALSE, mv_Matrix);
+    delete mv_Matrix;
+    
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
-    GLfloat* pT_Matrix = (GLfloat*)pInverseMatrix();
-    glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
-    glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
-    GLuint gpT_MatrixHandle = glGetUniformLocation(colorShader, "u_pT_Matrix");
-    glUniformMatrix4fv(gpT_MatrixHandle, 1, GL_FALSE, pT_Matrix);
+    GLuint u_mvpMatrixHandle = glGetUniformLocation(colorShader, "u_MVPMatrix");
+    glUniformMatrix4fv(u_mvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
+    delete mvp_Matrix;
+    
+    GLfloat* p_inverse_Matrix = (GLfloat*)pInverseMatrix();
+    GLuint u_p_inverseHandle = glGetUniformLocation(colorShader, "u_p_inverse");
+    glUniformMatrix4fv(u_p_inverseHandle, 1, GL_FALSE, p_inverse_Matrix);
+    delete p_inverse_Matrix;
+    
+    if(mv_inverse_Matrix) {
+        GLuint u_mv_inverseHandle = glGetUniformLocation(colorShader, "u_mv_inverse");
+        glUniformMatrix4fv(u_mv_inverseHandle, 1, GL_FALSE, mv_inverse_Matrix );
+        //delete mv_inverse_Matrix; //TODO
+    }
     checkGlError("glUniformMatrix4fv");
-    delete[] mv_Matrix;
-    delete[] mvp_Matrix;
-    delete[] pT_Matrix;
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     
@@ -80,6 +100,21 @@ void RenderLight::Render() {
     GLuint geometryTextureUniform = glGetUniformLocation(colorShader, "u_GeometryTexture");
     glUniform1i(geometryTextureUniform, 1);
     checkGlError("albTextureUniform");
+    
+    // Pass caustic texture
+    GLuint causticTextureUniform = glGetUniformLocation(colorShader, "u_CausticTexture");
+    if(causticTextureUniform != -1) {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, pipeline->causticTexture);
+        glUniform1i(causticTextureUniform, 2);
+        checkGlError("causticTextureUniform");
+    }
+    
+    // Pass time
+    GLuint timeUniform = glGetUniformLocation(colorShader, "u_Time");
+    if(timeUniform != -1)
+        glUniform1f(timeUniform, timer.getSeconds());
+
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");

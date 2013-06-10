@@ -42,6 +42,7 @@ void lookAt(float eyex, float eyey, float eyez,
 float* pMatrix();
 
 float* pInverseMatrix();
+float* mvInverseMatrix();
 
 //Push
 void pPushMatrix();

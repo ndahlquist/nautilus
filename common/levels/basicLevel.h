@@ -23,17 +23,15 @@ basicLevel::basicLevel() {
     cameraPos = Vector3f(0, 180, 100);
     cameraPan = Vector3f(0, 200, 0);
 
-    // cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
-    // cave->AddTexture("cave_albedo.jpg", false);
-    cave = new RenderObject("cave2.obj", NULL, "caustics_f.glsl");
-    cave->AddTexture("caustic_albedo.jpg", false);
+    cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
+    cave->AddTexture("cave_albedo.jpg", false);
     
     character = new Character("submarine.obj", NULL, "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
     struct characterInstance instance;
     character->instances.push_back(instance);
     
-    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
+    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_caustic_f.glsl");
 };
 
 // Clamps input to (-max, max) according to curve.

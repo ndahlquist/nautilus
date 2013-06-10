@@ -27,10 +27,13 @@ using namespace std;
 class RenderLight : public RenderObject {
 public:
     RenderLight(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
+    void PreTranslate();
     void Render();
     
     float color[3]; // R, G, B (0.0, 1.0)
     float brightness; // (0, inf)
+    
+    GLfloat* mv_inverse_Matrix;
 };
 
 

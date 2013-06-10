@@ -8,12 +8,8 @@
 #include "transform.h"
 #include "common.h"
 #include "log.h"
-#include "Timer.h"
-
-Timer timer;
 
 RenderObject::RenderObject(const char *vertexShaderFilename, const char *fragmentShaderFilename, bool writegeometry) {
-    timer.reset();
     BasicInit(vertexShaderFilename, fragmentShaderFilename, writegeometry);
 }
 
@@ -135,14 +131,11 @@ void RenderObject::RenderPass(int instance, GLfloat *buffer, int num) {
         checkGlError("texture");
     }
     
-    if (timeUniform != -1) {
-      glUniform1f(timeUniform, timer.getSeconds());
-    } 
-   // Pass normal map
+    // Pass normal map
     if(normalMapUniform != -1 && normalTexture != -1) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalTexture);
-        glUniform1i(textureUniform, 1);
+        glUniform1i(normalMapUniform, 1);
         checkGlError("normalTexture");
     }
     

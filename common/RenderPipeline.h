@@ -37,6 +37,11 @@ public:
     GLuint geometryShader;
     GLuint halfGeometryShader;
     
+    GLuint causticTexture;
+
+private:
+    void AddCausticTexture(const char *textureFilename);
+    
 };
 
 #endif // __nativeGraphics__RenderPipeline__
