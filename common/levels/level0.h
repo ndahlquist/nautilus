@@ -133,8 +133,11 @@ void level0::RenderFrame() {
 
     mvPushMatrix();
     translate(character->instances[0].position);
-    //rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
+    
+    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     scalef(10.00f);
+    translate(Vector3f(2.5,-0.5,-2));
+    rotatef(90, 0,0,-1);
     Water->Render();
     mvPopMatrix();
     
