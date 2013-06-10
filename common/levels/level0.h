@@ -146,7 +146,7 @@ void level0::RenderFrame() {
         translate(jellyfish->instances[i].position);
         rotate(0.0, jellyfish->instances[i].rot[0], jellyfish->instances[i].rot[1]);
         rotate(0.0, 0.0, PI / 2);
-        scalef(1.0f);
+        scalef(10.0f);
         jellyfish->Render(i);
         mvPopMatrix();
     }
