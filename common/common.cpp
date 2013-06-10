@@ -34,6 +34,7 @@
 
 #include "levels/basicLevel.h"
 #include "levels/level0.h"
+#include "levels/level1.h"
 
 using namespace std;
 using Eigen::Matrix4f;
@@ -69,7 +70,8 @@ void Setup(int w, int h) {
     displayHeight = h;
     pipeline = new RenderPipeline();
 
-    level = new level0();
+    // level = new level0();
+    level = new level1();
 }
 
 void setFrameBuffer(int handle) {

@@ -1,23 +1,25 @@
-// level0.h
+// level1.h
 // nativeGraphics
 
-#ifndef __nativeGraphics_levels_level0__
-#define __nativeGraphics_levels_level0__
+#ifndef __nativeGraphics_levels_level1__
+#define __nativeGraphics_levels_level1__
 
 #include "basicLevel.h"
 
 #define BOMB_TIMER_LENGTH 2.0f
 #define BOMB_EXPLOSION_LENGTH .3f
 
-class level0 : public basicLevel {
+class level1 : public basicLevel {
 public:
-    level0();
+    level1();
     void RenderFrame();
     
 private:
     void addJellyfish();
+    void addOctopus();
 
     Character * jellyfish;
+    Character * octopus;
     PhysicsObject * bomb;
 
     Fluid * Water;
@@ -31,10 +33,13 @@ private:
 
 };
 
-level0::level0() : basicLevel() {
+level1::level1() : basicLevel() {
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
+    
+    octopus = new Character("octopus.obj", NULL, "albedo_f.glsl"); 
+    octopus->AddTexture("octopus_albedo.jpg", false);
     
     destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");
     destructible->AddTexture("submarine_albedo.jpg", false);
@@ -51,7 +56,7 @@ level0::level0() : basicLevel() {
 
 }
 
-void level0::addJellyfish() {
+void level1::addJellyfish() {
     struct characterInstance instance;
     instance.position = character->instances[0].position + 600.0f * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     instance.MaxAcceleration = 200.0f;
@@ -60,7 +65,16 @@ void level0::addJellyfish() {
     jellyfish->instances.push_back(instance);
 }
 
-void level0::RenderFrame() {
+void level1::addOctopus() {
+    struct characterInstance instance;
+    instance.position = character->instances[0].position + 600.0f * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
+    instance.MaxAcceleration = 300.0f;
+    instance.Drag = 100.0f;
+    instance.MaxVelocity = 150.0f;
+    octopus->instances.push_back(instance);
+}
+
+void level1::RenderFrame() {
     // Setup perspective matrices
     pLoadIdentity();
     perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
@@ -106,8 +120,11 @@ void level0::RenderFrame() {
         shotBomb = false;
     
     while(jellyfish->instances.size() < 15)
-        addJellyfish();
-    
+      addJellyfish();
+ 
+    while(octopus->instances.size() < 7)
+      addOctopus();
+   
     // Run physics.
     bomb->Update();
     character->Update();
@@ -117,12 +134,19 @@ void level0::RenderFrame() {
         float dist = (character->instances[0].position - jellyfish->instances[i].position).norm();
         jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
+    for(int i = 0; i < octopus->instances.size(); i++) {
+        octopus->instances[i].targetPosition = character->instances[0].position;
+        // Randomize movement
+        float dist = (character->instances[0].position - octopus->instances[i].position).norm();
+        octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
+    }
     jellyfish->Update();
+    octopus->Update();
     Water->Update();
     
-    //mvPushMatrix(); // TODO
-    //destructible->Render();
-    //mvPopMatrix();
+    mvPushMatrix();
+    destructible->Render();
+    mvPopMatrix();
     
     mvPushMatrix();
     translate(character->instances[0].position);
@@ -143,8 +167,18 @@ void level0::RenderFrame() {
         translate(jellyfish->instances[i].position);
         rotate(0.0, jellyfish->instances[i].rot[0], jellyfish->instances[i].rot[1]);
         rotate(0.0, 0.0, PI / 2);
-        scalef(10.0f);
+        scalef(1.0f);
         jellyfish->Render(i);
+        mvPopMatrix();
+    }
+    
+    for(int i = 0; i < octopus->instances.size(); i++) {
+        mvPushMatrix();
+        translate(octopus->instances[i].position);
+        rotate(0.0, octopus->instances[i].rot[0], octopus->instances[i].rot[1]);
+        rotate(0.0, 0.0, PI / 2);
+        scalef(10.0f);
+        octopus->Render(i);
         mvPopMatrix();
     }
     
@@ -199,6 +233,13 @@ void level0::RenderFrame() {
                     jellyfish->instances.erase(jellyfish->instances.begin()+j);
                     j--;  
                 }
+	    }
+	    for (int j = 0; j < octopus->instances.size(); ++j) {
+		if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
+                    // Kill this octopus
+                    octopus->instances.erase(octopus->instances.begin()+j);
+                    j--;  
+                }
             }
             // Shake screen
             cameraPan += 5.0f * intensity * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
@@ -221,4 +262,4 @@ void level0::RenderFrame() {
     mvPopMatrix();
 }
 
-#endif // __nativeGraphics_levels_simpleLevel0__
+#endif // __nativeGraphics_levels_simpleLevel1__
