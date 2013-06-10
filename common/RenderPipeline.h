@@ -25,14 +25,13 @@ public:
     uint8_t * RayTracePixel(float x, float y, bool geometry);
     
     GLuint frameBuffer;
-
-    GLuint colorTexture; // R, G, B, UNUSED (specular)
     GLuint depthBuffer;
     
-    GLuint geometryDepthBuffer;
+    GLuint colorTexture; // R, G, B, UNUSED (specular)
     GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
-    unsigned int geometryTextureWidth;
-    unsigned int geometryTextureHeight;
+    
+    unsigned int drawWidth;
+    unsigned int drawHeight;
 
     GLuint geometryShader;
     GLuint halfGeometryShader;

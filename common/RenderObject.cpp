@@ -89,6 +89,7 @@ void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
 
 // Renders to the currently-active frame buffer.
 void RenderObject::RenderPass(int instance, GLfloat *buffer, int num) {
+    //LOGI("%i %i, %i", instance, (int) buffer, num);
 
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
@@ -164,7 +165,8 @@ void RenderObject::Render(int instance, GLfloat *buffer, int num) {
     glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
-    glViewport(0, 0, displayWidth, displayHeight);
+    glViewport(0, 0, pipeline->drawWidth, pipeline->drawHeight);
+    checkGlError("glBindFramebuffer");
     
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -172,9 +174,10 @@ void RenderObject::Render(int instance, GLfloat *buffer, int num) {
     glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDisable(GL_DITHER);
-    checkGlError("glClear");
+    checkGlError("glClear 4");
     
-    RenderPass(instance, buffer, num);
+    LOGI("pre color");
+    //RenderPass(instance, buffer, num);
     
     // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
     if(geometryShader != -1)
@@ -184,12 +187,17 @@ void RenderObject::Render(int instance, GLfloat *buffer, int num) {
     
     glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->geometryDepthBuffer);
-    glViewport(0, 0, pipeline->geometryTextureWidth, pipeline->geometryTextureHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
+    glViewport(0, 0, pipeline->drawWidth, pipeline->drawHeight);
+    checkGlError("glBindFramebuffer");
     
+    glDisable(GL_DEPTH_TEST); // TODO
     glEnable(GL_DITHER);
+        checkGlError("settings");
     
-    RenderPass(instance, buffer, num);
+      LOGI("pre geo");
+    //RenderPass(instance, buffer, num);
+      LOGI("post geo");
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
 }

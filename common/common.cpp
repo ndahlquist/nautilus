@@ -71,7 +71,7 @@ void Setup(int w, int h) {
     pipeline = new RenderPipeline();
 
     // level = new level0();
-    level = new level1();
+    level = new basicLevel();
 }
 
 void setFrameBuffer(int handle) {

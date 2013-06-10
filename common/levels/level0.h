@@ -61,6 +61,8 @@ void level0::addJellyfish() {
 }
 
 void level0::RenderFrame() {
+     LOGI("start");
+
     // Setup perspective matrices
     pLoadIdentity();
     perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
@@ -68,6 +70,8 @@ void level0::RenderFrame() {
     mvLoadIdentity();
     lookAt(cameraPos[0]+cameraPan[0], cameraPos[1]+cameraPan[1], cameraPos[2]+cameraPan[2], cameraPan[0], cameraPan[1], cameraPan[2], 0, 1, 0);
     RotatePerspective();
+    
+    LOGI("cave");
 
     //////////////////////////////////
     // Render to g buffer.
@@ -79,6 +83,7 @@ void level0::RenderFrame() {
     cave->Render();
     mvPopMatrix();
     
+        LOGI("trace");
     // Process user input
     if(touchDown) {
         uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
@@ -108,6 +113,7 @@ void level0::RenderFrame() {
     while(jellyfish->instances.size() < 15)
         addJellyfish();
     
+        LOGI("physics");
     // Run physics.
     bomb->Update();
     character->Update();
@@ -160,7 +166,7 @@ void level0::RenderFrame() {
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
-    
+        LOGI("lights");
     mvPushMatrix();
     translate(character->instances[0].position);
     bigLight->color[0] = 1.0;

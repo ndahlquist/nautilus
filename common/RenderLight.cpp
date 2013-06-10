@@ -25,7 +25,7 @@ void RenderLight::Render() {
     checkGlError("glUseProgram");
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
-    glViewport(0, 0, displayWidth, displayHeight);
+    glViewport(0, 0, pipeline->drawWidth, pipeline->drawHeight);
     
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);

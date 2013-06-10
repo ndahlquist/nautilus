@@ -50,6 +50,8 @@ void basicLevel::RotatePerspective() {
 }
 
 void basicLevel::RenderFrame() {
+
+     LOGI("start");
     // Setup perspective matrices
     pLoadIdentity();
     perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
@@ -63,10 +65,12 @@ void basicLevel::RenderFrame() {
     
     /** Any geometry that will be collision detected
         should be rendered here, before user input. **/
+             LOGI("precave");
     mvPushMatrix();
     scalef(40);
     cave->Render();
     mvPopMatrix();
+         LOGI("postcave");
     
     // Process user input
     if(touchDown) {
