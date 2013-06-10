@@ -31,7 +31,7 @@ basicLevel::basicLevel() {
     struct characterInstance instance;
     character->instances.push_back(instance);
     
-    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_caustic_f.glsl");
+    bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
 };
 
 // Clamps input to (-max, max) according to curve.

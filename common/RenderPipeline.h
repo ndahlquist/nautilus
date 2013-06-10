@@ -29,18 +29,13 @@ public:
     GLuint colorTexture; // R, G, B, UNUSED (specular)
     GLuint depthBuffer;
     
-    GLuint geometryDepthBuffer;
     GLuint geometryTexture; // NX_MV, NY_MV, NZ_MV, Depth_MVP
+    GLuint geometryDepthBuffer;
     unsigned int geometryTextureWidth;
     unsigned int geometryTextureHeight;
 
     GLuint geometryShader;
     GLuint halfGeometryShader;
-    
-    GLuint causticTexture;
-
-private:
-    void AddCausticTexture(const char *textureFilename);
     
 };
 

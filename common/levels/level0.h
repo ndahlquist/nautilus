@@ -5,6 +5,7 @@
 #define __nativeGraphics_levels_level0__
 
 #include "basicLevel.h"
+#include "RenderCaustic.h"
 
 #define BOMB_TIMER_LENGTH 2.0f
 #define BOMB_EXPLOSION_LENGTH .3f
@@ -26,12 +27,15 @@ private:
     RenderLight * explosiveLight;
     RenderLight * spotLight;
     RenderDestructible *destructible;
+    RenderCaustic *caustic;
     
     bool shotBomb;
 
 };
 
 level0::level0() : basicLevel() {
+
+    caustic = new RenderCaustic("square.obj", "dr_square_v.glsl", "caustic_f.glsl");
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
@@ -120,6 +124,8 @@ void level0::RenderFrame() {
     jellyfish->Update();
     Water->Update();
     
+    caustic->Render();
+    
     mvPushMatrix();
     destructible->Render();
     mvPopMatrix();
@@ -160,7 +166,6 @@ void level0::RenderFrame() {
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
-    
     
     bigLight->PreTranslate();
     mvPushMatrix();

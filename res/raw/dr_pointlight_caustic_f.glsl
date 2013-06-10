@@ -26,18 +26,6 @@ vec4 mvPos() {
     return u_p_inverse * mvpPos;
 }
 
-vec3 getCaustic(vec2 texCoord) {
-    // Lower frequency noise
-    vec3 val1 = texture2D(u_CausticTexture, (texCoord + vec2(u_Time / 2.0, 0.0)) * .3).rgb;
-    vec3 val2 = texture2D(u_CausticTexture, (texCoord+ vec2(0.0, u_Time / 2.0)) * .3).rgb;
-
-    // Higher frequency noise
-    vec3 val3 = texture2D(u_CausticTexture, texCoord + vec2(u_Time / 10.0, 0.0)).rgb;
-    vec3 val4 = texture2D(u_CausticTexture, texCoord + vec2(0.0, u_Time / 10.0)).rgb;
-    
-    return (val1 * val2) * (.5 + val3 * val4);
-}
-
 void main() {
     vec4 mvPos = mvPos();
     vec3 delta = v_mvLightPos - mvPos.xyz / mvPos.w;
@@ -47,7 +35,7 @@ void main() {
 	    discard;
 	
 	vec4 Pos = u_mv_inverse * mvPos;
-	vec3 caustic = getCaustic(Pos.xy / Pos.w / 100.0) + .6;
+	vec3 caustic = texture2D(u_CausticTexture, Pos.xy / Pos.w / 100.0) + .6;
     gl_FragColor = vec4(caustic * brightness * u_Color * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
 	
 }
