@@ -35,6 +35,7 @@ struct DestructibleNode
     Point3 position;
     Vector3 velocity;
     vector<struct DestructibleBond *> bonds;
+    int node_num;
 };
 
 struct DestructibleFace
@@ -79,10 +80,11 @@ std::vector<struct DestructibleNode *> nodes;
 std::vector<struct DestructibleBond *> bonds;
 std::vector<struct DestructibleFace *> surfaces;
 std::vector<struct DestructibleFace *> fragments;
+int node_counter = 0;
 
 RenderDestructible::RenderDestructible(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
     
-    std::vector<struct Vertex> vertices;
+    /*std::vector<struct Vertex> vertices;
     std::vector<struct face> faces;
     getObjectData((char *)resourceCallback(objFilename), numVertices, vertices, faces, false, false);
     
@@ -176,13 +178,14 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
         int zstart_idx = floor((zstart - zmin)/voxelSize);
         int zend_idx = ceil((zend - zmin)/voxelSize);
         
-        /*if (xstart_idx == xend_idx)
+    <!--    if (xstart_idx == xend_idx)
             xend_idx += 1;
         if (ystart_idx == yend_idx)
             yend_idx += 1;
         if (zstart_idx == zend_idx)
             zend_idx += 1;
-        */
+     -->
+    
         for (int xdim = xstart_idx; xdim <= xend_idx; xdim++) {
             for (int ydim = ystart_idx; ydim <= yend_idx; ydim++) {
                 for (int zdim = zstart_idx; zdim <= zend_idx; zdim++) {
@@ -216,11 +219,147 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
     }
     for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
         DestructibleNode *node = nodes[node_idx];
-        printf("v %.4f %.4f %.4f", node->position.x, node->position.y, node->position.z);
+        printf("v %.4f %.4f %.4f\n", node->position.x, node->position.y, node->position.z);
     }
     for (int bond_idx = 0; bond_idx < bonds.size(); bond_idx++) {
-        printf("b ");
+        DestructibleBond *bond = bonds[bond_idx];
+        printf("b %d %d\n", bond->nodes[0]->node_num, bond->nodes[1]->node_num);
     }
+    for (int face_idx = 0; face_idx < surfaces.size(); face_idx++) {
+        DestructibleFace *face = surfaces[face_idx];
+        printf("f %d %d %d\n", face->nodes[0]->node_num, face->nodes[1]->node_num, face->nodes[2]->node_num);
+    }
+    for (int cell_idx = 0; cell_idx < cells.size(); cell_idx++) {
+        DestructibleCell *cell = cells[cell_idx];
+        printf("cn %d %d %d %d %d %d %d %d\n", cell->nodes[0]->node_num, cell->nodes[1]->node_num, cell->nodes[2]->node_num, cell->nodes[3]->node_num, cell->nodes[4]->node_num, cell->nodes[5]->node_num, cell->nodes[6]->node_num, cell->nodes[7]->node_num);
+    }*/
+    
+}
+
+static void parseObjLine(char * line, std::vector<struct Vertex> & vertices, std::vector<struct Texture> & textures, std::vector<struct face> & faces) {
+	char * saveptr;
+	char * tok = strtok_r(line, " ", &saveptr);
+	if(tok == NULL || tok[0] == '#')
+		return;
+    
+	// Parse a vertex
+	if(strcmp(tok, "v") == 0) {
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		float x = atof(tok);
+        
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		float y = atof(tok);
+        
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		float z = atof(tok);
+        
+		vertices.push_back(Vertex(x, y, z));
+	}
+    
+	if(strcmp(tok, "vt") == 0) {
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		float u = atof(tok);
+        
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		float v = atof(tok);
+        
+		textures.push_back(Texture(u, v));
+	}
+    
+	// Parse a face
+	if(strcmp(tok, "f") == 0) {
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		int v1 = atoi(tok) - 1; // Zero index
+        
+		char*texsaveptr;
+		int texIndex[3] = {-1,-1,-1};
+		strtok_r(tok, "/", &texsaveptr);
+		char * textok = strtok_r(NULL, "/", &texsaveptr);
+		if(textok != NULL)
+			texIndex[0] = atoi(textok) - 1;
+        
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		int v2 = atoi(tok) - 1;
+        
+		strtok_r(tok, "/", &texsaveptr);
+		textok = strtok_r(NULL, "/", &texsaveptr);
+		if(textok != NULL)
+			texIndex[1] = atoi(textok) - 1;
+        
+		tok = strtok_r(NULL, " ", &saveptr);
+		if(tok == NULL || tok[0] == '#') {
+			LOGE("Error in ParseObjLine");
+			return;
+		}
+		int v3 = atoi(tok) - 1;
+        
+		strtok_r(tok, "/", &texsaveptr);
+		textok = strtok_r(NULL, "/", &texsaveptr);
+		if(textok != NULL)
+			texIndex[2] = atoi(textok) - 1;
+        
+		struct face thisFace = face(v1, v2, v3);
+		thisFace.texture[0] = texIndex[0];
+		thisFace.texture[1] = texIndex[1];
+		thisFace.texture[2] = texIndex[2];
+		faces.push_back(thisFace);
+	}
+}
+
+static void parseObjString(char * objString, std::vector<struct Vertex> & vertices, std::vector<struct face> & faces) {
+    
+	std::vector<struct Texture> textures;
+    
+	char * saveptr;
+	char * line = strtok_r(objString, "\n", &saveptr);
+	while(line != NULL) {
+		parseObjLine(line, vertices, textures, faces);
+		line = strtok_r(NULL, "\n", &saveptr);
+	}
+	// Copy textures into vertex structs.
+	for(int i = 0; i < faces.size(); i++) {
+		for(int v = 0; v < 3; v++) {
+			int texIndex = faces[i].texture[v];
+			if(texIndex == -1) {
+				vertices[faces[i].vertex[v]].texture[0] = 0;
+				vertices[faces[i].vertex[v]].texture[1] = 0;
+			} else {
+				if(texIndex < 0 || texIndex >= (int) textures.size()) {
+					LOGE("texIndex %d out of bounds [0, %d]", texIndex, (int) textures.size()); // TODO: Why does this break on Linux?
+			    }
+				vertices[faces[i].vertex[v]].texture[0] = textures[texIndex].coord[0];
+				vertices[faces[i].vertex[v]].texture[1] = textures[texIndex].coord[1];
+			}
+		}
+	}
 }
 
 static struct DestructibleCell* createCell(float xmin, float ymin, float zmin) {
@@ -345,6 +484,8 @@ static struct DestructibleNode *createNode(float x, float y, float z)
     DestructibleNode *node = new DestructibleNode(x, y, z);
     node->velocity = Vector3();
     nodes.push_back(node);
+    node->node_num = node_counter;
+    node_counter++;
     
     return node;
 }

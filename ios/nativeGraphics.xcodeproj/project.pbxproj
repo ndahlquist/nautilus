@@ -37,6 +37,7 @@
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
+		55A7C76B1766C01E00FF3C09 /* jellyfishvox.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C76A1766C01E00FF3C09 /* jellyfishvox.obj */; };
 		55B120B01763DE4E00A9912A /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120AF1763DE4E00A9912A /* cube.obj */; };
 		55B120B41763DE5A00A9912A /* submarine.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120B21763DE5A00A9912A /* submarine.obj */; };
 		55B120B81763DE6F00A9912A /* jellyfish_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55B120B51763DE6F00A9912A /* jellyfish_albedo.jpg */; };
@@ -102,6 +103,7 @@
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
+		55A7C76A1766C01E00FF3C09 /* jellyfishvox.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfishvox.obj; path = ../../res/raw/jellyfishvox.obj; sourceTree = "<group>"; };
 		55B120AF1763DE4E00A9912A /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cube.obj; path = ../../res/raw/cube.obj; sourceTree = "<group>"; };
 		55B120B21763DE5A00A9912A /* submarine.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = submarine.obj; path = ../../res/raw/submarine.obj; sourceTree = "<group>"; };
 		55B120B51763DE6F00A9912A /* jellyfish_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = jellyfish_albedo.jpg; path = ../../res/drawable/jellyfish_albedo.jpg; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55A7C76A1766C01E00FF3C09 /* jellyfishvox.obj */,
 				55B120EB176442B700A9912A /* jellyfish.obj */,
 				55793606174F067200E1AB4E /* icosphere.obj */,
 				55E2D29E175D5A510099F69E /* cave2.obj */,
@@ -375,6 +378,7 @@
 				55B120C11763DE9D00A9912A /* dr_square_v.glsl in Resources */,
 				55B120C21763DE9D00A9912A /* jellyfish_v.glsl in Resources */,
 				55B120EC176442B700A9912A /* jellyfish.obj in Resources */,
+				55A7C76B1766C01E00FF3C09 /* jellyfishvox.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

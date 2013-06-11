@@ -30,7 +30,7 @@ private:
     bool shotBomb;
 
 };
-
+// 18,000 x 15 x 5 / 100
 level0::level0() : basicLevel() {
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.

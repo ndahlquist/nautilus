@@ -63,7 +63,7 @@ void *resourceCB(const char *cfileName)
     
     if ([fileType isEqualToString:@"obj"] || [fileType isEqualToString:@"glsl"]) {
         return objResourceCB([fileComponents objectAtIndex:0], fileType);
-    } else if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"jpeg"]) {
+    } else if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"jpeg"] || [fileType isEqualToString:@"bmp"]) {
         return imageResourceCB([fileComponents objectAtIndex:0], fileType);
     }
     return NULL;
