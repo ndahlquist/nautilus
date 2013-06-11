@@ -74,7 +74,6 @@ public:
     vector<struct characterInstance> instances;
 
     bool collide;
-    bool destroyed;
 };
 
 

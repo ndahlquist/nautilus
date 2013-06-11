@@ -91,23 +91,7 @@ void renderDestroy() {
 }
 
 void RenderFrame() {
-    static int dtimer = 0;
-    static bool destroyed = false;
     pipeline->ClearBuffers();
-    
-    if (dtimer > 10) {
-        dtimer = 0;
-        destroyed = false;
-        loadLevel();
-    } else if (destroyed)
-        dtimer++;
-    else if(level->health <= 0.0f) {
-        destroyed = true;
-        level->DestroyCharacter();
-        dtimer++;
-        //renderDestroy();
-        //loadLevel();
-    }
     
     //if(level->transitionLight > 1.0f)
         //loadLevel();

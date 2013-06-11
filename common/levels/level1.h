@@ -13,6 +13,7 @@ class level1 : public basicLevel {
 public:
     level1(const char * mazeFile, Vector3f target);
     void RenderFrame();
+    void RestartLevel();
     
 private:
     void addJellyfish();
@@ -31,6 +32,9 @@ private:
     
     bool shotBomb;
     Timer frameRate;
+    
+    bool dead;
+    Timer deathTimer;
     
     Vector3f goal;
 };
@@ -56,7 +60,28 @@ level1::level1(const char * mazeFile, Vector3f target) : basicLevel(mazeFile) {
     goal = target;
     
     frameRate.reset();
+    
+    dead = false;
 
+}
+
+void level1::RestartLevel() {
+    destructible = new RenderDestructible("submarine.obj", NULL, "albedo_f.glsl");
+    destructible->AddTexture("submarine_albedo.jpg", false);
+    
+    cameraPos = Vector3f(0, 180, 100);
+    cameraPan = Vector3f(0, 200, 0);
+
+    health = 1.0;
+    character->instances[0].position = Vector3f(0,0,0);
+    character->instances[0].targetPosition = Vector3f(0,0,0);
+    character->instances[0].velocity = Vector3f(0,0,0);
+    jellyfish->instances.clear();
+    octopus->instances.clear();
+    bomb->instances.clear();
+    
+    dead = false;
+    
 }
 
 void level1::addJellyfish() {
@@ -78,6 +103,15 @@ void level1::addOctopus() {
 }
 
 void level1::RenderFrame() {
+    
+    if(health <= 0.0f && !dead) {
+        dead = true;
+        deathTimer.reset();
+    }
+    
+    if(dead && deathTimer.getSeconds() > 4.0)
+        RestartLevel();
+    
     // Setup perspective matrices
     pLoadIdentity();
     perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
@@ -97,37 +131,38 @@ void level1::RenderFrame() {
     mvPopMatrix();
     
     // Process user input
-    if(touchDown) {
-        uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
-        if(geometry[3] != 255) {
-            float depth = geometry[3] / 128.0f - 1.0f;            
-            Matrix4f mvp = projection.top()*model_view.top();
-            Eigen::Vector4f pos = mvp.inverse() * Eigen::Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
-            character->instances[0].targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
+    if(!dead) {
+        if(touchDown) {
+            uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
+            if(geometry[3] != 255) {
+                float depth = geometry[3] / 128.0f - 1.0f;            
+                Matrix4f mvp = projection.top()*model_view.top();
+                Eigen::Vector4f pos = mvp.inverse() * Eigen::Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
+                character->instances[0].targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
+            }
+            delete[] geometry;
         }
-        delete[] geometry;
-    }
-    
-    for(int i = 0; i < 3; i++)
-        cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->instances[0].position[i];
         
-    if(touchDown && !shotBomb) {
-        struct physicsInstance newBomb;
-        newBomb.position = character->instances[0].position;
-        newBomb.velocity = 200.0f * Eigen::Vector3f(-cos(character->instances[0].rot[0]), 1.0f, sin(character->instances[0].rot[0]));
-        bomb->instances.push_back(newBomb);
-        shotBomb = true;
+        for(int i = 0; i < 3; i++)
+            cameraPan[i] = (1.0 - PAN_LERP_FACTOR) * cameraPan[i] + PAN_LERP_FACTOR * character->instances[0].position[i];
+            
+        if(touchDown && !shotBomb) {
+            struct physicsInstance newBomb;
+            newBomb.position = character->instances[0].position;
+            newBomb.velocity = 200.0f * Eigen::Vector3f(-cos(character->instances[0].rot[0]), 1.0f, sin(character->instances[0].rot[0]));
+            bomb->instances.push_back(newBomb);
+            shotBomb = true;
+        }
+        
+        if(!touchDown)
+            shotBomb = false;
+        
+        while(jellyfish->instances.size() < 15)
+          addJellyfish();
+     
+        while(octopus->instances.size() < 7)
+          addOctopus();
     }
-    
-    if(!touchDown)
-        shotBomb = false;
-    
-    while(jellyfish->instances.size() < 15)
-      addJellyfish();
- 
-    while(octopus->instances.size() < 7)
-      addOctopus();
-   
    
     float timeSinceLast = frameRate.getSeconds();
     frameRate.reset();
@@ -156,19 +191,14 @@ void level1::RenderFrame() {
     octopus->Update();
     Water->Update();
     
-    //mvPushMatrix();
-    //destructible->Render();
-    //mvPopMatrix();
-    
     mvPushMatrix();
     translate(character->instances[0].position);
     rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     scalef(.15f);
-    if (health < .05) {
+    if(dead)
         destructible->Render();
-    } else {
+    else
         character->Render();
-    }
     mvPopMatrix();
 
     mvPushMatrix();
@@ -225,9 +255,21 @@ void level1::RenderFrame() {
     bigLight->color[0] = 1.0 - .1 * transitionLight;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8 - .1 * transitionLight;
-    bigLight->brightness = 32000.0 /** health*/ + 320000.0 * transitionLight;
+    bigLight->brightness = 32000.0 * health + 320000.0 * transitionLight;
     bigLight->Render();
     mvPopMatrix();
+    
+    if(dead) {
+        mvPushMatrix();
+        translate(character->instances[0].position + 40.0f * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f));
+        scalef(250);
+        explosiveLight->color[0] = 1.00f;
+        explosiveLight->color[1] = 0.33f;
+        explosiveLight->color[2] = 0.07f;
+        explosiveLight->brightness = 10000000.0f;
+        explosiveLight->Render();
+        mvPopMatrix();
+    }
     
     for(int i = 0; i < bomb->instances.size(); i++) {
         if(bomb->instances[i].timer.getSeconds() <= BOMB_TIMER_LENGTH) {
@@ -274,18 +316,19 @@ void level1::RenderFrame() {
         }
     }
     
-    mvPushMatrix();
-    translate(character->instances[0].position);
-    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
-    rotate(0.0,0,-PI / 2);
-    scalef(300.0f);
-    spotLight->color[0] = 0.4f;
-    spotLight->color[1] = 0.6f;
-    spotLight->color[2] = 1.0f;
-    spotLight->brightness = 16000.0;
-    spotLight->Render();
-    mvPopMatrix();
-    
+    if(!dead) {
+        mvPushMatrix();
+        translate(character->instances[0].position);
+        rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
+        rotate(0.0,0,-PI / 2);
+        scalef(300.0f);
+        spotLight->color[0] = 0.4f;
+        spotLight->color[1] = 0.6f;
+        spotLight->color[2] = 1.0f;
+        spotLight->brightness = 16000.0;
+        spotLight->Render();
+        mvPopMatrix();
+    }
     
     // Render the light around target
     mvPushMatrix();

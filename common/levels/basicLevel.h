@@ -11,8 +11,8 @@ public:
     basicLevel(const char * mazeFile);
     void RotatePerspective();
     virtual void RenderFrame();
+    void RestartLevel();
     void FreeLevel();
-    void DestroyCharacter();
     void RenderDestroyCharacter();
     
     Character * character;
@@ -22,7 +22,6 @@ public:
     HUD * hud;
     float health;
 
-    
     Vector3f cameraPos;
     Vector3f cameraPan;
     
@@ -30,15 +29,15 @@ public:
     float transitionLight;
 };
 
+void basicLevel::RestartLevel() {
+    
+}
+
 void basicLevel::FreeLevel() {
     free(character);
     free(cave);
     free(bigLight);
     free(hud);
-}
-
-void basicLevel::DestroyCharacter() {
-    character->destroyed = true;
 }
 
 void basicLevel::RenderDestroyCharacter() {
