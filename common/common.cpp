@@ -33,7 +33,7 @@
 #include "log.h"
 
 #include "levels/basicLevel.h"
-#include "levels/level0.h"
+#include "levels/level1.h"
 
 using namespace std;
 using Eigen::Matrix4f;
@@ -60,6 +60,10 @@ void SetResourceCallback(void*(*cb)(const char *, int *, int *)) {
     resourceCallback = cb;
 }
 
+void loadLevel() {
+    level = new level1("maze3x4x2.obj", Eigen::Vector3f(1000.0f, -400.0f, -000.0f));
+}
+
 void Setup(int w, int h) {
     if(!resourceCallback) {
         LOGE("Resource callback not set.");
@@ -69,7 +73,7 @@ void Setup(int w, int h) {
     displayHeight = h;
     pipeline = new RenderPipeline();
 
-    level = new level0();
+    loadLevel();
 }
 
 void setFrameBuffer(int handle) {
@@ -78,6 +82,10 @@ void setFrameBuffer(int handle) {
 
 void RenderFrame() {
     pipeline->ClearBuffers();
+    if(level->health <= 0.0f)
+        loadLevel();
+    if(level->transitionLight > 1.0f)
+        loadLevel(); 
     level->RenderFrame();
     fpsMeter();
 }

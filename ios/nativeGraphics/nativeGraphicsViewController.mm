@@ -74,6 +74,8 @@ void *resourceCB(const char *cfileName, int * width, int * height)
         printf("You should probably have passed width and height here.");
         int tempw, temph;
         return imageResourceCB([fileComponents objectAtIndex:0], fileType, tempw, temph);
+    } else if ([fileType isEqualToString:@"png"]) {
+        return imageResourceCB([fileComponents objectAtIndex:0], fileType, *width, *height);
     }
     return NULL;
 }
@@ -83,7 +85,33 @@ void *objResourceCB(NSString *fileName, NSString *fileType)
     NSString *fileContents = parseResource(fileName, fileType);
     return strdup([fileContents UTF8String]);
 }
+/*
+void *pngResourceCB(NSString *fileName, NSString *fileType, int & width, int & height)
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"healthbar" ofType:@"png"];
+    //NSData *texData = [[NSData alloc] initWithContentsOfFile:path];
+    UIImage *image = [UIImage imageWithContentsOfFile:path]; //[[UIImage alloc] initWithData:texData];
+    if (image == nil)
+        NSLog(@"Do real error checking here");
+    
+    width = CGImageGetWidth(image.CGImage);
+    height = CGImageGetHeight(image.CGImage);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    void *imageData = malloc( height * width * 4 );
+    CGContextRef context = CGBitmapContextCreate( imageData, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
+    CGColorSpaceRelease( colorSpace );
+    CGContextClearRect( context, CGRectMake( 0, 0, width, height ) );
+    CGContextTranslateCTM( context, 0, height - height );
+    CGContextDrawImage( context, CGRectMake( 0, 0, width, height ), image.CGImage );
+    
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    
+    CGContextRelease(context);
+    
+    return imageData;
 
+}
+*/
 void *imageResourceCB(NSString *fileName, NSString *fileType, int & width, int & height)
 {
     // Get Core Graphics image referece
@@ -98,11 +126,22 @@ void *imageResourceCB(NSString *fileName, NSString *fileType, int & width, int &
     }
     
     // Create bitmap context
-    width = CGImageGetWidth(imageRef);
-    height = CGImageGetHeight(imageRef);
+    width = 1024;//CGImageGetWidth(imageRef);
+    height = 1024;//CGImageGetHeight(imageRef);
     GLubyte * imageData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
-    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
+    CGContextRef imageContext;// = CGBitmapContextCreate(imageData, width, height, 8, width*4,
+                                                    //CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);
+    if ([fileType isEqualToString:@"png"]) {
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        imageContext = CGBitmapContextCreate( imageData, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
+        CGColorSpaceRelease( colorSpace );
+        CGContextClearRect( imageContext, CGRectMake( 0, 0, width, height ) );
+        CGContextTranslateCTM( imageContext, 0, height - height );
+    } else {
+        imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4,
                                                        CGImageGetColorSpace(imageRef), kCGImageAlphaPremultipliedLast);
+    }
+    
     // Flip the image
     //CGContextTranslateCTM(imageContext, 0, height);
     //CGContextScaleCTM(imageContext, 1.0, -1.0);

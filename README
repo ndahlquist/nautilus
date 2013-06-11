@@ -7,6 +7,22 @@ The 'android', 'ios and 'linux' directories contain build files for their
 respective platforms, which call the code in the 'common' directory through
 the 'common.h' api.
 
-Based on source code from the Android Open Source Project, and Stanford CS148
-starter project code.
+Based on source code from the Android Open Source Project, the Stanford CS148
+starter project code, and Eigen.
 
+
+
+
+Build instructions:
+
+Android:
+cd android
+ndk-build
+ant debug install
+
+Linux:
+cd linux
+make
+
+iOS:
+Some dark magic with X-Code.

@@ -22,12 +22,14 @@
     package="edu.stanford.nativegraphics">
     <uses-feature android:glEsVersion="0x00020000"/>
     <uses-feature android:name="android.hardware.screen.landscape"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-sdk android:minSdkVersion="8"
               android:targetSdkVersion="17"></uses-sdk>
         <application
             android:label="@string/gl2jni_activity"
             android:allowBackup="true">
             <activity android:name="MainActivity"
+                android:icon="@drawable/radar"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 android:screenOrientation="landscape"
             	android:configChanges="orientation|keyboardHidden">
