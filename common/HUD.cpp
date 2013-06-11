@@ -7,7 +7,7 @@
 #include "common.h"
 #include "log.h"
 
-HUD::HUD() : RenderObject("square.obj", "overlay_v.glsl", "overlay.glsl", false) { 
+HUD::HUD() : RenderObject("square.obj", "overlay_v.glsl", "overlay_f.glsl", false) { 
     healthbarTex = AddTexture("healthbar.png");
     healthbarBorderTex = AddTexture("healthbar_border.png");
     radarTex = AddTexture("radar.png");
@@ -84,8 +84,7 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
 }
 
 void HUD::Render(float health) {
-
-    RenderElement(healthbarBorderTex, -.1f, .8f, .8f, .08f);
-    RenderElement(healthbarTex, -.15f, .8f, .7f, .08f);
-    RenderElement(radarTex, -.8f, -.7f, .1f, .2f);
+    RenderElement(healthbarBorderTex, -.15f, .9f, .8f, .06f);
+    RenderElement(healthbarTex, -.15f, .9f, .8f * health, .06f);
+    RenderElement(radarTex, -.8f, -.75f, .15f, .15f * (float) displayWidth / (float) displayHeight);
 }

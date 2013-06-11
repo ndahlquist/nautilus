@@ -135,12 +135,16 @@ void level1::RenderFrame() {
         jellyfish->instances[i].targetPosition = character->instances[0].position;
         // Randomize movement
         float dist = (character->instances[0].position - jellyfish->instances[i].position).norm();
+        if(dist < 50.0f)
+            health -= .001; // TODO: * time
         jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     for(int i = 0; i < octopus->instances.size(); i++) {
         octopus->instances[i].targetPosition = character->instances[0].position;
         // Randomize movement
         float dist = (character->instances[0].position - octopus->instances[i].position).norm();
+        if(dist < 50.0f)
+            health -= .001; // TODO: * time
         octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     jellyfish->Update();
@@ -267,7 +271,7 @@ void level1::RenderFrame() {
     spotLight->Render();
     mvPopMatrix();
     
-    hud->Render(1.0f);
+    hud->Render(health);
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__
