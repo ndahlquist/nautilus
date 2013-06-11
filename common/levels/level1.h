@@ -80,7 +80,10 @@ void level1::RestartLevel() {
     octopus->instances.clear();
     bomb->instances.clear();
     
+    transitionLight = 0.0;
+    
     dead = false;
+    goalReached = false;
     
 }
 
@@ -354,7 +357,10 @@ void level1::RenderFrame() {
     if(goalReached) {
         transitionLight += .2f * timeSinceLast;
         health = min(health + 1.0f * timeSinceLast, 1.0f);
-    }   
+    }
+    
+    if(transitionLight >= 1.0f)
+        RestartLevel();
     
     hud->Render(health, target);
 }

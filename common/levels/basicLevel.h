@@ -13,7 +13,6 @@ public:
     virtual void RenderFrame();
     void RestartLevel();
     void FreeLevel();
-    void RenderDestroyCharacter();
     
     Character * character;
     RenderObject * cave;
@@ -38,27 +37,6 @@ void basicLevel::FreeLevel() {
     free(cave);
     free(bigLight);
     free(hud);
-}
-
-void basicLevel::RenderDestroyCharacter() {
-    // Setup perspective matrices
-    /*pLoadIdentity();
-    perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
-    
-    mvLoadIdentity();
-    lookAt(cameraPos(0)+cameraPan(0), cameraPos(1)+cameraPan(1), cameraPos(2)+cameraPan(2), cameraPan(0), cameraPan(1), cameraPan(2), 0, 1, 0);
-    RotatePerspective();
- 
-    mvPushMatrix();
-    translate(character->instances[0].position);
-    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
-    scalef(.15f);
-    if (character->destroyed) {
-        character->DestructibleRender();
-    } else {
-        character->Render();
-    }
-    mvPopMatrix();*/
 }
 
 basicLevel::basicLevel(const char * mazeFile) {
