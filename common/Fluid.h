@@ -12,7 +12,7 @@ using std::vector;
 using Eigen::Vector3f;
 
 typedef Eigen::Triplet<double> T;
-#define Cell_NUM_X 5
+#define Cell_NUM_X 3
 #define Cell_NUM_Y 6
 #define Cell_NUM_Z 6
 #define KCFL 0.7f
@@ -20,7 +20,7 @@ typedef Eigen::Triplet<double> T;
 #define DIRECTION_X 0
 #define DIRECTION_Y 1
 #define DIRECTION_Z 2
-#define GRAVITY -0.8f
+#define GRAVITY -2.f
 #define FRAME_TIME 0.04f
 
 class Fluid : public RenderObject {
@@ -28,7 +28,7 @@ public:
     Fluid(const char *vertexShaderFilename, const char *fragmentShaderFilename);
 	list<struct Particle*> listParticles;
     void Update();
-    void Render();
+    void Render(float rx,float ry, float rz);
 
 private:
     void RenderPass(int instance, GLfloat *buffer, int num);
@@ -42,6 +42,7 @@ private:
     int status[Cell_NUM_X+2*BUFFER][Cell_NUM_Y+2*BUFFER][Cell_NUM_Z+2*BUFFER];
     int layer[Cell_NUM_X][Cell_NUM_Y][Cell_NUM_Z];
     float p[Cell_NUM_X][Cell_NUM_Y][Cell_NUM_Z];
+    Eigen::Matrix4f rot;
     
 	int frameCount;
 	float maxVelocity;
@@ -61,11 +62,12 @@ private:
 	void ApplyPressure();
 	void MoveParticles(float time);
     void AddSource();
+    void Rotate(float, float, float);
     
     //mobile
     RenderObject* renderer;
-    float* GenVertexArrayInBound();
-    float* GenVertexArrayOutBound();
+    float* GenVertexArrayInBound(int&);
+    float* GenVertexArrayOutBound(int&);
     float* Surface(TRIANGLE*&, int&);
 };
 
@@ -686,20 +688,20 @@ void Fluid::AddSource(){
         }
 }
 
-float* Fluid::GenVertexArrayInBound(){
+float* Fluid::GenVertexArrayInBound(int& inBoundCount){
     float* vertices = new float[3*listParticles.size()];
     int bufferIndex = 0;
-    float radius = .1;
     for(list<struct Particle*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
         if((*iter)->inBound){
             vertices[bufferIndex++] =(*iter)->pos[0];
             vertices[bufferIndex++] =(*iter)->pos[1];
             vertices[bufferIndex++] =(*iter)->pos[2];
+            inBoundCount++;
         }
     }
     return vertices;
 }
-float* Fluid::GenVertexArrayOutBound(){
+float* Fluid::GenVertexArrayOutBound(int& outBoundCount){
     float* vertices = new float[3*listParticles.size()];
     int bufferIndex = 0;
     for(list<struct Particle*>::iterator iter=listParticles.begin();iter != listParticles.end();iter++){
@@ -707,21 +709,46 @@ float* Fluid::GenVertexArrayOutBound(){
             vertices[bufferIndex++] =(*iter)->pos[0];
             vertices[bufferIndex++] =(*iter)->pos[1];
             vertices[bufferIndex++] =(*iter)->pos[2];
+            outBoundCount++;
         }
     }
     return vertices;
 }
 
+void Fluid::Rotate(float rx, float ry, float rz){
+    Matrix4f rotx, roty, rotz;
+    rotx = Matrix4f::Identity();
+    roty = Matrix4f::Identity();
+    rotz = Matrix4f::Identity();
+    float cosrx, sinrx, cosry, sinry, cosrz, sinrz;
+    cosrx = cosf(rx); sinrx = sinf(rx);
+    cosry = cosf(ry); sinry = sinf(ry);
+    cosrz = cosf(rz); sinrz = sinf(rz);
+    
+    rotx(1,1) = cosrx; rotx(1,2) = -sinrx;
+    rotx(2,1) = sinrx; rotx(2,2) = cosrx;
+    
+    roty(0,0) = cosry; roty(2,0) = -sinry;
+    roty(0,2) = sinry; roty(2,2) = cosry;
+    
+    rotz(0,0) = cosrz; rotz(0,1) = -sinrz;
+    rotz(1,0) = sinrz; rotz(1,1) = cosrz;
+    
+    rot = (rotx * roty * rotz);
+}
+
 // Overrides RenderObject::Render
-void Fluid::Render() {
+void Fluid::Render(float rx, float ry, float rz) {
     // In bound
-    float * mesh = GenVertexArrayInBound();
-    RenderObject::Render(0, mesh, listParticles.size());
-    delete[] mesh;
+    int inBoundCount = 0;
+    float * mesh = GenVertexArrayInBound(inBoundCount);
+    RenderObject::Render(0, mesh, inBoundCount);
+    //delete[] mesh;
 
     // Out bound
-    mesh = GenVertexArrayOutBound();
-    RenderObject::Render(0, mesh, listParticles.size());
+    int outBoundCount = 0;
+    mesh = GenVertexArrayOutBound(outBoundCount);
+    RenderObject::Render(0, mesh, outBoundCount);
     delete[] mesh;
 }
 
