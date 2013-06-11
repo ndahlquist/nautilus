@@ -30,7 +30,7 @@ private:
     RenderDestructible *destructible;
     
     bool shotBomb;
-
+    Timer frameRate;
 };
 
 level1::level1() : basicLevel() {
@@ -56,6 +56,8 @@ level1::level1() : basicLevel() {
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
     
     shotBomb = false;
+    
+    frameRate.reset();
 
 }
 
@@ -128,6 +130,9 @@ void level1::RenderFrame() {
     while(octopus->instances.size() < 7)
       addOctopus();
    
+   
+    float timeSinceLast = frameRate.getSeconds();
+    frameRate.reset();
     // Run physics.
     bomb->Update();
     character->Update();
@@ -136,7 +141,7 @@ void level1::RenderFrame() {
         // Randomize movement
         float dist = (character->instances[0].position - jellyfish->instances[i].position).norm();
         if(dist < 50.0f)
-            health -= .001; // TODO: * time
+            health -= .05f * timeSinceLast;
         jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     for(int i = 0; i < octopus->instances.size(); i++) {
@@ -144,7 +149,7 @@ void level1::RenderFrame() {
         // Randomize movement
         float dist = (character->instances[0].position - octopus->instances[i].position).norm();
         if(dist < 50.0f)
-            health -= .001; // TODO: * time
+            health -= .05f * timeSinceLast;
         octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     jellyfish->Update();

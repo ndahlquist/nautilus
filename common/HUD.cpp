@@ -86,5 +86,5 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
 void HUD::Render(float health) {
     RenderElement(healthbarBorderTex, -.15f, .9f, .8f, .06f);
     RenderElement(healthbarTex, -.15f, .9f, .8f * health, .06f);
-    RenderElement(radarTex, -.8f, -.75f, .15f, .15f * (float) displayWidth / (float) displayHeight);
+    RenderElement(radarTex, -.8f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f, .15f, .15f * (float) displayWidth / (float) displayHeight);
 }
