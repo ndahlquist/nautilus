@@ -84,7 +84,7 @@ int node_counter = 0;
 
 RenderDestructible::RenderDestructible(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
     
-    /*std::vector<struct Vertex> vertices;
+    std::vector<struct Vertex> vertices;
     std::vector<struct face> faces;
     getObjectData((char *)resourceCallback(objFilename), numVertices, vertices, faces, false, false);
     
@@ -177,14 +177,6 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
         int yend_idx = ceil((yend - ymin)/voxelSize);
         int zstart_idx = floor((zstart - zmin)/voxelSize);
         int zend_idx = ceil((zend - zmin)/voxelSize);
-        
-    <!--    if (xstart_idx == xend_idx)
-            xend_idx += 1;
-        if (ystart_idx == yend_idx)
-            yend_idx += 1;
-        if (zstart_idx == zend_idx)
-            zend_idx += 1;
-     -->
     
         for (int xdim = xstart_idx; xdim <= xend_idx; xdim++) {
             for (int ydim = ystart_idx; ydim <= yend_idx; ydim++) {
@@ -217,7 +209,7 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
             }
         }
     }
-    for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
+    /*for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
         DestructibleNode *node = nodes[node_idx];
         printf("v %.4f %.4f %.4f\n", node->position.x, node->position.y, node->position.z);
     }
@@ -233,7 +225,6 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
         DestructibleCell *cell = cells[cell_idx];
         printf("cn %d %d %d %d %d %d %d %d\n", cell->nodes[0]->node_num, cell->nodes[1]->node_num, cell->nodes[2]->node_num, cell->nodes[3]->node_num, cell->nodes[4]->node_num, cell->nodes[5]->node_num, cell->nodes[6]->node_num, cell->nodes[7]->node_num);
     }*/
-    
 }
 
 static void parseObjLine(char * line, std::vector<struct Vertex> & vertices, std::vector<struct Texture> & textures, std::vector<struct face> & faces) {
