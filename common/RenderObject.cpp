@@ -135,10 +135,10 @@ void RenderObject::RenderPass(int instance, GLfloat *buffer, int num) {
         checkGlError("texture");
     }
     
-    if (timeUniform != -1) {
-      glUniform1f(timeUniform, timer.getSeconds());
-    } 
-   // Pass normal map
+    if(timeUniform != -1)
+        glUniform1f(timeUniform, timer.getSeconds());
+
+    // Pass normal map
     if(normalMapUniform != -1 && normalTexture != -1) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalTexture);

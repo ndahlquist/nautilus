@@ -26,8 +26,6 @@ basicLevel::basicLevel() {
     cameraPos = Vector3f(0, 180, 100);
     cameraPan = Vector3f(0, 200, 0);
 
-    // cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
-    // cave->AddTexture("cave_albedo.jpg", false);
     cave = new RenderObject("cave2.obj", NULL, "caustics_f.glsl");
     cave->AddTexture("caustic_albedo.jpg", false);
     

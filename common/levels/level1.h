@@ -35,7 +35,7 @@ private:
 
 level1::level1() : basicLevel() {
     
-    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
+    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
     octopus = new Character("octopus.obj", NULL, "albedo_f.glsl");
