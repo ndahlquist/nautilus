@@ -81,7 +81,7 @@ void RenderObject::AddTexture(const char *textureFilename, bool normalmap) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     
     glBindTexture(GL_TEXTURE_2D, 0);
-    //free(imageData); // TODO: Not allowed on Samsung Galaxy (not malloc'd).
+    free(imageData); // TODO: Not allowed on Samsung Galaxy (not malloc'd).
     
     checkGlError("AddTexture");
     
