@@ -21,6 +21,8 @@ public:
     Vector3f cameraPos;
     Vector3f cameraPan;
     
+    bool goalReached;
+    float transitionLight;
 };
 
 basicLevel::basicLevel(const char * mazeFile) {
@@ -40,6 +42,8 @@ basicLevel::basicLevel(const char * mazeFile) {
     
     hud = new HUD();
     health = 1.0f;
+    goalReached = false;
+    transitionLight = 0.0f;
 };
 
 // Clamps input to (-max, max) according to curve.
@@ -112,7 +116,7 @@ void basicLevel::RenderFrame() {
     bigLight->Render();
     mvPopMatrix();
     
-    hud->Render(0.8f);
+    //hud->Render(0.8f);
 }
 
 

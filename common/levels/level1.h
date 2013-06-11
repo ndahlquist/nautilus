@@ -11,7 +11,7 @@
 
 class level1 : public basicLevel {
 public:
-    level1(const char * mazeFile);
+    level1(const char * mazeFile, Vector3f target);
     void RenderFrame();
     
 private:
@@ -31,9 +31,11 @@ private:
     
     bool shotBomb;
     Timer frameRate;
+    
+    Vector3f goal;
 };
 
-level1::level1(const char * mazeFile) : basicLevel(mazeFile) {
+level1::level1(const char * mazeFile, Vector3f target) : basicLevel(mazeFile) {
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
@@ -53,6 +55,8 @@ level1::level1(const char * mazeFile) : basicLevel(mazeFile) {
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
     
     shotBomb = false;
+    
+    goal = target;
     
     frameRate.reset();
 
@@ -149,6 +153,7 @@ void level1::RenderFrame() {
             health -= .05f * timeSinceLast;
         octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
+    health = min(health + .01f * timeSinceLast, 1.0f);
     jellyfish->Update();
     octopus->Update();
     Water->Update();
@@ -202,16 +207,23 @@ void level1::RenderFrame() {
             mvPopMatrix();
         }
     }
+    
+    // Render the goal
+    mvPushMatrix();
+    translate(goal);
+    scalef(50);
+    bomb->Render(0);
+    mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
     mvPushMatrix();
     translate(character->instances[0].position);
-    bigLight->color[0] = 1.0;
+    bigLight->color[0] = 1.0 - .1 * transitionLight;
     bigLight->color[1] = 1.0;
-    bigLight->color[2] = 0.8;
-    bigLight->brightness = 32000.0 * (.4f + health);
+    bigLight->color[2] = 0.8 - .1 * transitionLight;
+    bigLight->brightness = 32000.0 * health + 320000.0 * transitionLight;
     bigLight->Render();
     mvPopMatrix();
     
@@ -272,7 +284,34 @@ void level1::RenderFrame() {
     spotLight->Render();
     mvPopMatrix();
     
-    hud->Render(health);
+    
+    // Render the light around target
+    mvPushMatrix();
+    translate(goal);
+    scalef(150);
+    explosiveLight->color[0] = 0.8f;
+    explosiveLight->color[1] = 1.0f;
+    explosiveLight->color[2] = 0.8f;
+    explosiveLight->brightness = 10000000.0f;
+    explosiveLight->Render();
+    mvPopMatrix();
+    
+    // TODO: clean this up
+    Vector3f delta = goal - character->instances[0].position;
+    Eigen::Vector2f delta2 = Eigen::Vector2f(delta(0), -delta(2));
+    float angle = atan2(delta2(0), delta2(1));
+    float distance = min(delta2.norm() / 1000.0f, 1.0f);
+    float target[2] = {distance * sin(angle), distance * cos(angle)};
+    
+    if((goal - character->instances[0].position).norm() <= 200.0f)
+        goalReached = true;
+    
+    if(goalReached) {
+        transitionLight += .2f * timeSinceLast;
+        health = min(health + 1.0f * timeSinceLast, 1.0f);
+    }   
+    
+    hud->Render(health, target);
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__

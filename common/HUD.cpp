@@ -11,7 +11,8 @@
 HUD::HUD() : RenderObject("square.obj", "overlay_v.glsl", "overlay_f.glsl", false) { 
     healthbarTex = AddTexture("healthbar.png");
     healthbarBorderTex = AddTexture("healthbar_border.png");
-    radarTex = AddTexture("radar.png");
+    radarTex = AddTexture("radar_back.png");
+    greenDotTex = AddTexture("green_dot.png");
 }
 
 GLuint HUD::AddTexture(const char *textureFilename) {
@@ -84,8 +85,11 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void HUD::Render(float health) {
+void HUD::Render(float health, float direction[]) {
     RenderElement(healthbarBorderTex, -.15f, .9f, .8f, .06f);
     RenderElement(healthbarTex, -.15f, .9f, .8f * health, .06f);
     RenderElement(radarTex, -.8f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f, .15f, .15f * (float) displayWidth / (float) displayHeight);
+    float deltaX = direction[0];
+    float deltaY = direction[1];
+    RenderElement(greenDotTex, -.8f + deltaX * .15f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f + deltaY * .15f * (float) displayWidth / (float) displayHeight, .01f, .01f * (float) displayWidth / (float) displayHeight);
 }
