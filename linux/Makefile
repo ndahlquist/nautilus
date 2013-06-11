@@ -12,7 +12,8 @@ FILES   := mainlinux ../common/common \
                      ../common/obj_parser \
                      ../common/PhysicsObject \
                      ../common/Character \
-                     ../common/RenderDestructible
+                     ../common/RenderDestructible \
+                     ../common/HUD
 
 #################################################################
 

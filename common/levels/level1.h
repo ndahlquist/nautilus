@@ -11,7 +11,7 @@
 
 class level1 : public basicLevel {
 public:
-    level1();
+    level1(const char * mazeFile, Vector3f target);
     void RenderFrame();
     
 private:
@@ -30,12 +30,14 @@ private:
     RenderDestructible *destructible;
     
     bool shotBomb;
-
+    Timer frameRate;
+    
+    Vector3f goal;
 };
 
-level1::level1() : basicLevel() {
+level1::level1(const char * mazeFile, Vector3f target) : basicLevel(mazeFile) {
     
-    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
+    jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
     octopus = new Character("octopus.obj", NULL, "albedo_f.glsl");
@@ -53,6 +55,10 @@ level1::level1() : basicLevel() {
     spotLight = new RenderLight("cone.obj", "dr_standard_v.glsl", "dr_spotlight_f.glsl");
     
     shotBomb = false;
+    
+    goal = target;
+    
+    frameRate.reset();
 
 }
 
@@ -89,7 +95,7 @@ void level1::RenderFrame() {
     /** Any geometry that will be collision detected
         should be rendered here, before user input. **/
     mvPushMatrix();
-    scalef(40);
+    scalef(200);
     cave->Render();
     mvPopMatrix();
     
@@ -125,6 +131,9 @@ void level1::RenderFrame() {
     while(octopus->instances.size() < 7)
       addOctopus();
    
+   
+    float timeSinceLast = frameRate.getSeconds();
+    frameRate.reset();
     // Run physics.
     bomb->Update();
     character->Update();
@@ -132,21 +141,26 @@ void level1::RenderFrame() {
         jellyfish->instances[i].targetPosition = character->instances[0].position;
         // Randomize movement
         float dist = (character->instances[0].position - jellyfish->instances[i].position).norm();
+        if(dist < 50.0f)
+            health -= .05f * timeSinceLast;
         jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     for(int i = 0; i < octopus->instances.size(); i++) {
         octopus->instances[i].targetPosition = character->instances[0].position;
         // Randomize movement
         float dist = (character->instances[0].position - octopus->instances[i].position).norm();
+        if(dist < 50.0f)
+            health -= .05f * timeSinceLast;
         octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
+    health = min(health + .01f * timeSinceLast, 1.0f);
     jellyfish->Update();
     octopus->Update();
     Water->Update();
     
-    mvPushMatrix();
-    destructible->Render();
-    mvPopMatrix();
+    //mvPushMatrix();
+    //destructible->Render();
+    //mvPopMatrix();
     
     mvPushMatrix();
     translate(character->instances[0].position);
@@ -163,7 +177,6 @@ void level1::RenderFrame() {
     rotatef(90, 0,0,-1);
     Water->Render(0,0,0);
     mvPopMatrix();
-    
     
     for(int i = 0; i < jellyfish->instances.size(); i++) {
         mvPushMatrix();
@@ -194,16 +207,23 @@ void level1::RenderFrame() {
             mvPopMatrix();
         }
     }
+    
+    // Render the goal
+    mvPushMatrix();
+    translate(goal);
+    scalef(50);
+    bomb->Render(0);
+    mvPopMatrix();
 
     ////////////////////////////////////////////////////
     // Using g buffer, render lights
     
     mvPushMatrix();
     translate(character->instances[0].position);
-    bigLight->color[0] = 1.0;
+    bigLight->color[0] = 1.0 - .1 * transitionLight;
     bigLight->color[1] = 1.0;
-    bigLight->color[2] = 0.8;
-    bigLight->brightness = 16000.0;
+    bigLight->color[2] = 0.8 - .1 * transitionLight;
+    bigLight->brightness = 32000.0 * health + 320000.0 * transitionLight;
     bigLight->Render();
     mvPopMatrix();
     
@@ -236,9 +256,9 @@ void level1::RenderFrame() {
                     jellyfish->instances.erase(jellyfish->instances.begin()+j);
                     j--;  
                 }
-	    }
-	    for (int j = 0; j < octopus->instances.size(); ++j) {
-		if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
+	        }
+	        for(int j=0; j < octopus->instances.size(); ++j) {
+                if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
                     // Kill this octopus
                     octopus->instances.erase(octopus->instances.begin()+j);
                     j--;  
@@ -263,6 +283,35 @@ void level1::RenderFrame() {
     spotLight->brightness = 16000.0;
     spotLight->Render();
     mvPopMatrix();
+    
+    
+    // Render the light around target
+    mvPushMatrix();
+    translate(goal);
+    scalef(150);
+    explosiveLight->color[0] = 0.8f;
+    explosiveLight->color[1] = 1.0f;
+    explosiveLight->color[2] = 0.8f;
+    explosiveLight->brightness = 10000000.0f;
+    explosiveLight->Render();
+    mvPopMatrix();
+    
+    // TODO: clean this up
+    Vector3f delta = goal - character->instances[0].position;
+    Eigen::Vector2f delta2 = Eigen::Vector2f(delta(0), -delta(2));
+    float angle = atan2(delta2(0), delta2(1));
+    float distance = min(delta2.norm() / 1000.0f, 1.0f);
+    float target[2] = {distance * sin(angle), distance * cos(angle)};
+    
+    if((goal - character->instances[0].position).norm() <= 200.0f)
+        goalReached = true;
+    
+    if(goalReached) {
+        transitionLight += .2f * timeSinceLast;
+        health = min(health + 1.0f * timeSinceLast, 1.0f);
+    }   
+    
+    hud->Render(health, target);
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__
