@@ -10,6 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "chamber.h"
+#include "simplex/3dnoise.h"
 
 using namespace Eigen;
 using namespace std;
@@ -172,6 +173,7 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
   for (Mesh::ConstVertexIter vIt = maze.vertices_begin(); vIt != maze.vertices_end(); ++vIt){
     Vec3f vert = maze.point(vIt);
     double effect = 0.4*tileSize * octave_noise_3d(6.0, .75, 2, vert[0]/scale, vert[1]/scale, vert[2]/scale);
+    //double effect = 0.4*tileSize * composedNoise(vert[0]/scale, vert[1]/scale, vert[2]/scale, 1, 0.75, 2);
     Vec3f shift(effect*maze.normal(vIt)[0], effect*maze.normal(vIt)[1], effect*maze.normal(vIt)[2]);
     maze.set_point(vIt, vert - shift);
     maze.set_texcoord2D(vIt, Vec2f(0,0));
@@ -192,6 +194,8 @@ void generateMesh(int width, int length, int height, vector <vector <vector<Cham
 
 void generateMaze(int width, int length, int height, double scale){
   //Use Kruskal's algorithm to get a maze starting with a 3d set of walls (i.e. cubes)
+  //initNoise(0);
+  genGrad(time(NULL));
   tileSize = scale;
 	width = width*2+1;
 	length = length*2+1;
