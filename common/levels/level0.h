@@ -120,9 +120,9 @@ void level0::RenderFrame() {
     jellyfish->Update();
     Water->Update();
     
-    mvPushMatrix();
-    destructible->Render();
-    mvPopMatrix();
+    //mvPushMatrix(); // TODO
+    //destructible->Render();
+    //mvPopMatrix();
     
     mvPushMatrix();
     translate(character->instances[0].position);
