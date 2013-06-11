@@ -83,7 +83,7 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void HUD::Render() {
+void HUD::Render(float health) {
 
     RenderElement(healthbarBorderTex, -.1f, .8f, .8f, .08f);
     RenderElement(healthbarTex, -.15f, .8f, .7f, .08f);

@@ -35,6 +35,9 @@ private:
 
 level1::level1() : basicLevel() {
     
+    cave = new RenderObject("maze3x4x2.obj", NULL, "caustics_f.glsl");
+    cave->AddTexture("caustic_albedo.jpg", false);
+    
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
@@ -89,7 +92,7 @@ void level1::RenderFrame() {
     /** Any geometry that will be collision detected
         should be rendered here, before user input. **/
     mvPushMatrix();
-    scalef(40);
+    scalef(200);
     cave->Render();
     mvPopMatrix();
     
@@ -236,9 +239,9 @@ void level1::RenderFrame() {
                     jellyfish->instances.erase(jellyfish->instances.begin()+j);
                     j--;  
                 }
-	    }
-	    for (int j = 0; j < octopus->instances.size(); ++j) {
-		if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
+	        }
+	        for(int j=0; j < octopus->instances.size(); ++j) {
+                if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
                     // Kill this octopus
                     octopus->instances.erase(octopus->instances.begin()+j);
                     j--;  
@@ -264,7 +267,7 @@ void level1::RenderFrame() {
     spotLight->Render();
     mvPopMatrix();
     
-    hud->Render();
+    hud->Render(1.0f);
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__

@@ -27,7 +27,7 @@ using namespace std;
 class HUD : public RenderObject {
 public:
     HUD();
-    void Render();
+    void Render(float health);
     void RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale);
     GLuint AddTexture(const char *textureFilename);
     

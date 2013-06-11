@@ -16,6 +16,7 @@ public:
     RenderObject * cave;
     RenderLight * bigLight;
     HUD * hud;
+    float health;
 
     Vector3f cameraPos;
     Vector3f cameraPan;
@@ -37,6 +38,7 @@ basicLevel::basicLevel() {
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
     
     hud = new HUD();
+    health = 1.0f;
 };
 
 // Clamps input to (-max, max) according to curve.
@@ -109,7 +111,7 @@ void basicLevel::RenderFrame() {
     bigLight->Render();
     mvPopMatrix();
     
-    hud->Render();
+    hud->Render(0.8f);
 }
 
 
