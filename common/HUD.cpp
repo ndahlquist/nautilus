@@ -8,10 +8,11 @@
 #include "log.h"
 
 HUD::HUD() : RenderObject("square.obj", "overlay_v.glsl", "overlay.glsl", false) { 
-    AddTexture("healthbar_back.jpg");
+    healthbarTex = AddTexture("healthbar_back.jpg");
+    radarTex = AddTexture("radar.png");
 }
 
-void HUD::AddTexture(const char *textureFilename) {
+GLuint HUD::AddTexture(const char *textureFilename) {
     // Load textures
     int width, height;
     GLubyte *imageData = (GLubyte *)loadResource(textureFilename, &width, &height);
@@ -32,7 +33,7 @@ void HUD::AddTexture(const char *textureFilename) {
     
     checkGlError("AddTexture");
     
-    texture = newTex;
+    return newTex;
 }
 
 void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale) {
@@ -83,7 +84,7 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
 
 void HUD::Render() {
 
-    RenderElement(texture, -.1f, .8f, .8f, .08f);
+    RenderElement(healthbarTex, -.1f, .8f, .8f, .08f);
 
-    RenderElement(texture, -.1f, -.8f, .8f, .08f);
+    RenderElement(radarTex, -.8f, -.7f, .1f, .2f);
 }

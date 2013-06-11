@@ -29,7 +29,10 @@ public:
     HUD();
     void Render();
     void RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale);
-    void AddTexture(const char *textureFilename);
+    GLuint AddTexture(const char *textureFilename);
+    
+    GLuint healthbarTex;
+    GLuint radarTex;
 };
 
 
