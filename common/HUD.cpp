@@ -75,10 +75,10 @@ void HUD::Render() {
     checkGlError("gvPositionHandle");
     
     // Pass texture coords
-    gvTexCoords = glGetAttribLocation(colorShader, "a_TexCoordinate");
-    glEnableVertexAttribArray(gvTexCoords);
-    glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 6);
-    checkGlError("gvTexCoords");
+    //gvTexCoords = glGetAttribLocation(colorShader, "a_TexCoordinate");
+    //glEnableVertexAttribArray(gvTexCoords);
+    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 6);
+    //checkGlError("gvTexCoords");
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
