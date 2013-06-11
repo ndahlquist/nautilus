@@ -35,8 +35,8 @@ void HUD::AddTexture(const char *textureFilename) {
     texture = newTex;
 }
 
-void HUD::Render() {
-
+void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale) {
+    
     if(!pipeline) {
         LOGE("RenderPipeline inaccessible.");
         exit(0);
@@ -51,18 +51,18 @@ void HUD::Render() {
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DITHER);
     
     GLuint u_displacement = glGetUniformLocation(colorShader, "u_displacement");
-    glUniform2f(u_displacement, .1f, .1f);
+    glUniform2f(u_displacement, xdisp, ydisp);
     
     GLuint u_scale = glGetUniformLocation(colorShader, "u_scale");
-    glUniform2f(u_scale, .1f, .2f); 
+    glUniform2f(u_scale, xscale, yscale); 
     
     // Pass texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
     glUniform1i(textureUniform, 0);
     checkGlError("texture");
 
@@ -74,16 +74,16 @@ void HUD::Render() {
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
     
-    // Pass texture coords
-    //gvTexCoords = glGetAttribLocation(colorShader, "a_TexCoordinate");
-    //glEnableVertexAttribArray(gvTexCoords);
-    //glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 6);
-    //checkGlError("gvTexCoords");
-    
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
-   
+}
+
+void HUD::Render() {
+
+    RenderElement(texture, -.1f, .8f, .8f, .08f);
+
+    RenderElement(texture, -.1f, -.8f, .8f, .08f);
 }
