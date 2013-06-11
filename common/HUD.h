@@ -32,6 +32,7 @@ public:
     GLuint AddTexture(const char *textureFilename);
     
     GLuint healthbarTex;
+    GLuint healthbarBorderTex;
     GLuint radarTex;
 };
 
