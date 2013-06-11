@@ -39,7 +39,8 @@ class RenderDestructible : public RenderObject {
 public:
     RenderDestructible(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void Render();
-    void RenderPass();
+    void RenderPass(int instance, GLfloat *buffer, int num);
+    GLfloat * getGeometry(int & num_vertices);
     
     bool explode;
     int ***voxelGrid3D;
