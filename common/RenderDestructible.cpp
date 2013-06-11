@@ -468,17 +468,12 @@ GLfloat * RenderDestructible::getGeometry(int & num_vertices) {
         }
     }
     
-    GLfloat * vertexBuffer = (float *)malloc((numSurfaceVertices + fragments.size()*3) * (3+3+2) * sizeof(float));
+    GLfloat * vertexBuffer = (float *)malloc((numSurfaceVertices + fragments.size()*3) * (3) * sizeof(float));
     int bufferIndex = 0;
     for (int node_idx = 0; node_idx < surfaceNodes.size(); node_idx++) {
         vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.x;
         vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.y;
         vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.z;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
     }
     
     for (int face_idx = 0; face_idx < fragments.size(); face_idx++) {
@@ -487,11 +482,6 @@ GLfloat * RenderDestructible::getGeometry(int & num_vertices) {
             vertexBuffer[bufferIndex++] = face->nodes[i]->position.x;
             vertexBuffer[bufferIndex++] = face->nodes[i]->position.y;
             vertexBuffer[bufferIndex++] = face->nodes[i]->position.z;
-            vertexBuffer[bufferIndex++] = 0.0;
-            vertexBuffer[bufferIndex++] = 0.0;
-            vertexBuffer[bufferIndex++] = 0.0;
-            vertexBuffer[bufferIndex++] = 0.0;
-            vertexBuffer[bufferIndex++] = 0.0;
         }
     }
     
@@ -503,7 +493,7 @@ void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     
     // Create vbo
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, num * (3+3+2) * sizeof(float), buffer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, num * (3) * sizeof(float), buffer, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     checkGlError("VertexBuffer Generation");
     //free(vertexBuffer); // TODO
@@ -521,23 +511,9 @@ void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     
     // Pass vertices
     glEnableVertexAttribArray(gvPositionHandle);
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
-    /*
-     // Pass normals
-     if(gvNormals != -1) {
-     glEnableVertexAttribArray(gvNormals);
-     glVertexAttribPointer(gvNormals, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) (3 * sizeof(GLfloat)));
-     checkGlError("gvNormals");
-     }
-     
-     // Pass texture coords
-     if(gvTexCoords != -1) {
-     glEnableVertexAttribArray(gvTexCoords);
-     glVertexAttribPointer(gvTexCoords, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid *) (6 * sizeof(GLfloat)));
-     checkGlError("gvTexCoords");
-     }
-     */
+
     // Pass texture
     if(textureUniform != -1 && texture != -1) {
         glActiveTexture(GL_TEXTURE0);
@@ -598,9 +574,11 @@ void RenderDestructible::Render() {
     
     glDepthMask(GL_FALSE); // We share the same depth buffer here, so don't overwrite it.
     glDepthFunc(GL_EQUAL);
-    glEnable(GL_DITHER);
+    glDisable(GL_DITHER);
     
     RenderPass(0, geometry, num_vertices);
+    
+    free(geometry);
     
     glDepthMask(GL_TRUE); // TODO
     
