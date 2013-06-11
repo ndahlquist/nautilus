@@ -16,11 +16,23 @@
 #include "Point3.h"
 #include "obj_parser.h"
 
-#define voxelSize 25.0
+#define voxelSize 5.0
 
 struct DestructibleNode
 {
-    GLfloat position[3];
+    DestructibleNode()
+    {
+        position.x = 0;
+        position.y = 0;
+        position.z = 0;
+    }
+    DestructibleNode(float x, float y, float z)
+    {
+        position.x = x;
+        position.y = y;
+        position.z = z;
+    }
+    Point3 position;
     Vector3 velocity;
     vector<struct DestructibleBond *> bonds;
 };
@@ -60,11 +72,13 @@ static struct DestructibleCell* createCell(float xmin, float ymin, float zmin);
 static struct DestructibleNode *createNode(float x, float y, float z);
 static struct DestructibleBond *createBond(DestructibleNode *node1, DestructibleNode *node2, DestructibleCell *cell);
 static struct DestructibleFace *createFace(DestructibleNode *node1, DestructibleNode *node2, DestructibleNode *node3, DestructibleCell *cell);
+static void createFragment(DestructibleNode *node);
 
 std::vector<struct DestructibleCell *> cells;
 std::vector<struct DestructibleNode *> nodes;
 std::vector<struct DestructibleBond *> bonds;
 std::vector<struct DestructibleFace *> surfaces;
+std::vector<struct DestructibleFace *> fragments;
 
 RenderDestructible::RenderDestructible(const char *objFilename, const char *vertexShaderFilename, const char *fragmentShaderFilename) : RenderObject(objFilename, vertexShaderFilename, fragmentShaderFilename) {
     
@@ -200,6 +214,13 @@ RenderDestructible::RenderDestructible(const char *objFilename, const char *vert
             }
         }
     }
+    for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
+        DestructibleNode *node = nodes[node_idx];
+        printf("v %.4f %.4f %.4f", node->position.x, node->position.y, node->position.z);
+    }
+    for (int bond_idx = 0; bond_idx < bonds.size(); bond_idx++) {
+        printf("b ");
+    }
 }
 
 static struct DestructibleCell* createCell(float xmin, float ymin, float zmin) {
@@ -299,7 +320,7 @@ static struct DestructibleBond *createBond(DestructibleNode *node1, Destructible
     bond->nodes.push_back(node1);
     bond->nodes.push_back(node2);
     
-    bond->origLength = sqrt(pow(node1->position[0]-node2->position[0],2) + pow(node1->position[1]-node2->position[1],2) + pow(node1->position[2]-node2->position[2],2));
+    bond->origLength = sqrt(pow(node1->position.x-node2->position.x,2) + pow(node1->position.y-node2->position.y,2) + pow(node1->position.z-node2->position.z,2));
     bond->breakThresh = (GLfloat)(rand() % 100)/10;
     bond->springConst = .5;
     bond->broken = false;
@@ -317,18 +338,42 @@ static struct DestructibleNode *createNode(float x, float y, float z)
 {
     for (int i = 0; i < nodes.size(); i++) {
         DestructibleNode *node = nodes[i];
-        if (node->position[0] == x && node->position[1] == y && node->position[2] == z) {
+        if (node->position.x == x && node->position.y == y && node->position.z == z) {
             return node;
         }
     }
-    DestructibleNode *node = new DestructibleNode;
-    node->position[0] = x;
-    node->position[1] = y;
-    node->position[2] = z;
+    DestructibleNode *node = new DestructibleNode(x, y, z);
     node->velocity = Vector3();
     nodes.push_back(node);
     
     return node;
+}
+
+static void createFragment(DestructibleNode *node) {
+    float x = node->position.x;
+    float y = node->position.y;
+    float z = node->position.z;
+    
+    DestructibleNode *node1 = new DestructibleNode(x, y, z);
+    DestructibleNode *node2 = new DestructibleNode(x + voxelSize/2, y, z);
+    DestructibleNode *node3 = new DestructibleNode(x, y - voxelSize/2, z);
+    DestructibleNode *node4 = new DestructibleNode(x, y, z + voxelSize/2);
+    
+    //TODO: add rotational velocity
+    node1->velocity = node->velocity;
+    node2->velocity = node->velocity;
+    node3->velocity = node->velocity;
+    node4->velocity = node->velocity;
+    
+    DestructibleFace *face1 = new DestructibleFace(node1, node2, node3);
+    DestructibleFace *face2 = new DestructibleFace(node1, node3, node4);
+    DestructibleFace *face3 = new DestructibleFace(node2, node3, node4);
+    DestructibleFace *face4 = new DestructibleFace(node1, node4, node2);
+    
+    fragments.push_back(face1);
+    fragments.push_back(face2);
+    fragments.push_back(face3);
+    fragments.push_back(face4);
 }
 
 bool explode = false;
@@ -336,7 +381,7 @@ bool explode = false;
 void RenderDestructible::RenderPass() {
 
     if (!explode) {
-        nodes[0]->velocity = Vector3(.1, .01, -.01);
+        //nodes[0]->velocity = Vector3(.1, .01, -.01);
         /*nodes[1]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[2]->velocity = Vector3(1.0, 1.0, 1.0);
         nodes[3]->velocity = Vector3(1.0, 1.0, 1.0);
@@ -347,9 +392,6 @@ void RenderDestructible::RenderPass() {
 
         explode = true;
     }
-    
-    int numFragments = 0;
-    std::vector<struct DestructibleNode *> fragmentNodes;
     
     for (int node_idx = 0; node_idx < nodes.size(); node_idx++) {
         DestructibleNode *node = nodes[node_idx];
@@ -368,14 +410,14 @@ void RenderDestructible::RenderPass() {
             DestructibleNode *node1 = bond->nodes[0];
             DestructibleNode *node2 = bond->nodes[1];
             
-            Vector3 vec = Vector3(node1->position[0] - node2->position[0], node1->position[1] - node2->position[1], node1->position[2] - node2->position[2]);
-            float bondLength = sqrt(pow(node1->position[0]-node2->position[0],2) + pow(node1->position[1]-node2->position[1],2) + pow(node1->position[2]-node2->position[2],2));
+            Vector3 vec = Vector3(node1->position.x - node2->position.x, node1->position.y - node2->position.y, node1->position.z - node2->position.z);
+            float bondLength = sqrt(pow(node1->position.x-node2->position.x,2) + pow(node1->position.y-node2->position.y,2) + pow(node1->position.z-node2->position.z,2));
             vec.Normalize();
             vec = vec * (bondLength - bond->origLength) * bond->springConst;
             
             Vector3 vel = (node1->velocity - node2->velocity) * bond->dampConst;
             
-            if (node->position[0] == node2->position[0] && node->position[1] == node2->position[1] && node->position[2] == node2->position[2]) {
+            if (node->position.x == node2->position.x && node->position.y == node2->position.y && node->position.z == node2->position.z) {
                 vec *= -1;
                 vel *= -1;
             }
@@ -384,13 +426,19 @@ void RenderDestructible::RenderPass() {
         }
         Vector3 accel = force / 5.0;
         node->velocity = node->velocity + (accel * .1);
-        node->position[0] = node->position[0] + (node->velocity.x * .1);
-        node->position[1] = node->position[1] + (node->velocity.y * .1);
-        node->position[2] = node->position[2] + (node->velocity.z * .1);
+        node->position = node->position + node->velocity *.1;
         
         if (node->bonds.size() == 0) {
-            numFragments++;
-            fragmentNodes.push_back(node);
+            createFragment(node);
+            nodes.erase(nodes.begin() + node_idx);
+            node_idx--;
+        }
+    }
+    
+    for (int face_idx = 0; face_idx < fragments.size(); face_idx++) {
+        DestructibleFace *face = fragments[face_idx];
+        for (int i = 0; i < face->nodes.size(); i++) {
+            face->nodes[i]->position = face->nodes[i]->position + (face->nodes[i]->velocity * .1);
         }
     }
     
@@ -405,7 +453,7 @@ void RenderDestructible::RenderPass() {
             DestructibleBond *bond = cell->bonds[j];
             DestructibleNode *node1 = bond->nodes[0];
             DestructibleNode *node2 = bond->nodes[1];
-            float bondLength = sqrt(pow(node1->position[0]-node2->position[0],2) + pow(node1->position[1]-node2->position[1],2) + pow(node1->position[2]-node2->position[2],2));
+            float bondLength = sqrt(pow(node1->position.x-node2->position.x,2) + pow(node1->position.y-node2->position.y,2) + pow(node1->position.z-node2->position.z,2));
             if (bondLength/bond->origLength > 1.0 + bond->breakThresh) {
                 cell->broken = true;
             }
@@ -458,12 +506,12 @@ void RenderDestructible::RenderPass() {
         }
     }
     
-    GLfloat * vertexBuffer = (float *)malloc((numSurfaceVertices + numFragments*12) * (3+3+2) * sizeof(float));
+    GLfloat * vertexBuffer = (float *)malloc((numSurfaceVertices + fragments.size()*3) * (3+3+2) * sizeof(float));
     int bufferIndex = 0;
     for (int node_idx = 0; node_idx < surfaceNodes.size(); node_idx++) {
-        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position[0];
-        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position[1];
-        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position[2];
+        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.x;
+        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.y;
+        vertexBuffer[bufferIndex++] = surfaceNodes[node_idx]->position.z;
         vertexBuffer[bufferIndex++] = 0.0;
         vertexBuffer[bufferIndex++] = 0.0;
         vertexBuffer[bufferIndex++] = 0.0;
@@ -471,106 +519,21 @@ void RenderDestructible::RenderPass() {
         vertexBuffer[bufferIndex++] = 0.0;
     }
     
-    for (int nodef_idx = 0; nodef_idx < fragmentNodes.size(); nodef_idx++) {
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0] + voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1]; 
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0] + voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2] + voxelSize/2;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[0];
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[1] - voxelSize/2;
-        vertexBuffer[bufferIndex++] = fragmentNodes[nodef_idx]->position[2];
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
-        vertexBuffer[bufferIndex++] = 0.0;
+    for (int face_idx = 0; face_idx < fragments.size(); face_idx++) {
+        DestructibleFace *face = fragments[face_idx];
+        for (int i = 0; i < face->nodes.size(); i++) {
+            vertexBuffer[bufferIndex++] = face->nodes[i]->position.x;
+            vertexBuffer[bufferIndex++] = face->nodes[i]->position.y;
+            vertexBuffer[bufferIndex++] = face->nodes[i]->position.z;
+            vertexBuffer[bufferIndex++] = 0.0;
+            vertexBuffer[bufferIndex++] = 0.0;
+            vertexBuffer[bufferIndex++] = 0.0;
+            vertexBuffer[bufferIndex++] = 0.0;
+            vertexBuffer[bufferIndex++] = 0.0;
+        }
     }
     
-    numVertices = numSurfaceVertices + numFragments*12;
+    numVertices = numSurfaceVertices + fragments.size()*3;
     
     //Create vbo
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);

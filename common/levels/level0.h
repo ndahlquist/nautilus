@@ -36,7 +36,7 @@ level0::level0() : basicLevel() {
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
-    destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");
+    destructible = new RenderDestructible("jellyfish.obj", NULL, "albedo_f.glsl");
     destructible->AddTexture("submarine_albedo.jpg", false);
     
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");

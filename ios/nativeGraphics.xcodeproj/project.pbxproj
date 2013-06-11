@@ -49,6 +49,7 @@
 		55B120C81763DEE600A9912A /* RenderDestructible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120C61763DEE600A9912A /* RenderDestructible.cpp */; };
 		55B120CB1763DEFB00A9912A /* PhysicsObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120C91763DEFB00A9912A /* PhysicsObject.cpp */; };
 		55B120CE1763DF6200A9912A /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120CC1763DF6200A9912A /* Character.cpp */; };
+		55B120EC176442B700A9912A /* jellyfish.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120EB176442B700A9912A /* jellyfish.obj */; };
 		55B66BA0173CAA440094F000 /* RenderObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B66B9E173CAA440094F000 /* RenderObject.cpp */; };
 		55D577C5173CC9C800BE1A50 /* transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D577C3173CC9C800BE1A50 /* transform.cpp */; };
 		55E2D294175D59A60099F69E /* RenderPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55E2D292175D59A60099F69E /* RenderPipeline.cpp */; };
@@ -117,6 +118,7 @@
 		55B120CA1763DEFB00A9912A /* PhysicsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicsObject.h; path = ../../common/PhysicsObject.h; sourceTree = "<group>"; };
 		55B120CC1763DF6200A9912A /* Character.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Character.cpp; path = ../../common/Character.cpp; sourceTree = "<group>"; };
 		55B120CD1763DF6200A9912A /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../common/Character.h; sourceTree = "<group>"; };
+		55B120EB176442B700A9912A /* jellyfish.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfish.obj; path = ../../res/raw/jellyfish.obj; sourceTree = "<group>"; };
 		55B66B9E173CAA440094F000 /* RenderObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderObject.cpp; path = ../../common/RenderObject.cpp; sourceTree = "<group>"; };
 		55B66B9F173CAA440094F000 /* RenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderObject.h; path = ../../common/RenderObject.h; sourceTree = "<group>"; };
 		55D577C3173CC9C800BE1A50 /* transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = transform.cpp; path = ../../common/transform.cpp; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55B120EB176442B700A9912A /* jellyfish.obj */,
 				55793606174F067200E1AB4E /* icosphere.obj */,
 				55E2D29E175D5A510099F69E /* cave2.obj */,
 				55B120AF1763DE4E00A9912A /* cube.obj */,
@@ -371,6 +374,7 @@
 				55B120C01763DE9D00A9912A /* dr_pointlight_sat_f.glsl in Resources */,
 				55B120C11763DE9D00A9912A /* dr_square_v.glsl in Resources */,
 				55B120C21763DE9D00A9912A /* jellyfish_v.glsl in Resources */,
+				55B120EC176442B700A9912A /* jellyfish.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
