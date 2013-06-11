@@ -27,7 +27,7 @@ private:
     RenderLight * smallLight;
     RenderLight * explosiveLight;
     RenderLight * spotLight;
-    RenderDestructible *destructible;
+    
     
     bool shotBomb;
     Timer frameRate;
@@ -42,9 +42,6 @@ level1::level1(const char * mazeFile, Vector3f target) : basicLevel(mazeFile) {
     
     octopus = new Character("octopus.obj", NULL, "albedo_f.glsl");
     octopus->AddTexture("octopus_albedo.jpg", false);
-    
-    destructible = new RenderDestructible("cube.obj", NULL, "albedo_f.glsl");
-    destructible->AddTexture("submarine_albedo.jpg", false);
     
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
         
@@ -154,6 +151,7 @@ void level1::RenderFrame() {
         octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     health = min(health + .01f * timeSinceLast, 1.0f);
+    health = max(health, 0.0f);
     jellyfish->Update();
     octopus->Update();
     Water->Update();
@@ -166,7 +164,11 @@ void level1::RenderFrame() {
     translate(character->instances[0].position);
     rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     scalef(.15f);
-    character->Render();
+    if (health < .05) {
+        destructible->Render();
+    } else {
+        character->Render();
+    }
     mvPopMatrix();
 
     mvPushMatrix();
@@ -223,7 +225,7 @@ void level1::RenderFrame() {
     bigLight->color[0] = 1.0 - .1 * transitionLight;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8 - .1 * transitionLight;
-    bigLight->brightness = 32000.0 * health + 320000.0 * transitionLight;
+    bigLight->brightness = 32000.0 /** health*/ + 320000.0 * transitionLight;
     bigLight->Render();
     mvPopMatrix();
     

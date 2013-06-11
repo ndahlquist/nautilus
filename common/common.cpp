@@ -61,6 +61,10 @@ void SetResourceCallback(void*(*cb)(const char *, int *, int *)) {
 }
 
 void loadLevel() {
+    if (level != NULL) {
+        level->FreeLevel();
+        free(level);
+    }
     level = new level1("maze3x4x2.obj", Eigen::Vector3f(1000.0f, -400.0f, -000.0f));
 }
 
@@ -80,12 +84,33 @@ void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
 
+void renderDestroy() {
+    for (int i = 0; i < 50; i++) {
+        level->RenderFrame();
+    }
+}
+
 void RenderFrame() {
+    static int dtimer = 0;
+    static bool destroyed = false;
     pipeline->ClearBuffers();
-    if(level->health <= 0.0f)
+    
+    if (dtimer > 10) {
+        dtimer = 0;
+        destroyed = false;
         loadLevel();
-    if(level->transitionLight > 1.0f)
-        loadLevel(); 
+    } else if (destroyed)
+        dtimer++;
+    else if(level->health <= 0.0f) {
+        destroyed = true;
+        level->DestroyCharacter();
+        dtimer++;
+        //renderDestroy();
+        //loadLevel();
+    }
+    
+    //if(level->transitionLight > 1.0f)
+        //loadLevel();
     level->RenderFrame();
     fpsMeter();
 }

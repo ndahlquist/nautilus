@@ -11,19 +11,56 @@ public:
     basicLevel(const char * mazeFile);
     void RotatePerspective();
     virtual void RenderFrame();
+    void FreeLevel();
+    void DestroyCharacter();
+    void RenderDestroyCharacter();
     
     Character * character;
     RenderObject * cave;
     RenderLight * bigLight;
+    RenderDestructible *destructible;
     HUD * hud;
     float health;
 
+    
     Vector3f cameraPos;
     Vector3f cameraPan;
     
     bool goalReached;
     float transitionLight;
 };
+
+void basicLevel::FreeLevel() {
+    free(character);
+    free(cave);
+    free(bigLight);
+    free(hud);
+}
+
+void basicLevel::DestroyCharacter() {
+    character->destroyed = true;
+}
+
+void basicLevel::RenderDestroyCharacter() {
+    // Setup perspective matrices
+    /*pLoadIdentity();
+    perspective(90, (float) displayWidth / (float) displayHeight, 60, 800);
+    
+    mvLoadIdentity();
+    lookAt(cameraPos(0)+cameraPan(0), cameraPos(1)+cameraPan(1), cameraPos(2)+cameraPan(2), cameraPan(0), cameraPan(1), cameraPan(2), 0, 1, 0);
+    RotatePerspective();
+ 
+    mvPushMatrix();
+    translate(character->instances[0].position);
+    rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
+    scalef(.15f);
+    if (character->destroyed) {
+        character->DestructibleRender();
+    } else {
+        character->Render();
+    }
+    mvPopMatrix();*/
+}
 
 basicLevel::basicLevel(const char * mazeFile) {
 
@@ -37,6 +74,9 @@ basicLevel::basicLevel(const char * mazeFile) {
     character->AddTexture("submarine_albedo.jpg", false);
     struct characterInstance instance;
     character->instances.push_back(instance);
+    
+    destructible = new RenderDestructible("submarine.obj", NULL, "albedo_f.glsl");
+    destructible->AddTexture("submarine_albedo.jpg", false);
     
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
     
@@ -101,7 +141,11 @@ void basicLevel::RenderFrame() {
     translate(character->instances[0].position);
     rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
     scalef(.15f);
-    character->Render();
+    if (health < .05) {
+        destructible->Render();
+    } else {
+        character->Render();
+    }
     mvPopMatrix();
     
     ////////////////////////////////////////////////////
@@ -112,7 +156,7 @@ void basicLevel::RenderFrame() {
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
-    bigLight->brightness = 16000.0 * health;
+    bigLight->brightness = 16000.0;// * health;
     bigLight->Render();
     mvPopMatrix();
     

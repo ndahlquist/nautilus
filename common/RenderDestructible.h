@@ -29,18 +29,19 @@
 
 using namespace std;
 #include <vector>
-
+/*
 struct DestructibleBond;
 struct DestructibleNode;
 struct DestructibleCell;
 struct DestructibleFace;
-
+*/
 class RenderDestructible : public RenderObject {
 public:
     RenderDestructible(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void Render();
     void RenderPass();
     
+    bool explode;
     int ***voxelGrid3D;
 };
 

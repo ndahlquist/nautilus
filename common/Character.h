@@ -28,6 +28,12 @@ using Eigen::Vector3f;
 
 using namespace std;
 
+
+struct DestructibleNode;
+struct DestructibleBond;
+struct DestructibleFace;
+struct DestructibleCell;
+
 struct characterInstance {
     characterInstance() {
         targetPosition = Vector3f(0, 0, 0);
@@ -61,10 +67,14 @@ public:
     void Update(); // Update all instances
     void Update(int instance); // Update a specific instance
     void RenderPass(int instance);
-    
+    /*void ReplaceModel(); //should only be used for sub, replaces sub with destructible model
+    void DestructibleRender();
+    void DestructibleRenderPass();
+    */
     vector<struct characterInstance> instances;
 
     bool collide;
+    bool destroyed;
 };
 
 

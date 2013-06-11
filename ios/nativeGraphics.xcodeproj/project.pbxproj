@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55609EBB176757A8007E6E4A /* subvox.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55609EBA176757A8007E6E4A /* subvox.obj */; };
 		55793609174F067200E1AB4E /* albedo_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793603174F067200E1AB4E /* albedo_f.glsl */; };
 		5579360A174F067200E1AB4E /* dr_pointlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793604174F067200E1AB4E /* dr_pointlight_f.glsl */; };
 		5579360B174F067200E1AB4E /* dr_standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55793605174F067200E1AB4E /* dr_standard_v.glsl */; };
@@ -37,6 +38,8 @@
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
+		559F47F81767077100B65B7E /* green_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 559F47F61767077100B65B7E /* green_dot.png */; };
+		559F47F91767077100B65B7E /* radar_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 559F47F71767077100B65B7E /* radar_back.png */; };
 		55A7C7741766E73B00FF3C09 /* caustic_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */; };
 		55A7C7751766E73B00FF3C09 /* healthbar_border.png in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7711766E73B00FF3C09 /* healthbar_border.png */; };
 		55A7C7761766E73B00FF3C09 /* healthbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7721766E73B00FF3C09 /* healthbar.png */; };
@@ -78,6 +81,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		55609EBA176757A8007E6E4A /* subvox.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = subvox.obj; path = ../res/raw/subvox.obj; sourceTree = "<group>"; };
 		55793603174F067200E1AB4E /* albedo_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = albedo_f.glsl; path = ../../res/raw/albedo_f.glsl; sourceTree = "<group>"; };
 		55793604174F067200E1AB4E /* dr_pointlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_pointlight_f.glsl; path = ../../res/raw/dr_pointlight_f.glsl; sourceTree = "<group>"; };
 		55793605174F067200E1AB4E /* dr_standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_standard_v.glsl; path = ../../res/raw/dr_standard_v.glsl; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
+		559F47F61767077100B65B7E /* green_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green_dot.png; path = ../../res/drawable/green_dot.png; sourceTree = "<group>"; };
+		559F47F71767077100B65B7E /* radar_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = radar_back.png; path = ../../res/drawable/radar_back.png; sourceTree = "<group>"; };
 		55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = caustic_albedo.jpg; path = ../../res/drawable/caustic_albedo.jpg; sourceTree = "<group>"; };
 		55A7C7711766E73B00FF3C09 /* healthbar_border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = healthbar_border.png; path = ../../res/drawable/healthbar_border.png; sourceTree = "<group>"; };
 		55A7C7721766E73B00FF3C09 /* healthbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = healthbar.png; path = ../../res/drawable/healthbar.png; sourceTree = "<group>"; };
@@ -185,6 +191,8 @@
 		558ED141174598F2000DD7F3 /* drawables */ = {
 			isa = PBXGroup;
 			children = (
+				559F47F61767077100B65B7E /* green_dot.png */,
+				559F47F71767077100B65B7E /* radar_back.png */,
 				55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */,
 				55A7C7711766E73B00FF3C09 /* healthbar_border.png */,
 				55A7C7721766E73B00FF3C09 /* healthbar.png */,
@@ -212,6 +220,7 @@
 		55906D8917302DDB00BD92BF = {
 			isa = PBXGroup;
 			children = (
+				55609EBA176757A8007E6E4A /* subvox.obj */,
 				558ED14D174ADC41000DD7F3 /* AVFoundation.framework */,
 				55906DC91731E63100BD92BF /* OpenGLES.framework */,
 				55906DC71731D05600BD92BF /* QuartzCore.framework */,
@@ -436,6 +445,9 @@
 				55A7C7861766E76300FF3C09 /* overlay_f.glsl in Resources */,
 				55A7C7871766E76300FF3C09 /* overlay_v.glsl in Resources */,
 				55A7C78C1766E7F900FF3C09 /* caustics_f.glsl in Resources */,
+				559F47F81767077100B65B7E /* green_dot.png in Resources */,
+				559F47F91767077100B65B7E /* radar_back.png in Resources */,
+				55609EBB176757A8007E6E4A /* subvox.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
