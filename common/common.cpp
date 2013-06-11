@@ -61,6 +61,10 @@ void SetResourceCallback(void*(*cb)(const char *, int *, int *)) {
     resourceCallback = cb;
 }
 
+void loadLevel() {
+    level = new level1("maze3x4x2.obj");
+}
+
 void Setup(int w, int h) {
     if(!resourceCallback) {
         LOGE("Resource callback not set.");
@@ -70,8 +74,7 @@ void Setup(int w, int h) {
     displayHeight = h;
     pipeline = new RenderPipeline();
 
-    // level = new level0();
-    level = new level1();
+    loadLevel();
 }
 
 void setFrameBuffer(int handle) {
@@ -80,6 +83,8 @@ void setFrameBuffer(int handle) {
 
 void RenderFrame() {
     pipeline->ClearBuffers();
+    if(level->health <= 0.0f)
+        loadLevel();
     level->RenderFrame();
     fpsMeter();
 }

@@ -11,7 +11,7 @@
 
 class level0 : public basicLevel {
 public:
-    level0();
+    level0(const char * mazeFile);
     void RenderFrame();
     
 private:
@@ -31,7 +31,7 @@ private:
 
 };
 
-level0::level0() : basicLevel() {
+level0::level0(const char * mazeFile) : basicLevel(mazeFile) {
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl"); // TODO: jellyfish shader. It seemed to lower fps.
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);

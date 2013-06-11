@@ -11,7 +11,7 @@
 
 class level1 : public basicLevel {
 public:
-    level1();
+    level1(const char * mazeFile);
     void RenderFrame();
     
 private:
@@ -33,10 +33,7 @@ private:
     Timer frameRate;
 };
 
-level1::level1() : basicLevel() {
-    
-    cave = new RenderObject("maze3x4x2.obj", NULL, "caustics_f.glsl");
-    cave->AddTexture("caustic_albedo.jpg", false);
+level1::level1(const char * mazeFile) : basicLevel(mazeFile) {
     
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
@@ -176,7 +173,6 @@ void level1::RenderFrame() {
     Water->Render(0,0,0);
     mvPopMatrix();
     
-    
     for(int i = 0; i < jellyfish->instances.size(); i++) {
         mvPushMatrix();
         translate(jellyfish->instances[i].position);
@@ -215,7 +211,7 @@ void level1::RenderFrame() {
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
-    bigLight->brightness = 16000.0;
+    bigLight->brightness = 32000.0 * (.4f + health);
     bigLight->Render();
     mvPopMatrix();
     

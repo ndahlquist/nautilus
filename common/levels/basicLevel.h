@@ -8,7 +8,7 @@
 
 class basicLevel {
 public:
-    basicLevel();
+    basicLevel(const char * mazeFile);
     void RotatePerspective();
     virtual void RenderFrame();
     
@@ -20,14 +20,15 @@ public:
 
     Vector3f cameraPos;
     Vector3f cameraPan;
+    
 };
 
-basicLevel::basicLevel() {
+basicLevel::basicLevel(const char * mazeFile) {
 
     cameraPos = Vector3f(0, 180, 100);
     cameraPan = Vector3f(0, 200, 0);
 
-    cave = new RenderObject("cave2.obj", NULL, "caustics_f.glsl");
+    cave = new RenderObject(mazeFile, NULL, "caustics_f.glsl");
     cave->AddTexture("caustic_albedo.jpg", false);
     
     character = new Character("submarine.obj", NULL, "albedo_f.glsl");
@@ -107,7 +108,7 @@ void basicLevel::RenderFrame() {
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
-    bigLight->brightness = 16000.0;
+    bigLight->brightness = 16000.0 * health;
     bigLight->Render();
     mvPopMatrix();
     
