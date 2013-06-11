@@ -1,30 +1,37 @@
 #ifndef __nativeGraphics_levels_basicLevel__
 #define __nativeGraphics_levels_basicLevel__
 
+#include "HUD.h"
+
 #define PAN_LERP_FACTOR .04 // TODO
 #define PI 3.1415f // TODO
 
 class basicLevel {
 public:
-    basicLevel();
+    basicLevel(const char * mazeFile);
     void RotatePerspective();
     virtual void RenderFrame();
     
     Character * character;
     RenderObject * cave;
     RenderLight * bigLight;
+    HUD * hud;
+    float health;
 
     Vector3f cameraPos;
     Vector3f cameraPan;
+    
+    bool goalReached;
+    float transitionLight;
 };
 
-basicLevel::basicLevel() {
+basicLevel::basicLevel(const char * mazeFile) {
 
     cameraPos = Vector3f(0, 180, 100);
     cameraPan = Vector3f(0, 200, 0);
 
-    cave = new RenderObject("cave2.obj", NULL, "albedo_f.glsl");
-    cave->AddTexture("cave_albedo.jpg", false);
+    cave = new RenderObject(mazeFile, NULL, "caustics_f.glsl");
+    cave->AddTexture("caustic_albedo.jpg", false);
     
     character = new Character("submarine.obj", NULL, "albedo_f.glsl");
     character->AddTexture("submarine_albedo.jpg", false);
@@ -32,6 +39,11 @@ basicLevel::basicLevel() {
     character->instances.push_back(instance);
     
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
+    
+    hud = new HUD();
+    health = 1.0f;
+    goalReached = false;
+    transitionLight = 0.0f;
 };
 
 // Clamps input to (-max, max) according to curve.
@@ -100,9 +112,11 @@ void basicLevel::RenderFrame() {
     bigLight->color[0] = 1.0;
     bigLight->color[1] = 1.0;
     bigLight->color[2] = 0.8;
-    bigLight->brightness = 16000.0;
+    bigLight->brightness = 16000.0 * health;
     bigLight->Render();
     mvPopMatrix();
+    
+    //hud->Render(0.8f);
 }
 
 

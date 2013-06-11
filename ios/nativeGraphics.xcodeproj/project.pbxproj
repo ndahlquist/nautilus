@@ -37,6 +37,20 @@
 		55906DC81731D05600BD92BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC71731D05600BD92BF /* QuartzCore.framework */; };
 		55906DCA1731E63100BD92BF /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55906DC91731E63100BD92BF /* OpenGLES.framework */; };
 		5590712D1732FEC500BD92BF /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5590712C1732FEC500BD92BF /* common.cpp */; };
+		55A7C7741766E73B00FF3C09 /* caustic_albedo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */; };
+		55A7C7751766E73B00FF3C09 /* healthbar_border.png in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7711766E73B00FF3C09 /* healthbar_border.png */; };
+		55A7C7761766E73B00FF3C09 /* healthbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7721766E73B00FF3C09 /* healthbar.png */; };
+		55A7C7771766E73B00FF3C09 /* radar.png in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7731766E73B00FF3C09 /* radar.png */; };
+		55A7C77E1766E74F00FF3C09 /* maze.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7781766E74F00FF3C09 /* maze.obj */; };
+		55A7C77F1766E74F00FF3C09 /* maze0.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7791766E74F00FF3C09 /* maze0.obj */; };
+		55A7C7801766E74F00FF3C09 /* maze1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C77A1766E74F00FF3C09 /* maze1.obj */; };
+		55A7C7811766E74F00FF3C09 /* maze2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C77B1766E74F00FF3C09 /* maze2.obj */; };
+		55A7C7821766E74F00FF3C09 /* maze3x4x2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C77C1766E74F00FF3C09 /* maze3x4x2.obj */; };
+		55A7C7831766E74F00FF3C09 /* maze5x5x5.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C77D1766E74F00FF3C09 /* maze5x5x5.obj */; };
+		55A7C7861766E76300FF3C09 /* overlay_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7841766E76300FF3C09 /* overlay_f.glsl */; };
+		55A7C7871766E76300FF3C09 /* overlay_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C7851766E76300FF3C09 /* overlay_v.glsl */; };
+		55A7C78A1766E79000FF3C09 /* HUD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55A7C7881766E79000FF3C09 /* HUD.cpp */; };
+		55A7C78C1766E7F900FF3C09 /* caustics_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55A7C78B1766E7F900FF3C09 /* caustics_f.glsl */; };
 		55B120B01763DE4E00A9912A /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120AF1763DE4E00A9912A /* cube.obj */; };
 		55B120B31763DE5A00A9912A /* octopus.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120B11763DE5A00A9912A /* octopus.obj */; };
 		55B120B41763DE5A00A9912A /* submarine.obj in Resources */ = {isa = PBXBuildFile; fileRef = 55B120B21763DE5A00A9912A /* submarine.obj */; };
@@ -46,7 +60,6 @@
 		55B120BF1763DE9D00A9912A /* dr_explosive_pointlight_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120BB1763DE9D00A9912A /* dr_explosive_pointlight_f.glsl */; };
 		55B120C01763DE9D00A9912A /* dr_pointlight_sat_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120BC1763DE9D00A9912A /* dr_pointlight_sat_f.glsl */; };
 		55B120C11763DE9D00A9912A /* dr_square_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120BD1763DE9D00A9912A /* dr_square_v.glsl */; };
-		55B120C21763DE9D00A9912A /* jellyfish_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 55B120BE1763DE9D00A9912A /* jellyfish_v.glsl */; };
 		55B120C51763DED900A9912A /* obj_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120C31763DED900A9912A /* obj_parser.cpp */; };
 		55B120C81763DEE600A9912A /* RenderDestructible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120C61763DEE600A9912A /* RenderDestructible.cpp */; };
 		55B120CB1763DEFB00A9912A /* PhysicsObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55B120C91763DEFB00A9912A /* PhysicsObject.cpp */; };
@@ -104,6 +117,21 @@
 		55906DC91731E63100BD92BF /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		559071251732580500BD92BF /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../common/common.h; sourceTree = "<group>"; };
 		5590712C1732FEC500BD92BF /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = common.cpp; path = ../../common/common.cpp; sourceTree = "<group>"; };
+		55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = caustic_albedo.jpg; path = ../../res/drawable/caustic_albedo.jpg; sourceTree = "<group>"; };
+		55A7C7711766E73B00FF3C09 /* healthbar_border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = healthbar_border.png; path = ../../res/drawable/healthbar_border.png; sourceTree = "<group>"; };
+		55A7C7721766E73B00FF3C09 /* healthbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = healthbar.png; path = ../../res/drawable/healthbar.png; sourceTree = "<group>"; };
+		55A7C7731766E73B00FF3C09 /* radar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = radar.png; path = ../../res/drawable/radar.png; sourceTree = "<group>"; };
+		55A7C7781766E74F00FF3C09 /* maze.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze.obj; path = ../../res/raw/maze.obj; sourceTree = "<group>"; };
+		55A7C7791766E74F00FF3C09 /* maze0.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze0.obj; path = ../../res/raw/maze0.obj; sourceTree = "<group>"; };
+		55A7C77A1766E74F00FF3C09 /* maze1.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze1.obj; path = ../../res/raw/maze1.obj; sourceTree = "<group>"; };
+		55A7C77B1766E74F00FF3C09 /* maze2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze2.obj; path = ../../res/raw/maze2.obj; sourceTree = "<group>"; };
+		55A7C77C1766E74F00FF3C09 /* maze3x4x2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze3x4x2.obj; path = ../../res/raw/maze3x4x2.obj; sourceTree = "<group>"; };
+		55A7C77D1766E74F00FF3C09 /* maze5x5x5.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = maze5x5x5.obj; path = ../../res/raw/maze5x5x5.obj; sourceTree = "<group>"; };
+		55A7C7841766E76300FF3C09 /* overlay_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = overlay_f.glsl; path = ../../res/raw/overlay_f.glsl; sourceTree = "<group>"; };
+		55A7C7851766E76300FF3C09 /* overlay_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = overlay_v.glsl; path = ../../res/raw/overlay_v.glsl; sourceTree = "<group>"; };
+		55A7C7881766E79000FF3C09 /* HUD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HUD.cpp; path = ../../common/HUD.cpp; sourceTree = "<group>"; };
+		55A7C7891766E79000FF3C09 /* HUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HUD.h; path = ../../common/HUD.h; sourceTree = "<group>"; };
+		55A7C78B1766E7F900FF3C09 /* caustics_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = caustics_f.glsl; path = ../../res/raw/caustics_f.glsl; sourceTree = "<group>"; };
 		55B120AF1763DE4E00A9912A /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cube.obj; path = ../../res/raw/cube.obj; sourceTree = "<group>"; };
 		55B120B11763DE5A00A9912A /* octopus.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = octopus.obj; path = ../../res/raw/octopus.obj; sourceTree = "<group>"; };
 		55B120B21763DE5A00A9912A /* submarine.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = submarine.obj; path = ../../res/raw/submarine.obj; sourceTree = "<group>"; };
@@ -113,7 +141,6 @@
 		55B120BB1763DE9D00A9912A /* dr_explosive_pointlight_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_explosive_pointlight_f.glsl; path = ../../res/raw/dr_explosive_pointlight_f.glsl; sourceTree = "<group>"; };
 		55B120BC1763DE9D00A9912A /* dr_pointlight_sat_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_pointlight_sat_f.glsl; path = ../../res/raw/dr_pointlight_sat_f.glsl; sourceTree = "<group>"; };
 		55B120BD1763DE9D00A9912A /* dr_square_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dr_square_v.glsl; path = ../../res/raw/dr_square_v.glsl; sourceTree = "<group>"; };
-		55B120BE1763DE9D00A9912A /* jellyfish_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = jellyfish_v.glsl; path = ../../res/raw/jellyfish_v.glsl; sourceTree = "<group>"; };
 		55B120C31763DED900A9912A /* obj_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = obj_parser.cpp; path = ../../common/obj_parser.cpp; sourceTree = "<group>"; };
 		55B120C41763DED900A9912A /* obj_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obj_parser.h; path = ../../common/obj_parser.h; sourceTree = "<group>"; };
 		55B120C61763DEE600A9912A /* RenderDestructible.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderDestructible.cpp; path = ../../common/RenderDestructible.cpp; sourceTree = "<group>"; };
@@ -158,6 +185,10 @@
 		558ED141174598F2000DD7F3 /* drawables */ = {
 			isa = PBXGroup;
 			children = (
+				55A7C7701766E73B00FF3C09 /* caustic_albedo.jpg */,
+				55A7C7711766E73B00FF3C09 /* healthbar_border.png */,
+				55A7C7721766E73B00FF3C09 /* healthbar.png */,
+				55A7C7731766E73B00FF3C09 /* radar.png */,
 				55E2D2A5175D5AFA0099F69E /* cave_albedo.jpg */,
 				55B120B51763DE6F00A9912A /* jellyfish_albedo.jpg */,
 				55B120B61763DE6F00A9912A /* octopus_albedo.jpg */,
@@ -222,6 +253,8 @@
 				5590712C1732FEC500BD92BF /* common.cpp */,
 				55B120CC1763DF6200A9912A /* Character.cpp */,
 				55B120CD1763DF6200A9912A /* Character.h */,
+				55A7C7881766E79000FF3C09 /* HUD.cpp */,
+				55A7C7891766E79000FF3C09 /* HUD.h */,
 				55B66B9F173CAA440094F000 /* RenderObject.h */,
 				55B66B9E173CAA440094F000 /* RenderObject.cpp */,
 				55B120C91763DEFB00A9912A /* PhysicsObject.cpp */,
@@ -264,6 +297,12 @@
 		5594978317376DFF006E176F /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				55A7C7781766E74F00FF3C09 /* maze.obj */,
+				55A7C7791766E74F00FF3C09 /* maze0.obj */,
+				55A7C77A1766E74F00FF3C09 /* maze1.obj */,
+				55A7C77B1766E74F00FF3C09 /* maze2.obj */,
+				55A7C77C1766E74F00FF3C09 /* maze3x4x2.obj */,
+				55A7C77D1766E74F00FF3C09 /* maze5x5x5.obj */,
 				55793606174F067200E1AB4E /* icosphere.obj */,
 				55E2D29E175D5A510099F69E /* cave2.obj */,
 				95EC7EC81765283300EC1A43 /* jellyfish.obj */,
@@ -280,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				55793603174F067200E1AB4E /* albedo_f.glsl */,
+				55A7C78B1766E7F900FF3C09 /* caustics_f.glsl */,
 				55B120BB1763DE9D00A9912A /* dr_explosive_pointlight_f.glsl */,
 				55B120BC1763DE9D00A9912A /* dr_pointlight_sat_f.glsl */,
 				55B120BD1763DE9D00A9912A /* dr_square_v.glsl */,
@@ -287,11 +327,12 @@
 				55E2D299175D5A430099F69E /* dr_spotlight_f.glsl */,
 				55793604174F067200E1AB4E /* dr_pointlight_f.glsl */,
 				55793605174F067200E1AB4E /* dr_standard_v.glsl */,
-				55B120BE1763DE9D00A9912A /* jellyfish_v.glsl */,
 				558ED138174598B1000DD7F3 /* geometry_f.glsl */,
 				55E2D295175D5A350099F69E /* geometry_far_f.glsl */,
 				55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */,
 				558ED139174598B1000DD7F3 /* standard_v.glsl */,
+				55A7C7841766E76300FF3C09 /* overlay_f.glsl */,
+				55A7C7851766E76300FF3C09 /* overlay_v.glsl */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
@@ -381,8 +422,20 @@
 				55B120BF1763DE9D00A9912A /* dr_explosive_pointlight_f.glsl in Resources */,
 				55B120C01763DE9D00A9912A /* dr_pointlight_sat_f.glsl in Resources */,
 				55B120C11763DE9D00A9912A /* dr_square_v.glsl in Resources */,
-				55B120C21763DE9D00A9912A /* jellyfish_v.glsl in Resources */,
 				95EC7EC91765283300EC1A43 /* jellyfish.obj in Resources */,
+				55A7C7741766E73B00FF3C09 /* caustic_albedo.jpg in Resources */,
+				55A7C7751766E73B00FF3C09 /* healthbar_border.png in Resources */,
+				55A7C7761766E73B00FF3C09 /* healthbar.png in Resources */,
+				55A7C7771766E73B00FF3C09 /* radar.png in Resources */,
+				55A7C77E1766E74F00FF3C09 /* maze.obj in Resources */,
+				55A7C77F1766E74F00FF3C09 /* maze0.obj in Resources */,
+				55A7C7801766E74F00FF3C09 /* maze1.obj in Resources */,
+				55A7C7811766E74F00FF3C09 /* maze2.obj in Resources */,
+				55A7C7821766E74F00FF3C09 /* maze3x4x2.obj in Resources */,
+				55A7C7831766E74F00FF3C09 /* maze5x5x5.obj in Resources */,
+				55A7C7861766E76300FF3C09 /* overlay_f.glsl in Resources */,
+				55A7C7871766E76300FF3C09 /* overlay_v.glsl in Resources */,
+				55A7C78C1766E7F900FF3C09 /* caustics_f.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +460,7 @@
 				55B120C81763DEE600A9912A /* RenderDestructible.cpp in Sources */,
 				55B120CB1763DEFB00A9912A /* PhysicsObject.cpp in Sources */,
 				55B120CE1763DF6200A9912A /* Character.cpp in Sources */,
+				55A7C78A1766E79000FF3C09 /* HUD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -27,7 +27,7 @@ void main() {
 
     vec3 delta = v_mvLightPos - mvPos();
 	float distsq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z; 
-	vec3 lightColor = clamp(u_Color * u_Brightness / distsq - .2, 0.0, 2.0);
-    gl_FragColor = vec4(lightColor * texture2D(u_ColorTexture, samplePoint).rgb, 1.0);
+	vec3 lightColor = u_Color * u_Brightness / distsq - .2;
+    gl_FragColor = vec4(lightColor, 1.0);
 	
 }
