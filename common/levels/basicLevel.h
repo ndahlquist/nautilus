@@ -1,6 +1,8 @@
 #ifndef __nativeGraphics_levels_basicLevel__
 #define __nativeGraphics_levels_basicLevel__
 
+#include "HUD.h"
+
 #define PAN_LERP_FACTOR .04 // TODO
 #define PI 3.1415f // TODO
 
@@ -13,6 +15,7 @@ public:
     Character * character;
     RenderObject * cave;
     RenderLight * bigLight;
+    HUD * hud;
 
     Vector3f cameraPos;
     Vector3f cameraPan;
@@ -32,6 +35,8 @@ basicLevel::basicLevel() {
     character->instances.push_back(instance);
     
     bigLight = new RenderLight("square.obj", "dr_square_v.glsl", "dr_pointlight_f.glsl");
+    
+    hud = new HUD();
 };
 
 // Clamps input to (-max, max) according to curve.
@@ -103,6 +108,8 @@ void basicLevel::RenderFrame() {
     bigLight->brightness = 16000.0;
     bigLight->Render();
     mvPopMatrix();
+    
+    hud->Render();
 }
 
 

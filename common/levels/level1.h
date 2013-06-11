@@ -144,9 +144,9 @@ void level1::RenderFrame() {
     octopus->Update();
     Water->Update();
     
-    mvPushMatrix();
-    destructible->Render();
-    mvPopMatrix();
+    //mvPushMatrix();
+    //destructible->Render();
+    //mvPopMatrix();
     
     mvPushMatrix();
     translate(character->instances[0].position);
@@ -260,6 +260,8 @@ void level1::RenderFrame() {
     spotLight->brightness = 16000.0;
     spotLight->Render();
     mvPopMatrix();
+    
+    hud->Render();
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__
