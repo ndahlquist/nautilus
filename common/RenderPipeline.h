@@ -11,6 +11,7 @@
 #include <jni.h>
 #elif __APPLE__
 #include <stdlib.h>
+#include <stdint.h>
 #include <OpenGLES/ES2/gl.h>
 #else // linux
 #include <GL/glew.h>

@@ -5,7 +5,7 @@ CPPFLAGS = -O3 -fPIC
 LDFLAGS = -O3 -framework GLUT -framework OpenGL
 LIB = -lOpenMeshCored -lOpenMeshToolsd -Wl,-rpath,$(OPENMESH_LIB_DIR) 
 TARGET = maze
-OBJS = maze.o simplex.o
+OBJS = maze.o simplex.o noise.o
 
 default: $(OBJS)
 	$(LD) $(OBJS) $(LDFLAGS) -L$(OPENMESH_LIB_DIR) $(LIB) -o $(TARGET)
@@ -21,6 +21,9 @@ maze.o: maze.cpp
 
 simplex.o: simplex/simplexnoise.cpp
 	$(CPP) -c $(CPPFLAGS) simplex/simplexnoise.cpp -o simplex.o $(INCLUDE)
+
+noise.o: simplex/3dnoise.cpp
+	$(CPP) -c $(CPPFLAGS) simplex/3dnoise.cpp -o noise.o $(INCLUDE)
 
 clean:
 	rm $(OBJS) $(TARGET)
