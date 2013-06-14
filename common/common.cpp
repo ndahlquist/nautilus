@@ -63,7 +63,7 @@ void SetResourceCallback(void*(*cb)(const char *, int *, int *)) {
 void loadLevel() {
     if (level != NULL) {
         level->FreeLevel();
-        free(level);
+        delete level;
     }
     level = new level1("maze3x4x2.obj", Eigen::Vector3f(1000.0f, -400.0f, -000.0f));
 }

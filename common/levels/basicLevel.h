@@ -32,11 +32,11 @@ void basicLevel::RestartLevel() {
     
 }
 
-void basicLevel::FreeLevel() {
-    free(character);
-    free(cave);
-    free(bigLight);
-    free(hud);
+void basicLevel::FreeLevel() { // TODO: Should be a destructor
+    delete character;
+    delete cave;
+    delete bigLight;
+    delete hud;
 }
 
 basicLevel::basicLevel(const char * mazeFile) {

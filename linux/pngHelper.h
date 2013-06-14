@@ -19,7 +19,7 @@ void * pngResourceCallback(const char * file_name, int & width, int & height) {
 
     // read the header
     png_byte header[8];
-    fread(header, 1, 8, fp);
+    int unused = fread(header, 1, 8, fp);
 
     if (png_sig_cmp(header, 0, 8))
     {
@@ -75,16 +75,10 @@ void * pngResourceCallback(const char * file_name, int & width, int & height) {
 
     // variables to pass to get info
     int bit_depth, color_type;
-    png_uint_32 temp_width, temp_height;
 
     // get info about png
-    png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
+    png_get_IHDR(png_ptr, info_ptr, (png_uint_32*) &width, (png_uint_32*) &height, &bit_depth, &color_type,
         NULL, NULL, NULL);
-
-    if (width){ width = temp_width; }
-    if (height){ height = temp_height; }
-
-    //printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
 
     if (bit_depth != 8)
     {
@@ -116,7 +110,7 @@ void * pngResourceCallback(const char * file_name, int & width, int & height) {
     rowbytes += 3 - ((rowbytes-1) % 4);
 
     // Allocate the image_data as a big block, to be given to opengl
-    png_byte * image_data = (png_byte *)malloc(rowbytes * temp_height * sizeof(png_byte)+15);
+    png_byte * image_data = (png_byte *)malloc(rowbytes * height * sizeof(png_byte)+15);
     if (image_data == NULL)
     {
         fprintf(stderr, "error: could not allocate memory for PNG image data\n");
@@ -126,7 +120,7 @@ void * pngResourceCallback(const char * file_name, int & width, int & height) {
     }
 
     // row_pointers is for pointing to image_data for reading the png with libpng
-    png_byte ** row_pointers = (png_byte **)malloc(temp_height * sizeof(png_byte *));
+    png_byte ** row_pointers = (png_byte **)malloc(height * sizeof(png_byte *));
     if (row_pointers == NULL)
     {
         fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
@@ -137,21 +131,13 @@ void * pngResourceCallback(const char * file_name, int & width, int & height) {
     }
 
     // set the individual row_pointers to point at the correct offsets of image_data
-    for (unsigned int i = 0; i < temp_height; i++)
+    for (unsigned int i = 0; i < height; i++)
     {
-        row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
+        row_pointers[height - 1 - i] = image_data + i * rowbytes;
     }
 
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
-
-    // Generate the OpenGL texture object
-    /*GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 
     // clean up
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);

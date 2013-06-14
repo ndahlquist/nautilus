@@ -491,12 +491,11 @@ GLfloat * RenderDestructible::getGeometry(int & num_vertices) {
 
 void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     
-    // Create vbo
+    // Create vbo // TODO: Shouldn't be vertex buffered.
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, num * (3) * sizeof(float), buffer, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     checkGlError("VertexBuffer Generation");
-    //free(vertexBuffer); // TODO
     
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
@@ -504,8 +503,8 @@ void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     glUniformMatrix4fv(gmvMatrixHandle, 1, GL_FALSE, mv_Matrix);
     glUniformMatrix4fv(gmvpMatrixHandle, 1, GL_FALSE, mvp_Matrix);
     checkGlError("glUniformMatrix4fv");
-    delete mv_Matrix;
-    delete mvp_Matrix;
+    delete[] mv_Matrix;
+    delete[] mvp_Matrix;
     
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
     

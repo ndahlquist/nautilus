@@ -32,7 +32,7 @@ void * jpegResourceCallback(const char * fileName, int & width, int & height) {
         printf("NO MEM FOR JPEG CONVERT!\n");
         return 0;
     }
-    int row_stride = width * cinfo.output_components ;
+    int row_stride = width * cinfo.output_components;
     
     JSAMPARRAY pJpegBuffer = (*cinfo.mem->alloc_sarray) // Output row buffer
     ((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
