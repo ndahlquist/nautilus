@@ -740,16 +740,16 @@ void Fluid::Rotate(float rx, float ry, float rz){
 // Overrides RenderObject::Render
 void Fluid::Render(float rx, float ry, float rz) {
     
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
+    /*glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
-    glViewport(0, 0, displayWidth, displayHeight);
+    glViewport(0, 0, displayWidth, displayHeight);*/
 
     // In bound
     int inBoundCount = 0;
     float * mesh = GenVertexArrayInBound(inBoundCount);
     RenderObject::Render(0, mesh, inBoundCount);
-    //delete[] mesh;
+    //delete[] mesh; // TODO
 
     // Out bound
     int outBoundCount = 0;

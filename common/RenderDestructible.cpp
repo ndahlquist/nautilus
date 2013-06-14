@@ -553,11 +553,11 @@ void RenderDestructible::Render() {
     //////////////////////////////////
     // Render to frame buffer
     
-    // Render colors (R, G, B, UNUSED / SPECULAR)
+    // Render colors (R, G, B, Depth_MVP)
     SetShader(colorShader);
     
     glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->gBuffer, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
     
     glEnable(GL_DEPTH_TEST);
@@ -569,23 +569,6 @@ void RenderDestructible::Render() {
     checkGlError("glClear");
     
     RenderPass(0, geometry, num_vertices);
-    
-    // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
-    SetShader(pipeline->geometryShader);
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
-    
-    glDepthMask(GL_FALSE); // We share the same depth buffer here, so don't overwrite it.
-    glDepthFunc(GL_EQUAL);
-    glDisable(GL_DITHER);
-    
-    RenderPass(0, geometry, num_vertices);
-    
-    free(geometry);
-    
-    glDepthMask(GL_TRUE); // TODO
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); // TODO: unbind other resources
 }

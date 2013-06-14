@@ -44,7 +44,7 @@ void PhysicsObject::Update(int instanceNum) {
     instance->velocity += instance->acceleration * timeElapsed;
     
     if(ScreenSpaceCollisions) {
-        Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(instance->position[0], instance->position[1], instance->position[2], 1.0); // TODO
+        /*Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(instance->position[0], instance->position[1], instance->position[2], 1.0); // TODO
         float x = ((1.0f + MVP_POS(0) / MVP_POS(3)) / 2.0f);
         float y = ((1.0f + MVP_POS(1) / MVP_POS(3)) / 2.0f);
         
@@ -59,7 +59,7 @@ void PhysicsObject::Update(int instanceNum) {
         delete[] geometry;
         
         if(depth < 256 * MVP_POS(2) / MVP_POS(3))
-            instance->velocity = COEFF_RESTITUTION * (-2 * instance->velocity.dot(normal) * normal + instance->velocity);
+            instance->velocity = COEFF_RESTITUTION * (-2 * instance->velocity.dot(normal) * normal + instance->velocity);*/
     }
     
     for(int i = 0; i < 3; i++)

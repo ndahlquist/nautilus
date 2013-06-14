@@ -165,11 +165,11 @@ void RenderObject::Render(int instance, GLfloat *buffer, int num) {
     //////////////////////////////////
     // Render to frame buffer
     
-    // Render colors (R, G, B, UNUSED / SPECULAR)
+    // Render to gbuffer (R, G, B, UNUSED / Depth_MVP)
     SetShader(colorShader);
     
     glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->colorTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->gBuffer, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->depthBuffer);
     glViewport(0, 0, displayWidth, displayHeight);
     
@@ -180,21 +180,6 @@ void RenderObject::Render(int instance, GLfloat *buffer, int num) {
     glDisable(GL_BLEND);
     glDisable(GL_DITHER);
     checkGlError("glClear");
-    
-    RenderPass(instance, buffer, num);
-    
-    // Render geometry (NX_MV, NY_MV, NZ_MV, Depth_MVP)
-    if(geometryShader != -1)
-        SetShader(geometryShader);
-    else
-        SetShader(pipeline->geometryShader);
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, pipeline->frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pipeline->geometryTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pipeline->geometryDepthBuffer);
-    glViewport(0, 0, pipeline->geometryTextureWidth, pipeline->geometryTextureHeight);
-    
-    glEnable(GL_DITHER);
     
     RenderPass(instance, buffer, num);
     

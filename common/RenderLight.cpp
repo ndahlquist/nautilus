@@ -67,19 +67,12 @@ void RenderLight::Render() {
     glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const GLvoid*) 0);
     checkGlError("gvPositionHandle");
     
-    // Pass color texture of g buffer
+    // Pass g buffer
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, pipeline->colorTexture);
-    GLuint colorTextureUniform = glGetUniformLocation(colorShader, "u_ColorTexture");
+    glBindTexture(GL_TEXTURE_2D, pipeline->gBuffer);
+    GLuint colorTextureUniform = glGetUniformLocation(colorShader, "u_gBuffer");
     glUniform1i(colorTextureUniform, 0);
-    checkGlError("albTextureUniform");
-   
-    // Pass geometry texture of g buffer
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, pipeline->geometryTexture);
-    GLuint geometryTextureUniform = glGetUniformLocation(colorShader, "u_GeometryTexture");
-    glUniform1i(geometryTextureUniform, 1);
-    checkGlError("albTextureUniform");
+    checkGlError("pass gBuffer");
     
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
     checkGlError("glDrawArrays");
