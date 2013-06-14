@@ -64,6 +64,9 @@ struct DestructibleFace
 
 struct DestructibleBond
 {
+    DestructibleBond() {
+        broken = false;
+    }
     vector<DestructibleNode *> nodes;
     vector<DestructibleCell *> cells;
     GLfloat origLength;
@@ -75,6 +78,9 @@ struct DestructibleBond
 
 struct DestructibleCell
 {
+    DestructibleCell() {
+        broken = false;
+    }
     vector<struct DestructibleBond *> bonds;
     vector<struct DestructibleNode *> nodes;
     bool broken;
