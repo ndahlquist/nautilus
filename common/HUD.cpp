@@ -13,6 +13,7 @@ HUD::HUD() : RenderObject("square.obj", "overlay_v.glsl", "overlay_f.glsl", fals
     healthbarBorderTex = AddTexture("healthbar_border.png");
     radarTex = AddTexture("radar_back.png");
     greenDotTex = AddTexture("green_dot.png");
+    redDotTex = AddTexture("red_dot.png");
 }
 
 GLuint HUD::AddTexture(const char *textureFilename) {
@@ -85,11 +86,20 @@ void HUD::RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xs
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void HUD::Render(float health, float direction[]) {
+void HUD::Render(float health) {
     RenderElement(healthbarBorderTex, -.15f, .9f, .8f, .06f);
     RenderElement(healthbarTex, -.15f, .9f, .8f * health, .06f);
     RenderElement(radarTex, -.8f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f, .15f, .15f * (float) displayWidth / (float) displayHeight);
-    float deltaX = direction[0];
-    float deltaY = direction[1];
-    RenderElement(greenDotTex, -.8f + deltaX * .15f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f + deltaY * .15f * (float) displayWidth / (float) displayHeight, .01f, .01f * (float) displayWidth / (float) displayHeight);
+}
+
+void HUD::ShowRadar(Eigen::Vector3f delta_pos, int color, float size) {
+    Eigen::Vector2f delta2 = Eigen::Vector2f(delta_pos(0), -delta_pos(2));
+    float angle = atan2(delta2(0), delta2(1));
+    float distance = min(delta2.norm() / 400.0f, 1.0f);
+    float x = distance * sin(angle);
+    float y = distance * cos(angle);
+    GLuint renderColor = redDotTex;
+    if(color == 0)
+        renderColor = greenDotTex;
+    RenderElement(renderColor, -.8f + x * .15f, -.8f + .15f * (float) displayWidth / (float) displayHeight / 2.0f + y * .15f * (float) displayWidth / (float) displayHeight, size, size * (float) displayWidth / (float) displayHeight);
 }

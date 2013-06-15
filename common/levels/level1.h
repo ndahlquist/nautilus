@@ -343,13 +343,6 @@ void level1::RenderFrame() {
     explosiveLight->Render();
     mvPopMatrix();
     
-    // TODO: clean this up
-    Vector3f delta = goal - character->instances[0].position;
-    Eigen::Vector2f delta2 = Eigen::Vector2f(delta(0), -delta(2));
-    float angle = atan2(delta2(0), delta2(1));
-    float distance = min(delta2.norm() / 1000.0f, 1.0f);
-    float target[2] = {distance * sin(angle), distance * cos(angle)};
-    
     if((goal - character->instances[0].position).norm() <= 200.0f)
         goalReached = true;
     
@@ -361,7 +354,14 @@ void level1::RenderFrame() {
     if(transitionLight >= 1.0f)
         RestartLevel();
     
-    hud->Render(health, target);
+    hud->Render(health);
+    hud->ShowRadar(goal - character->instances[0].position, 0, .01f);
+    
+    for(int i = 0; i < jellyfish->instances.size(); i++)
+         hud->ShowRadar(jellyfish->instances[i].position - character->instances[0].position, 1, .004f);
+    
+    for(int i = 0; i < small_jellyfish->instances.size(); i++)
+         hud->ShowRadar(small_jellyfish->instances[i].position - character->instances[0].position, 1, .004f);
 }
 
 #endif // __nativeGraphics_levels_simpleLevel1__

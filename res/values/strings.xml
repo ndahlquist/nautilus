@@ -5,7 +5,7 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="gl2jni_activity">Native Graphics Demo</string>
+    <string name="gl2jni_activity">Nautilus</string>
 
 </resources>
 

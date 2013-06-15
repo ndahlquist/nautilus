@@ -21,13 +21,15 @@
 #endif
 
 #include "RenderObject.h"
+#include "Eigen/Core"
 
 using namespace std;
 
 class HUD : public RenderObject {
 public:
     HUD();
-    void Render(float health, float direction[]);
+    void Render(float health);
+    void ShowRadar(Eigen::Vector3f delta_pos, int color, float size);
     void RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale);
     GLuint AddTexture(const char *textureFilename);
     
@@ -35,6 +37,7 @@ public:
     GLuint healthbarBorderTex;
     GLuint radarTex;
     GLuint greenDotTex;
+    GLuint redDotTex;
 };
 
 
