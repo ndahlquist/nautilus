@@ -17,10 +17,10 @@ public:
     
 private:
     void addJellyfish();
-    void addOctopus();
+    void addsmall_jellyfish();
 
     Character * jellyfish;
-    Character * octopus;
+    Character * small_jellyfish;
     PhysicsObject * bomb;
 
     Fluid * Water;
@@ -44,8 +44,8 @@ level1::level1(const char * mazeFile, Vector3f target) : basicLevel(mazeFile) {
     jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
     jellyfish->AddTexture("jellyfish_albedo.jpg", false);
     
-    octopus = new Character("octopus.obj", NULL, "albedo_f.glsl");
-    octopus->AddTexture("octopus_albedo.jpg", false);
+    small_jellyfish = new Character("jellyfish.obj", NULL, "albedo_f.glsl");
+    small_jellyfish->AddTexture("jellyfish_albedo_1.jpg", false);
     
     bomb = new PhysicsObject("icosphere.obj", NULL, "solid_color_f.glsl");
         
@@ -77,7 +77,7 @@ void level1::RestartLevel() {
     character->instances[0].targetPosition = Vector3f(0,0,0);
     character->instances[0].velocity = Vector3f(0,0,0);
     jellyfish->instances.clear();
-    octopus->instances.clear();
+    small_jellyfish->instances.clear();
     bomb->instances.clear();
     
     transitionLight = 0.0;
@@ -96,13 +96,13 @@ void level1::addJellyfish() {
     jellyfish->instances.push_back(instance);
 }
 
-void level1::addOctopus() {
+void level1::addsmall_jellyfish() {
     struct characterInstance instance;
     instance.position = character->instances[0].position + 600.0f * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     instance.MaxAcceleration = 300.0f;
     instance.Drag = 100.0f;
     instance.MaxVelocity = 150.0f;
-    octopus->instances.push_back(instance);
+    small_jellyfish->instances.push_back(instance);
 }
 
 void level1::RenderFrame() {
@@ -160,10 +160,10 @@ void level1::RenderFrame() {
             shotBomb = false;
         
         while(jellyfish->instances.size() < 15)
-          addJellyfish();
+            addJellyfish();
      
-        while(octopus->instances.size() < 7)
-          addOctopus();
+        while(small_jellyfish->instances.size() < 7)
+            addsmall_jellyfish();
     }
    
     float timeSinceLast = frameRate.getSeconds();
@@ -179,18 +179,18 @@ void level1::RenderFrame() {
             health -= .05f * timeSinceLast;
         jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
-    for(int i = 0; i < octopus->instances.size(); i++) {
-        octopus->instances[i].targetPosition = character->instances[0].position;
+    for(int i = 0; i < small_jellyfish->instances.size(); i++) {
+        small_jellyfish->instances[i].targetPosition = character->instances[0].position;
         // Randomize movement
-        float dist = (character->instances[0].position - octopus->instances[i].position).norm();
+        float dist = (character->instances[0].position - small_jellyfish->instances[i].position).norm();
         if(dist < 50.0f)
-            health -= .05f * timeSinceLast;
-        octopus->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
+            health -= .1f * timeSinceLast;
+        small_jellyfish->instances[i].targetPosition += 1.1f * dist * Vector3f((rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
     }
     health = min(health + .01f * timeSinceLast, 1.0f);
     health = max(health, 0.0f);
     jellyfish->Update();
-    octopus->Update();
+    small_jellyfish->Update();
     Water->Update();
     
     mvPushMatrix();
@@ -222,13 +222,13 @@ void level1::RenderFrame() {
         mvPopMatrix();
     }
     
-    for(int i = 0; i < octopus->instances.size(); i++) {
+    for(int i = 0; i < small_jellyfish->instances.size(); i++) {
         mvPushMatrix();
-        translate(octopus->instances[i].position);
-        rotate(0.0, octopus->instances[i].rot[0], octopus->instances[i].rot[1]);
+        translate(small_jellyfish->instances[i].position);
+        rotate(0.0, small_jellyfish->instances[i].rot[0], small_jellyfish->instances[i].rot[1]);
         rotate(0.0, 0.0, PI / 2);
-        scalef(10.0f);
-        octopus->Render(i);
+        scalef(0.7f);
+        small_jellyfish->Render(i);
         mvPopMatrix();
     }
     
@@ -303,10 +303,10 @@ void level1::RenderFrame() {
                     j--;  
                 }
 	        }
-	        for(int j=0; j < octopus->instances.size(); ++j) {
-                if((octopus->instances[j].position - bomb->instances[i].position).norm() < 200) {
-                    // Kill this octopus
-                    octopus->instances.erase(octopus->instances.begin()+j);
+	        for(int j=0; j < small_jellyfish->instances.size(); ++j) {
+                if((small_jellyfish->instances[j].position - bomb->instances[i].position).norm() < 200) {
+                    // Kill this small_jellyfish
+                    small_jellyfish->instances.erase(small_jellyfish->instances.begin()+j);
                     j--;  
                 }
             }
