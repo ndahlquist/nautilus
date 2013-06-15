@@ -84,17 +84,8 @@ void setFrameBuffer(int handle) {
     defaultFrameBuffer = handle;
 }
 
-void renderDestroy() {
-    for (int i = 0; i < 50; i++) {
-        level->RenderFrame();
-    }
-}
-
 void RenderFrame() {
     pipeline->ClearBuffers();
-    
-    //if(level->transitionLight > 1.0f)
-        //loadLevel();
     level->RenderFrame();
     fpsMeter();
 }

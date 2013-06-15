@@ -18,12 +18,15 @@
 #include <stdio.h>
 #endif
 
+#include "Eigen/Core"
+
 class RenderPipeline {
 public:
 
     RenderPipeline();
     void ClearBuffers();
-    //uint8_t * RayTracePixel(float x, float y, bool geometry);
+    uint8_t getDepth(float x, float y);
+    Eigen::Vector3f getNormal(float x, float y, Eigen::Matrix4f mvp);
     
     GLuint frameBuffer;
 

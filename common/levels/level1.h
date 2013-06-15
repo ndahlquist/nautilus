@@ -136,14 +136,13 @@ void level1::RenderFrame() {
     // Process user input
     if(!dead) {
         if(touchDown) {
-            /*uint8_t * geometry = pipeline->RayTracePixel(lastTouch[0], 1.0f - lastTouch[1], true);
-            if(geometry[3] != 255) {
-                float depth = geometry[3] / 128.0f - 1.0f;            
+            uint8_t depthb = pipeline->getDepth(lastTouch[0], 1.0f - lastTouch[1]);
+            if(depthb != 255) {
+                float depth = depthb / 128.0f - 1.0f;            
                 Matrix4f mvp = projection.top()*model_view.top();
                 Eigen::Vector4f pos = mvp.inverse() * Eigen::Vector4f((lastTouch[0]) * 2.0f - 1.0f, (1.0 - lastTouch[1]) * 2.0f - 1.0f, depth, 1.0);
                 character->instances[0].targetPosition = Vector3f(pos(0) / pos(3), pos(1) / pos(3), pos(2) / pos(3));
             }
-            delete[] geometry;*/
         }
         
         for(int i = 0; i < 3; i++)

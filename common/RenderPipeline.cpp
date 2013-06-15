@@ -8,6 +8,10 @@
 #include "log.h"
 #include "cmath"
 
+#include "Eigen/Eigenvalues"
+
+using Eigen::Vector3f;
+
 RenderPipeline::RenderPipeline() {
     
     defaultFrameBuffer = 0;
@@ -40,32 +44,56 @@ inline int clamp(int x, int a, int b) {
     return x < a ? a : (x > b ? b : x);
 }
 
-/*uint8_t * RenderPipeline::RayTracePixel(float x, float y, bool geometry) {
-    
-    int xpixel, ypixel;
-    if(geometry) {
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, geometryTexture, 0);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geometryDepthBuffer);
-        xpixel = clamp((int) floor(x * pipeline->geometryTextureWidth), 0, pipeline->geometryTextureWidth - 1);
-        ypixel = clamp((int) floor(y * pipeline->geometryTextureHeight), 0, pipeline->geometryTextureHeight - 1);
-    } else {
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer, 0);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-        xpixel = clamp((int) floor(x * displayWidth), 0, displayWidth - 1);
-        ypixel = clamp((int) floor(y * displayHeight), 0, displayHeight - 1);
-    }
+uint8_t RenderPipeline::getDepth(float x, float y) {
 
-    uint8_t * data = new uint8_t[4];
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer, 0);
+        
+    int xpixel = clamp((int) floor(x * displayWidth), 0, displayWidth - 1);
+    int ypixel = clamp((int) floor(y * displayHeight), 0, displayHeight - 1);
+    
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     checkGlError("glPixelStorei");
-    glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    
+    uint8_t data[4]; // TODO
+    glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
     checkGlError("glReadPixels");
     
-    return data;
+    return data[3];
+}
 
-}*/
+Eigen::Vector3f RenderPipeline::getNormal(float x, float y, Eigen::Matrix4f mvp) {
+
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer, 0);
+        
+    int xpixel = clamp((int) floor(x * displayWidth), 0, displayWidth - 6);
+    int ypixel = clamp((int) floor(y * displayHeight), 0, displayHeight - 6);
+    
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    checkGlError("glPixelStorei");
+    
+    uint8_t data[4]; // TODO
+    glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
+    checkGlError("glReadPixels");
+    Eigen::Vector4f pos0 = mvp.inverse() * Eigen::Vector4f(2.0f * xpixel / (float) displayWidth - 1, 2.0f * ypixel / (float) displayHeight - 1, data[3] / 128.0f - 1.0f, 1.0);
+    
+    glReadPixels(xpixel + 5, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
+    checkGlError("glReadPixels");
+    Eigen::Vector4f pos1 = mvp.inverse() * Eigen::Vector4f(2.0f * (xpixel+5) / (float) displayWidth - 1, 2.0f * ypixel / (float) displayHeight - 1, data[3] / 128.0f - 1.0f, 1.0);
+    
+    glReadPixels(xpixel, ypixel + 5, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
+    checkGlError("glReadPixels");
+    Eigen::Vector4f pos2 = mvp.inverse() * Eigen::Vector4f(2.0f * xpixel / (float) displayWidth - 1, 2.0f * (ypixel+5) / (float) displayHeight - 1, data[3] / 128.0f - 1.0f, 1.0);
+    
+    Eigen::Vector4f cross0t = pos0 / pos0(3) - pos1 / pos1(3);
+    Vector3f cross0 = Vector3f(cross0t(0), cross0t(1), cross0t(2));
+    
+    Eigen::Vector4f cross1t = pos0 / pos0(3) - pos2 / pos2(3);
+    Vector3f cross1 = Vector3f(cross1t(0), cross1t(1), cross1t(2));
+
+    return cross0.cross(cross1).normalized();
+}
 
 void RenderPipeline::ClearBuffers() {
     

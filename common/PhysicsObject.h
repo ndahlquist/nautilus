@@ -32,7 +32,7 @@ struct physicsInstance {
     physicsInstance() {
         position = Vector3f(0, 0, 0);
         velocity = Vector3f(0, 0, 0);
-        acceleration = Vector3f(0, -800.0, 0);
+        acceleration = Vector3f(0, -500.0, 0);
         timer.reset();
         lastUpdate.reset();
     }

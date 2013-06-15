@@ -44,22 +44,17 @@ void PhysicsObject::Update(int instanceNum) {
     instance->velocity += instance->acceleration * timeElapsed;
     
     if(ScreenSpaceCollisions) {
-        /*Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(instance->position[0], instance->position[1], instance->position[2], 1.0); // TODO
+        // Get the position in screen space
+        Vector4f MVP_POS = projection.top()*model_view.top()*Vector4f(instance->position[0], instance->position[1], instance->position[2], 1.0);
         float x = ((1.0f + MVP_POS(0) / MVP_POS(3)) / 2.0f);
         float y = ((1.0f + MVP_POS(1) / MVP_POS(3)) / 2.0f);
         
-        uint8_t * geometry = pipeline->RayTracePixel(x, y, true);
-        uint8_t depth = geometry[3];
-        Vector4f MV_normal = Vector4f(geometry[0] / 128.0f - 1.0f, geometry[1] / 128.0f - 1.0f, geometry[2] / 128.0f - 1.0f, 0.0);
-        
-        Vector4f normal_hom = model_view.top().inverse() * MV_normal;
-        Vector3f normal = Vector3f(normal_hom(0), -normal_hom(1), normal_hom(2)); // TODO: Why is this negative??
-        normal.normalize();
-        
-        delete[] geometry;
-        
-        if(depth < 256 * MVP_POS(2) / MVP_POS(3))
-            instance->velocity = COEFF_RESTITUTION * (-2 * instance->velocity.dot(normal) * normal + instance->velocity);*/
+        uint8_t depth = pipeline->getDepth(x, y);
+        if(depth < 256 * MVP_POS(2) / MVP_POS(3)) {
+            Vector3f normal = pipeline->getNormal(x, y, projection.top()*model_view.top());
+            if(instance->velocity.dot(normal) < 0)
+                instance->velocity = COEFF_RESTITUTION * (-2 * instance->velocity.dot(normal) * normal + instance->velocity);
+        }
     }
     
     for(int i = 0; i < 3; i++)
