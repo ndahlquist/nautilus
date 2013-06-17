@@ -30,7 +30,7 @@ CFLAGS 		 := -g \
 CFLAGS_PLATFORM  :=
 LDFLAGS		 :=
 FRAMEWORKS	 :=
-LIBS		 := png jpeg freetype
+LIBS		 := png jpeg
 
 ARCH=$(shell uname | sed -e 's/-.*//g')
 

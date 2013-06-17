@@ -497,12 +497,6 @@ GLfloat * RenderDestructible::getGeometry(int & num_vertices) {
 
 void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     
-    // Create vbo // TODO: Shouldn't be vertex buffered.
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, num * (3) * sizeof(float), buffer, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    checkGlError("VertexBuffer Generation");
-    
     // Pass matrices
     GLfloat* mv_Matrix = (GLfloat*)mvMatrix();
     GLfloat* mvp_Matrix = (GLfloat*)mvpMatrix();
@@ -512,11 +506,11 @@ void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
     delete[] mv_Matrix;
     delete[] mvp_Matrix;
     
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     // Pass vertices
     glEnableVertexAttribArray(gvPositionHandle);
-    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*) 0);
+    glVertexAttribPointer(gvPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*) buffer);
     checkGlError("gvPositionHandle");
 
     // Pass texture
@@ -525,14 +519,6 @@ void RenderDestructible::RenderPass(int instance, GLfloat *buffer, int num) {
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(textureUniform, 0);
         checkGlError("texture");
-    }
-    
-    // Pass normal map
-    if(normalMapUniform != -1 && normalTexture != -1) {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, normalTexture);
-        glUniform1i(textureUniform, 1);
-        checkGlError("normalTexture");
     }
     
     glDrawArrays(GL_TRIANGLES, 0, num);
