@@ -562,7 +562,7 @@ void RenderDestructible::Render() {
     
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LEQUAL); // TODO: Measure effect on performance vs clear buffer.
+    glDepthFunc(GL_LESS);
     glDisable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDisable(GL_DITHER);

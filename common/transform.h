@@ -10,7 +10,6 @@ using Eigen::Vector3f;
 extern std::stack<Matrix4f> model_view;
 extern std::stack<Matrix4f> projection;
 
-
 //Model-view
 //get the current matrix
 float* mvMatrix();

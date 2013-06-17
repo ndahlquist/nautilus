@@ -55,7 +55,7 @@ uint8_t RenderPipeline::getDepth(float x, float y) {
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     checkGlError("glPixelStorei");
     
-    uint8_t data[4]; // TODO
+    uint8_t data[4];
     glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
     checkGlError("glReadPixels");
     
@@ -73,7 +73,7 @@ Eigen::Vector3f RenderPipeline::getNormal(float x, float y, Eigen::Matrix4f mvp)
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     checkGlError("glPixelStorei");
     
-    uint8_t data[4]; // TODO
+    uint8_t data[4];
     glReadPixels(xpixel, ypixel, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &data);
     checkGlError("glReadPixels");
     Eigen::Vector4f pos0 = mvp.inverse() * Eigen::Vector4f(2.0f * xpixel / (float) displayWidth - 1, 2.0f * ypixel / (float) displayHeight - 1, data[3] / 128.0f - 1.0f, 1.0);

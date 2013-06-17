@@ -4,7 +4,7 @@
 #include "HUD.h"
 
 #define PAN_LERP_FACTOR .04 // TODO
-#define PI 3.1415f // TODO
+#define _USE_MATH_DEFINES // M_PI
 
 class basicLevel {
 public:
@@ -70,8 +70,8 @@ inline float tanClamp(float input, float max) {
 
 // Rotate around the subject based on orientation
 void basicLevel::RotatePerspective() {
-    float rot0 = tanClamp( orientation[2], PI / 10.0f);
-    float rot2 = tanClamp(-orientation[1], PI / 10.0f);
+    float rot0 = tanClamp( orientation[2], M_PI / 10.0f);
+    float rot2 = tanClamp(-orientation[1], M_PI / 10.0f);
     
     translatef(cameraPan[0], cameraPan[1], cameraPan[2]);
     rotate(rot0, 0, rot2);

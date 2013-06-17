@@ -7,7 +7,8 @@
 std::stack<Matrix4f> model_view;
 std::stack<Matrix4f> projection;
 
-#define PI 3.1415926536
+#define _USE_MATH_DEFINES // M_PI
+
 //Model-view
 //get the current matrix
 float* mvMatrix(){
@@ -49,8 +50,7 @@ void translatef(float x, float y, float z){
 }
 //Rotate, angle in degrees
 void rotatef(float angle, float x, float y, float z){
-    angle *=  PI;
-    angle /= 180.f;
+    angle *=  M_PI / 180.0f;
     float cos_theta = cosf(angle);
     float _cos_theta = 1.f - cos_theta;
     float sin_theta = sqrt(1.f-cos_theta*cos_theta);
@@ -204,7 +204,7 @@ void perspective(float fovy, float aspect,
                  float zNear, float zFar) {
     float xmin, xmax, ymin, ymax;
     
-    ymax = zNear * (float)tanf(fovy * PI / 360);
+    ymax = zNear * (float)tanf(fovy * M_PI / 360.0f);
     ymin = -ymax;
     xmin = ymin * aspect;
     xmax = ymax * aspect;

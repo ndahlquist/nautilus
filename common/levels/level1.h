@@ -216,7 +216,7 @@ void level1::RenderFrame() {
         mvPushMatrix();
         translate(jellyfish->instances[i].position);
         rotate(0.0, jellyfish->instances[i].rot[0], jellyfish->instances[i].rot[1]);
-        rotate(0.0, 0.0, PI / 2);
+        rotate(0.0, 0.0, (float) M_PI / 2.0f);
         scalef(1.0f);
         jellyfish->Render(i);
         mvPopMatrix();
@@ -226,7 +226,7 @@ void level1::RenderFrame() {
         mvPushMatrix();
         translate(small_jellyfish->instances[i].position);
         rotate(0.0, small_jellyfish->instances[i].rot[0], small_jellyfish->instances[i].rot[1]);
-        rotate(0.0, 0.0, PI / 2);
+        rotate(0.0, 0.0, (float) M_PI / 2.0f);
         scalef(0.7f);
         small_jellyfish->Render(i);
         mvPopMatrix();
@@ -281,7 +281,7 @@ void level1::RenderFrame() {
             smallLight->color[0] = 1.00f;
             smallLight->color[1] = 0.33f;
             smallLight->color[2] = 0.07f;
-            smallLight->brightness = 1500 + 1500 * sin(bomb->instances[i].timer.getSeconds() * 4.0f * PI);
+            smallLight->brightness = 1500 + 1500 * sin(bomb->instances[i].timer.getSeconds() * 4.0f * M_PI);
             smallLight->Render();
             mvPopMatrix();
         } else if(bomb->instances[i].timer.getSeconds() <= BOMB_TIMER_LENGTH + BOMB_EXPLOSION_LENGTH) {
@@ -292,7 +292,7 @@ void level1::RenderFrame() {
             explosiveLight->color[1] = 1.00f;
             explosiveLight->color[2] = 1.00f;
             float explosionTime = (bomb->instances[i].timer.getSeconds() - BOMB_TIMER_LENGTH) / BOMB_EXPLOSION_LENGTH;
-            float intensity = sin(PI * sqrt(explosionTime));
+            float intensity = sin(M_PI * sqrt(explosionTime));
             explosiveLight->brightness = 10000000.0f * intensity;
             explosiveLight->Render();
             mvPopMatrix();
@@ -322,7 +322,7 @@ void level1::RenderFrame() {
         mvPushMatrix();
         translate(character->instances[0].position);
         rotate(0.0, character->instances[0].rot[0], character->instances[0].rot[1]);
-        rotate(0.0,0,-PI / 2);
+        rotate(0.0,0,-M_PI / 2.0f);
         scalef(300.0f);
         spotLight->color[0] = 0.4f;
         spotLight->color[1] = 0.6f;
