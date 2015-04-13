@@ -15,7 +15,6 @@
 		55793615174F075200E1AB4E /* glsl_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5579360F174F075200E1AB4E /* glsl_helper.cpp */; };
 		55793616174F075200E1AB4E /* RenderLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55793611174F075200E1AB4E /* RenderLight.cpp */; };
 		558ED135174598A7000DD7F3 /* square.obj in Resources */ = {isa = PBXBuildFile; fileRef = 558ED130174598A7000DD7F3 /* square.obj */; };
-		558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED138174598B1000DD7F3 /* geometry_f.glsl */; };
 		558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 558ED139174598B1000DD7F3 /* standard_v.glsl */; };
 		558ED149174ADBA4000DD7F3 /* water_droplet_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */; };
 		558ED14A174ADBA4000DD7F3 /* water_droplet_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */; };
@@ -89,7 +88,6 @@
 		55793611174F075200E1AB4E /* RenderLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderLight.cpp; path = ../../common/RenderLight.cpp; sourceTree = "<group>"; };
 		55793612174F075200E1AB4E /* RenderLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderLight.h; path = ../../common/RenderLight.h; sourceTree = "<group>"; };
 		558ED130174598A7000DD7F3 /* square.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = square.obj; path = ../../res/raw/square.obj; sourceTree = "<group>"; };
-		558ED138174598B1000DD7F3 /* geometry_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = geometry_f.glsl; path = ../../res/raw/geometry_f.glsl; sourceTree = "<group>"; };
 		558ED139174598B1000DD7F3 /* standard_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = standard_v.glsl; path = ../../res/raw/standard_v.glsl; sourceTree = "<group>"; };
 		558ED145174ADBA4000DD7F3 /* water_droplet_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = water_droplet_1.wav; path = ../../res/raw/water_droplet_1.wav; sourceTree = "<group>"; };
 		558ED146174ADBA4000DD7F3 /* water_droplet_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = water_droplet_2.wav; path = ../../res/raw/water_droplet_2.wav; sourceTree = "<group>"; };
@@ -331,7 +329,6 @@
 				55E2D299175D5A430099F69E /* dr_spotlight_f.glsl */,
 				55793604174F067200E1AB4E /* dr_pointlight_f.glsl */,
 				55793605174F067200E1AB4E /* dr_standard_v.glsl */,
-				558ED138174598B1000DD7F3 /* geometry_f.glsl */,
 				55E2D2A3175D5A5C0099F69E /* solid_color_f.glsl */,
 				558ED139174598B1000DD7F3 /* standard_v.glsl */,
 				55A7C7841766E76300FF3C09 /* overlay_f.glsl */,
@@ -398,7 +395,6 @@
 				55906DAC17302DDB00BD92BF /* Default-568h@2x.png in Resources */,
 				55906DAF17302DDB00BD92BF /* MainStoryboard.storyboard in Resources */,
 				558ED135174598A7000DD7F3 /* square.obj in Resources */,
-				558ED13D174598B1000DD7F3 /* geometry_f.glsl in Resources */,
 				558ED13E174598B1000DD7F3 /* standard_v.glsl in Resources */,
 				55793609174F067200E1AB4E /* albedo_f.glsl in Resources */,
 				5579360A174F067200E1AB4E /* dr_pointlight_f.glsl in Resources */,
