@@ -89,6 +89,7 @@ LIBDIRS    := $(EXTRA_LIB_DIRS)
 
 CFLAGS     += $(addprefix -I, $(INCDIRS))
 CFLAGS	   += $(CFLAGS_PLATFORM)
+CFLAGS     += -DARCH_$(ARCH)
 LDFLAGS    += $(addprefix -L, $(LIBDIRS))
 
 LDLIBS	   := $(addprefix -l, $(LIBS))

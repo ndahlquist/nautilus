@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>399D91CF-CE9D-47F4-93AD-CDB4D147E59F</string>
 	<key>IDESourceControlProjectName</key>
-	<string>nativeGraphics</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>3EDD5278EFDE35611BB1907E641A9E9595AF8D76</key>
 		<string>https://github.com/ndahlquist/nautilus.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ios/nativeGraphics.xcodeproj</string>
+	<string>ios/nativeGraphics.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>3EDD5278EFDE35611BB1907E641A9E9595AF8D76</key>
