@@ -2,7 +2,11 @@
 // nativeGraphics
 
 #include <GL/glew.h>
-#include <GL/glut.h>
+#ifdef ARCH_Darwin // OS X
+    #include <GLUT/glut.h>
+#else
+    #include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
@@ -96,7 +100,7 @@ char * stringResourceCallback(const char * fileName) {
         printf("Unable to open file %s\n", fileName);
         return NULL;
     }
-    
+
     string returnStr;
 /* OpenGL ES requires precision identifiers in shaders, while regular OpenGL
    while not compile with precision specifiers. We get around this by skippinng
@@ -105,7 +109,7 @@ char * stringResourceCallback(const char * fileName) {
         getline(file, returnStr);
     getline(file, returnStr, '\0');
     file.close();
-    
+
     return strdup(returnStr.c_str());
 }
 
@@ -139,7 +143,7 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(20, 20);
     glutInitWindowSize(1000, 800);
     glutCreateWindow("nativeGraphics");
-    
+
     // Initialize GLEW.
     glewInit();
     if(!GLEW_VERSION_2_0) {

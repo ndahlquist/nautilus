@@ -7,18 +7,7 @@
 #include <iostream>
 #include <string>
 
-#ifdef ANDROID_NDK
-#include "importgl.h"
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <jni.h>
-#elif __APPLE__
-#include <stdlib.h>
-#include <OpenGLES/ES2/gl.h>
-#else // linux
-#include <GL/glew.h>
-#include <stdio.h>
-#endif
+#include "graphics_header.h"
 
 #include "RenderObject.h"
 
@@ -28,7 +17,7 @@ class RenderLight : public RenderObject {
 public:
     RenderLight(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile);
     void Render();
-    
+
     float color[3]; // R, G, B (0.0, 1.0)
     float brightness; // (0, inf)
 };

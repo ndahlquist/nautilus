@@ -4,18 +4,7 @@
 #ifndef __nativeGraphics__Character__
 #define __nativeGraphics__Character__
 
-#ifdef ANDROID_NDK
-#include "importgl.h"
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <jni.h>
-#elif __APPLE__
-#include <stdlib.h>
-#include <OpenGLES/ES2/gl.h>
-#else // linux
-#include <GL/glew.h>
-#include <stdio.h>
-#endif
+#include "graphics_header.h"
 
 #include <vector>
 
@@ -47,16 +36,16 @@ struct characterInstance {
         lastUpdate.reset();
         animationTime = 0.0f;
     }
-    
+
     Vector3f targetPosition;
     float MaxVelocity;
     float MaxAcceleration;
     float Drag;
-    
+
     Vector3f position;
-    Vector3f velocity;    
+    Vector3f velocity;
     float rot[2];
-    
+
     Timer lastUpdate;
     float animationTime;
 };
