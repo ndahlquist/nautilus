@@ -2,7 +2,11 @@
 // nativeGraphics
 
 #include <GL/glew.h>
-#include <GLUT/glut.h>
+#ifdef ARCH_Darwin // OS X
+    #include <GLUT/glut.h>
+#else
+    #include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
