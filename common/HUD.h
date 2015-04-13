@@ -12,9 +12,9 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <jni.h>
-#elif __APPLE__
-#include <stdlib.h>
-#include <OpenGLES/ES2/gl.h>
+//#elif __APPLE__
+//#include <stdlib.h>
+//#include <OpenGLES/ES2/gl.h>
 #else // linux
 #include <GL/glew.h>
 #include <stdio.h>
@@ -32,7 +32,7 @@ public:
     void ShowRadar(Eigen::Vector3f delta_pos, int color, float size);
     void RenderElement(GLuint textureHandle, float xdisp, float ydisp, float xscale, float yscale);
     GLuint AddTexture(const char *textureFilename);
-    
+
     GLuint healthbarTex;
     GLuint healthbarBorderTex;
     GLuint radarTex;

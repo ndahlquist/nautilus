@@ -9,9 +9,9 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <jni.h>
-#elif __APPLE__
-#include <stdlib.h>
-#include <OpenGLES/ES2/gl.h>
+//#elif __APPLE__
+//#include <stdlib.h>
+//#include <OpenGLES/ES2/gl.h>
 #else // linux
 #include <GL/glew.h>
 #include <stdio.h>
@@ -49,9 +49,9 @@ public:
     PhysicsObject(const char *objFile, const char *vertexShaderFile, const char *fragmentShaderFile, bool collide = true);
     void Update(); // Update all instances
     void Update(int instance); // Update a specific instance
-    
+
     vector<struct physicsInstance> instances;
-    
+
 private:
     bool ScreenSpaceCollisions;
 };

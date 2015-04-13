@@ -3,17 +3,18 @@
 TARGET  := NativeGraphics
 
 # list files to compile and link together
-FILES   := mainlinux ../common/common \
-                     ../common/RenderPipeline \
-                     ../common/RenderObject \
-                     ../common/RenderLight \
-                     ../common/transform \
-                     ../common/glsl_helper \
-                     ../common/obj_parser \
-                     ../common/PhysicsObject \
-                     ../common/Character \
-                     ../common/RenderDestructible \
-                     ../common/HUD
+FILES   := mainlinux \
+           ../common/common \
+           ../common/RenderPipeline \
+           ../common/RenderObject \
+           ../common/RenderLight \
+           ../common/transform \
+           ../common/glsl_helper \
+           ../common/obj_parser \
+           ../common/PhysicsObject \
+           ../common/Character \
+           ../common/RenderDestructible \
+           ../common/HUD
 
 #################################################################
 
@@ -30,7 +31,7 @@ CFLAGS 		 := -g \
 CFLAGS_PLATFORM  :=
 LDFLAGS		 :=
 FRAMEWORKS	 :=
-LIBS		 := png jpeg
+LIBS		 := png jpeg glew
 
 ARCH=$(shell uname | sed -e 's/-.*//g')
 
@@ -56,9 +57,9 @@ CFLAGS_PLATFORM += `freetype-config --cflags`
 #
 # Mac users need to point to the libjpeg and libpng directories as well as the
 # freetype headers.
-# 
+#
 # The default location of a fink install is given below.
-# 
+#
 EXTRA_LIB_DIRS := /opt/local/lib
 EXTRA_INC_DIRS  := /opt/local/include glew/include
 
@@ -73,7 +74,7 @@ CFLAGS_PLATFORM += `freetype-config --cflags`
 #
 # hack for myth machines.  Add /usr/lib as an explicit lib dir so
 # it gets picked up instead of /usr/pubsw/lib.
-# 
+#
 
 EXTRA_LIB_DIRS := /usr/lib64 /usr/lib glew/lib
 EXTRA_INC_DIRS := /usr/include/freetype2 glew/include ../common/
@@ -83,7 +84,7 @@ endif
 
 TARGET     := $(addsuffix $(EXESUFFIX), $(TARGET))
 
-INCDIRS    := . $(LIBST_INC) $(EXTRA_INC_DIRS)
+INCDIRS    := . ../common $(LIBST_INC) $(EXTRA_INC_DIRS)
 LIBDIRS    := $(EXTRA_LIB_DIRS)
 
 CFLAGS     += $(addprefix -I, $(INCDIRS))

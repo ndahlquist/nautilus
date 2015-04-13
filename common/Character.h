@@ -9,9 +9,9 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <jni.h>
-#elif __APPLE__
-#include <stdlib.h>
-#include <OpenGLES/ES2/gl.h>
+//#elif __APPLE__
+//#include <stdlib.h>
+//#include <OpenGLES/ES2/gl.h>
 #else // linux
 #include <GL/glew.h>
 #include <stdio.h>
@@ -47,16 +47,16 @@ struct characterInstance {
         lastUpdate.reset();
         animationTime = 0.0f;
     }
-    
+
     Vector3f targetPosition;
     float MaxVelocity;
     float MaxAcceleration;
     float Drag;
-    
+
     Vector3f position;
-    Vector3f velocity;    
+    Vector3f velocity;
     float rot[2];
-    
+
     Timer lastUpdate;
     float animationTime;
 };
