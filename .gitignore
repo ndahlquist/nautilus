@@ -8,3 +8,4 @@ android/obj/
 android/project.properties
 linux/NativeGraphics
 
+.DS_Store
