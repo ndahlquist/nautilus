@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -366,9 +366,14 @@
 				CLASSPREFIX = nativeGraphics;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Ling-Ling Zhang";
+				TargetAttributes = {
+					55906D9117302DDB00BD92BF = {
+						DevelopmentTeam = 424M5254LK;
+					};
+				};
 			};
 			buildConfigurationList = 55906D8D17302DDB00BD92BF /* Build configuration list for PBXProject "nativeGraphics" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -546,14 +551,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nativeGraphics/nativeGraphics-Prefix.pch";
 				INFOPLIST_FILE = "nativeGraphics/nativeGraphics-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CB40A97B-53D7-4033-AACB-CC5F6223E23B";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CB40A97B-53D7-4033-AACB-CC5F6223E23B";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -562,14 +567,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ling-Ling Zhang (KR4529X8FT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nativeGraphics/nativeGraphics-Prefix.pch";
 				INFOPLIST_FILE = "nativeGraphics/nativeGraphics-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "CB40A97B-53D7-4033-AACB-CC5F6223E23B";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CB40A97B-53D7-4033-AACB-CC5F6223E23B";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
